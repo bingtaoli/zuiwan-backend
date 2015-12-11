@@ -43,6 +43,10 @@
             <div id="add-article">
                 <form>
                     <div class="form-group" style="width: 70%">
+                        <label>文章作者</label>
+                        <input type="text" class="form-control" name="article_author" placeholder="">
+                    </div>
+                    <div class="form-group" style="width: 70%">
                         <label>文章来源</label>
                         <input type="text" class="form-control" name="article_source" placeholder="原创">
                     </div>

@@ -35,6 +35,7 @@
             'article_source': article_source,
             'article_intro': article_intro
         };
+        console.log(data);
         var url = "<?php echo site_url() ?>/admin/add_article";
         $.ajax({
             type: "POST",

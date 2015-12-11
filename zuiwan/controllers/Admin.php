@@ -39,7 +39,7 @@ class Admin extends MY_Controller
             $article_content = $post_data['article_content'];
             $article_author = $post_data['article_author'];
             $article_source = $post_data['article_source'];
-            $article_intro = $post_data['article_intro'];
+            //$article_intro = $post_data['article_intro'];
             $create_time = date('Y-m-d H:m:s');
             $result = [
                 'status' => 'success',
@@ -51,7 +51,7 @@ class Admin extends MY_Controller
                 'article_author'  => $article_author,
                 'article_source'  => $article_source,
                 'create_time'     => $create_time,
-                'article_intro'   => $article_intro,
+                //'article_intro'   => $article_intro,
             ];
             try {
                 $this->article->add_article($insert_data);

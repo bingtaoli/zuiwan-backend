@@ -22,18 +22,20 @@ class User extends MY_Controller {
             $post_data = $this->input->post();
             $username = $post_data['username'];
             $password = $post_data['password'];
+            $s = var_export($post_data, true);
             $result = [
                 'status' => 'success',
-                'message' => '',
+                'message' => $s,
                 'user_detail' => '',  #登录成功后用户具体信息
             ];
             try {
                 $data = [
                     'username' => $username,
                     'password' => $password,
-                    'create_time' => date('Y-m-d'),
+                    'create_time' => date("Y-m-d"),
                     'identify' => 1,
                 ];
+                log_message('info', 'register user: ' . $s);
                 $this->user->add_user($data);
                 $user = $this->user->get_user_by_name($username);
                 $result['user_detail'] = $user;
@@ -68,6 +70,7 @@ class User extends MY_Controller {
                 $user = $this->user->get_user_by_name_password($username, $password);
                 if ($user){
                     $result['message'] = '登陆成功';
+                    log_message('info', 'user logged in' . $username);
                     Zuiwanclient::login($username);
                     # 获取用户具体信息
                     $result['user_detail'] = (array)$user;
@@ -94,7 +97,7 @@ class User extends MY_Controller {
             try {
                 Zuiwanclient::logout();
             } catch(Exception $e){
-                $result['message'] = 'unknown error happens';
+                $result['message'] = $e->getMessage();
                 $result['status'] = 'error';
             }
             $this->output->set_content_type('application/json');
@@ -120,7 +123,33 @@ class User extends MY_Controller {
                 //更新收藏信息
                 $this->user->update_user($this->user_detail);
             } catch(Exception $e){
-                $result['message'] = 'unknown error happens';
+                $result['message'] = $e->getMessage();
+                $result['status'] = 'error';
+            }
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
+        }
+    }
+
+    /**
+     * 收藏媒体
+     */
+    public function collect_media(){
+        if (METHOD == 'post'){
+            $post_data = $this->input->post();
+            $media_id = $post_data['media_id'];
+
+            $collect_media = $this->user_detail['collect_media'];
+            $update_media = $collect_media . ',' . $media_id;
+            $this->user_detail['collect_media'] = $update_media;
+
+            $result['status'] = 'success';
+            $result['message'] = '';
+            try {
+                //更新收藏信息
+                $this->user->update_user($this->user_detail);
+            } catch(Exception $e){
+                $result['message'] = $e->getMessage();
                 $result['status'] = 'error';
             }
             $this->output->set_content_type('application/json');
