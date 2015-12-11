@@ -73,7 +73,7 @@ class User extends MY_Controller {
                     log_message('info', 'user logged in' . $username);
                     Zuiwanclient::login($username);
                     # 获取用户具体信息
-                    $result['user_detail'] = (array)$user;
+                    $result['user_detail'] = $user;
                 } else {
                     $result['message'] = '用户名或密码错误';
                     $result['status'] = 'error';
