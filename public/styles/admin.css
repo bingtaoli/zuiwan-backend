@@ -1,0 +1,98 @@
+body {
+    font-family: Microsoft Yahei;
+    font-style: normal;
+    position: relative;
+}
+.header {
+    background: #353b5e;
+    color: #fff;
+}
+.header-main {
+    width: 80%;
+    margin: 0 auto;
+}
+.container {
+    width: 80%;
+    background: #fff;
+}
+.none {
+    display: none;
+}
+.fl {
+    float: left;
+}
+.fr {
+    float: right;
+}
+.one-row {
+    display: block;
+    width:100%;
+}
+.header {
+    padding: 10px 15px;
+    border-bottom: 2px solid #f3f5f7;
+}
+.identify {
+    font-size: 16px;
+    display: inline-block;
+    line-height: 30px;
+}
+.identify span {
+    font-weight: bold;
+}
+.split {
+    font-size: 16px;
+    display: inline-block;
+    line-height: 30px;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+.white-on-green {
+    color: #fff;
+    background: #88c92d;
+}
+.logout {
+    display: inline-block;
+    font-size: 16px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 30px;
+    text-align: center;
+    cursor: pointer;
+}
+h2 span {
+    font-size: 14px;
+}
+ul {
+    list-style: none;
+    padding: 0;
+}
+ul li {
+    float: left;
+    width: 100px;
+    margin-right: 20px;
+    padding-left: 5px;
+    padding-bottom: 8px;
+    padding-top: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #a9b0b6;
+    cursor: pointer;
+}
+ul li.active {
+    border-bottom: 3px solid #56cbca;
+}
+ul li:hover {
+    border-bottom: 3px solid #56cbca;
+}
+.clear {
+    clear: both;
+}
+.fill-section-header {
+    font-weight: bold;
+    padding: 8px 0;
+}
+input[type="radio"] {
+    cursor: pointer;
+}
