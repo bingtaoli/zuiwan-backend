@@ -38,7 +38,8 @@ class User extends MY_Controller {
                 log_message('info', 'register user: ' . $s);
                 $this->user->add_user($data);
                 $user = $this->user->get_user_by_name($username);
-                $result['user_detail'] = $user;
+                $json_user = json_encode($user);
+                $result['user_detail'] = $json_user;
             } catch (IdentifyException $e){
                 if ($e->getCode() == 0){
                     $result['message'] = '该用户已经注册';
@@ -73,7 +74,8 @@ class User extends MY_Controller {
                     log_message('info', 'user logged in' . $username);
                     Zuiwanclient::login($username);
                     # 获取用户具体信息
-                    $result['user_detail'] = (array)$user;
+                    $json_user = json_encode($user);
+                    $result['user_detail'] = $json_user;
                 } else {
                     $result['message'] = '用户名或密码错误';
                     $result['status'] = 'error';
