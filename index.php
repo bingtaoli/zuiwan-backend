@@ -300,7 +300,7 @@ switch (ENVIRONMENT)
 	}
 
 	define('VIEWPATH', $view_folder);
-	define('DIR_IN_ROOT', 'zuiwan-m');
+	define('DIR_IN_ROOT', 'zuiwan-backend');
 /*
  * --------------------------------------------------------------------
  * LOAD THE BOOTSTRAP FILE

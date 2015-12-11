@@ -25,13 +25,15 @@
     $('#publish').on('click', function(){
         var article_content = editor.getData();
         var article_type = 1;
-        var article_author = 'test';
-        var article_source = '思存';
+        var article_author = $('[name="article_author"]').val();
+        var article_source = $('[name="article_source"]').val();
+        var article_intro = $('[name="article_intro"]').val();
         var data = {
             'article_content': article_content,
             'article_type': article_type,
             'article_author': article_author,
-            'article_source': article_source
+            'article_source': article_source,
+            'article_intro': article_intro
         };
         var url = "<?php echo site_url() ?>/admin/add_article";
         $.ajax({

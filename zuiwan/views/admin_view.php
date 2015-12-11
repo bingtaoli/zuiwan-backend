@@ -44,11 +44,21 @@
                 <form>
                     <div class="form-group" style="width: 70%">
                         <label>文章来源</label>
-                        <input type="text" class="form-control" name="article_source" placeholder="">
+                        <input type="text" class="form-control" name="article_source" placeholder="原创">
                     </div>
                     <div class="form-group" style="width: 70%">
                         <label>文章类型</label>
-                        <input type="email" class="form-control" name="article_type" placeholder="">
+                        <select class="form-control" name="article_type">
+                            <option>新闻</option>
+                            <option>搞笑</option>
+                            <option>文艺</option>
+                            <option>故事</option>
+                            <option>体育</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="width: 70%">
+                        <label>文章简介</label>
+                        <input type="email" class="form-control" name="article_intro" placeholder="">
                     </div>
                 </form>
                 <textarea id="rich-editor" rows="10"></textarea>
@@ -71,7 +81,7 @@
                         <th class="none"></th>
                         <th>作者</th>
                         <th>类型</th>
-                        <th>内容</th>
+                        <th>简介</th>
                         <th>来源</th>
                         <th class="none"></th>
                     </tr>
@@ -85,7 +95,7 @@
                         <td class="none"><?php echo $a['id'] ?></td>
                         <th><?php echo $a['article_author'] ?></th>
                         <td><?php echo $a['article_type'] ?></td>
-                        <td><?php echo htmlspecialchars(substr($a['article_content'], 0, 15)) ?></td>
+                        <td><?php echo $a['article_intro'] ?></td>
                         <td><?php echo $a['article_source'] ?></td>
                         <td class="edit-or-del">
                             <span class="glyphicon glyphicon-edit"></span>

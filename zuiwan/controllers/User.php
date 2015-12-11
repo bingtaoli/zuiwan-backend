@@ -28,7 +28,13 @@ class User extends MY_Controller {
                 'user_detail' => '',  #登录成功后用户具体信息
             ];
             try {
-                $this->user->add_user($username, $password);
+                $data = [
+                    'username' => $username,
+                    'password' => $password,
+                    'create_time' => date('Y-m-d'),
+                    'identify' => 1,
+                ];
+                $this->user->add_user($data);
                 $user = $this->user->get_user_by_name($username);
                 $result['user_detail'] = $user;
             } catch (IdentifyException $e){
