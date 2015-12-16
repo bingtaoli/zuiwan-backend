@@ -9,6 +9,7 @@
 
 <!doctype html>
 <html>
+
 <?php $this->load->view('common/admin_header') ?>
 <style>
     tbody tr td.edit-or-del {
@@ -41,7 +42,7 @@
         </ul>
         <div id="admin-panel">
             <div id="add-article">
-                <form>
+                <form enctype="multipart/form-data" action="<?php echo site_url() ?>/admin/add_article" method="post">
                     <div class="form-group" style="width: 70%">
                         <label>文章作者</label>
                         <input type="text" class="form-control" name="article_author" placeholder="">
@@ -60,15 +61,19 @@
                             <option>体育</option>
                         </select>
                     </div>
+                    <div>
+                        <label>文章大图: </label>
+                        <input name="article_img" type="file" style="display: inline-block;">
+                    </div>
                     <div class="form-group" style="width: 70%">
                         <label>文章简介</label>
-                        <input type="email" class="form-control" name="article_intro" placeholder="">
+                        <input type="text" class="form-control" name="article_intro" placeholder="">
+                    </div>
+                    <textarea name="article_content" id="rich-editor" rows="16"></textarea>
+                    <div style="margin-top: 10px;">
+                        <button type="submit" class="btn btn-primary">发布</button>
                     </div>
                 </form>
-                <textarea id="rich-editor" rows="10"></textarea>
-                <div style="margin-top: 10px;">
-                    <button id="publish" class="btn btn-primary">发布</button>
-                </div>
             </div>
             <div id="all-article" class="none">
                 <table class="can-more table table-bordered table-striped">
@@ -96,7 +101,7 @@
                     foreach ($articles as $a){
                     ?>
                     <tr>
-                        <td class="none"><?php echo $a['id'] ?></td>
+                        <td name="article_id" class="none"><?php echo $a['id'] ?></td>
                         <th><?php echo $a['article_author'] ?></th>
                         <td><?php echo $a['article_type'] ?></td>
                         <td><?php echo $a['article_intro'] ?></td>

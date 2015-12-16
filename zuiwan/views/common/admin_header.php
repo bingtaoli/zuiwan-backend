@@ -10,8 +10,8 @@
     <meta charset="UTF-8">
     <title>醉晚后台管理系统</title>
     <?php $this->load->view('common/bootstrap');?>
-    <link rel="stylesheet" type="text/css" href="/<?php echo DIR_IN_ROOT ?>/public/styles/admin.css" />
-    <script src="/<?php echo DIR_IN_ROOT ?>/public/third_part/ckeditor/ckeditor.js"></script>
+    <link rel="stylesheet" type="text/css" href="<?php if(DIR_IN_ROOT) echo '/' . DIR_IN_ROOT ?>/public/styles/admin.css" />
+    <script src="<?php if(DIR_IN_ROOT) echo '/' . DIR_IN_ROOT ?>/public/third_part/ckeditor/ckeditor.js"></script>
     <style>
         .none {
             display: none;

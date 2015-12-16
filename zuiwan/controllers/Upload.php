@@ -17,7 +17,7 @@ $config['img_dir']= "upload/img"; //上传img文件地址 采用绝对地址 采
 /**
  *  TODO 这里图片路径地址还有部分未明确，后续优化
  */
-$config['site_url']="/zuiwan-m/public/"; //网站的网址 这与图片上传后的地址有关 最后不加"/" 可留空
+$config['site_url']="/zuiwan-backend/public/"; //网站的网址 这与图片上传后的地址有关 最后不加"/" 可留空
 
 class Upload extends MY_Controller {
 

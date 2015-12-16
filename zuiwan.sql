@@ -5,7 +5,7 @@ use zuiwan_m;
 create table if not exists user (
     id int NOT NULL AUTO_INCREMENT,
     username varchar(10) NOT NULL,
-    password varchar(20) NOT NULL ,
+    password varchar(32) NOT NULL ,
     identify int NOT NULL, # 身份，用户或者管理员
     user_avatar varchar(50), #用户头像图片地址
     create_time varchar(30) NOT NULL, # time of this user been creates, date(Y:m:d H:i:s)
@@ -17,12 +17,13 @@ create table if not exists user (
 # 文章表
 create table if not exists article (
     id int NOT NULL AUTO_INCREMENT,
-    article_type varchar(10) NOT NULL,
+    article_type varchar(10) NOT NULL, #topic
     article_intro varchar(50), #文章简介
     article_content varchar(10000) NOT NULL, #内容
     article_author varchar(20) NOT NULL, #作者
     article_source varchar(100), #转自，可以为空
     create_time varchar(30) NOT NULL, # 发布时间
+    article_img VARCHAR(20), #文章展示图片,可选
     PRIMARY KEY (id)
 ) default charset=utf8;
 

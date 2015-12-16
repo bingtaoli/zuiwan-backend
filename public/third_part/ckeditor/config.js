@@ -37,5 +37,5 @@ CKEDITOR.editorConfig = function( config ) {
 	config.removeDialogTabs = 'image:advanced;link:advanced';
 
     config.image_previewText=' ';
-	config.filebrowserImageUploadUrl= "/zuiwan-m/index.php/upload/upload_file";
+	config.filebrowserImageUploadUrl= "/zuiwan-backend/index.php/upload/upload_file";
 };

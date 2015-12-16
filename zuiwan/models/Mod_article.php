@@ -29,6 +29,11 @@ class Mod_article extends CI_Model
         $this->db->insert('article', $data);
     }
 
+    public function del_article($id){
+        $this->db->where('id', $id);
+        $this->db->delete('article');
+    }
+
     public function get_all_article(){
         $result = $this->db->get('article')->result_array();
         return $result;

@@ -22,39 +22,29 @@
         'removePlugins': 'elementspath'
     };
     window.editor = CKEDITOR.replace('rich-editor', config);
-    $('#publish').on('click', function(){
-        var article_content = editor.getData();
-        var article_type = 1;
-        var article_author = $('[name="article_author"]').val();
-        var article_source = $('[name="article_source"]').val();
-        var article_intro = $('[name="article_intro"]').val();
-        var data = {
-            'article_content': article_content,
-            'article_type': article_type,
-            'article_author': article_author,
-            'article_source': article_source,
-            'article_intro': article_intro
-        };
-        console.log(data);
-        var url = "<?php echo site_url() ?>/admin/add_article";
-        $.ajax({
-            type: "POST",
-            url: url,
-            dataType: "json",
-            data: data,
-            timeout : 8000,  // 8s超时时间
-            success: function (json) {
-                if (json.status == 'success'){
-                    _show_alert_message("发布文章成功", 1);
-                } else if (json.status == 'error'){
-                    _show_alert_message("发布文章失败 " + json.message, 2);
-                }
-            },
-            error: function (e) {
-                _show_alert_message("发布文章失败 " + e.message, 2);
-            }
-        });
-    });
+
+//    $('form').on('submit', function(e){
+//        e.preventDefault();
+//        window.editor.updateElement();
+//        var url = "<?php //echo site_url() ?>///admin/add_article";
+//        $.ajax({
+//            type: "POST",
+//            url: url,
+//            dataType: "json",
+//            data: data,
+//            timeout : 80000,  // 80s超时时间
+//            success: function (json) {
+//                if (json.status == 'success'){
+//                    _show_alert_message("发布文章成功", 1);
+//                } else if (json.status == 'error'){
+//                    _show_alert_message("发布文章失败 " + json.message, 2);
+//                }
+//            },
+//            error: function (e) {
+//                _show_alert_message("发布文章失败 " + e.message, 2);
+//            }
+//        });
+//    });
     function _show_alert_message(message_content, type){
         $('.alert').hide();
         var message;
@@ -74,5 +64,31 @@
         var id = $(this).parents('tr').find('td').eq(0).text();
         var url = "<?php echo site_url() ?>/admin/edit_article/" + id;
         window.location.href = url;
+    });
+    $('.edit-or-del .glyphicon-remove').on('click', function(){
+        var id = $(this).parents('tr').find('td').eq(0).text();
+        var url = "<?php echo site_url() ?>/admin/del_article/";
+        var tr = $(this).parents('tr');
+        var data = {
+            'id': id
+        };
+        $.ajax({
+            type: "POST",
+            url: url,
+            dataType: "json",
+            data: data,
+            timeout : 80000,  // 80s超时时间
+            success: function (json) {
+                if (json.status == 'success'){
+                    _show_alert_message("删除文章成功", 1);
+                    $(tr).remove();
+                } else if (json.status == 'error'){
+                    _show_alert_message("删除文章失败 " + (json.message ? json.message : ''), 2);
+                }
+            },
+            error: function (e) {
+                _show_alert_message("删除文章失败 " + (e.message ? e.message : ''), 2);
+            }
+        });
     });
 </script>
