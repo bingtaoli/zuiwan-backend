@@ -66,8 +66,8 @@ class Admin extends MY_Controller
                     }
                     //上传成功才增加文章
                     $insert_data['article_img'] = $store_file_name;
-                    $this->article->add_article($insert_data);
                 }
+                $this->article->add_article($insert_data);
             } catch (IdentifyException $e){
                 $error_id = 1;
             } catch (Exception $e){
