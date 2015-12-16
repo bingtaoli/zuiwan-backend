@@ -37,6 +37,7 @@ class Admin extends MY_Controller
              * TODO 只有root账户可以访问
              */
             $post_data = $this->input->post();
+            $article_title = $post_data['article_title'];
             $article_type = $post_data['article_type'];
             $article_content = $post_data['article_content'];
             $article_author = $post_data['article_author'];
@@ -46,6 +47,7 @@ class Admin extends MY_Controller
             //$create_time = date('Y-m-d H:m:s');
             $create_time = date('F d, Y'); # December 09, 2015
             $insert_data =[
+                'article_title'    => $article_title,
                 'article_type'    => $article_type,
                 'article_content' => $article_content,
                 'article_author'  => $article_author,

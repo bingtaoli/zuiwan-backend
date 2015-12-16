@@ -45,6 +45,10 @@
                 <form enctype="multipart/form-data" action="<?php echo site_url() ?>/admin/add_article" method="post">
                     <div class="form-group" style="width: 70%">
                         <label>文章作者</label>
+                        <input type="text" class="form-control" name="article_title" placeholder="">
+                    </div>
+                    <div class="form-group" style="width: 70%">
+                        <label>文章作者</label>
                         <input type="text" class="form-control" name="article_author" placeholder="">
                     </div>
                     <div class="form-group" style="width: 70%">
@@ -79,7 +83,8 @@
                 <table class="can-more table table-bordered table-striped">
                     <colgroup>
                         <col class="col-xs-1">
-                        <col class="col-xs-2">
+                        <col class="col-xs-1">
+                        <col class="col-xs-1">
                         <col class="col-xs-1">
                         <col class="col-xs-4">
                         <col class="col-xs-3">
@@ -88,6 +93,7 @@
                     <thead>
                     <tr>
                         <th class="none"></th>
+                        <th>标题</th>
                         <th>作者</th>
                         <th>类型</th>
                         <th>简介</th>
@@ -102,6 +108,7 @@
                     ?>
                     <tr>
                         <td name="article_id" class="none"><?php echo $a['id'] ?></td>
+                        <th><?php echo $a['article_title'] ?></th>
                         <th><?php echo $a['article_author'] ?></th>
                         <td><?php echo $a['article_type'] ?></td>
                         <td><?php echo $a['article_intro'] ?></td>
