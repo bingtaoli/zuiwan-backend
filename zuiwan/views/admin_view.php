@@ -44,7 +44,7 @@
             <div id="add-article">
                 <form enctype="multipart/form-data" action="<?php echo site_url() ?>/admin/add_article" method="post">
                     <div class="form-group" style="width: 70%">
-                        <label>文章作者</label>
+                        <label>文章标题</label>
                         <input type="text" class="form-control" name="article_title" placeholder="">
                     </div>
                     <div class="form-group" style="width: 70%">
@@ -59,6 +59,16 @@
                         <label>文章类型</label>
                         <select class="form-control" name="article_type">
                             <option>新闻</option>
+                            <option>搞笑</option>
+                            <option>文艺</option>
+                            <option>故事</option>
+                            <option>体育</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="width: 70%">
+                        <label>所属专题</label>
+                        <select class="form-control" name="article_type">
+                            <option>艺术殿堂</option>
                             <option>搞笑</option>
                             <option>文艺</option>
                             <option>故事</option>

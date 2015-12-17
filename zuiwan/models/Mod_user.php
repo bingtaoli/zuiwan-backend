@@ -58,11 +58,8 @@ class Mod_user extends CI_Model {
 
     public function get_user_by_name($username){
         $this->db->where('username', $username);
-        $result = $this->db->get('user')->result();
+        $result = $this->db->get('user')->result_array();
         if ($result){
-            /**
-             * result()是一个数组
-             */
             return $result[0];
         } else {
             return NULL;

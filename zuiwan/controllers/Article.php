@@ -28,8 +28,7 @@ class Article extends MY_Controller
                 $a['article_img'] = $img_prefix . $a['article_img'];
             }
         }
-        $result = [];
-        $result['articles'] = $articles;
+        $result = $articles;
         $this->output->set_content_type('application/json');
         $this->output->set_output(json_encode($result));
     }

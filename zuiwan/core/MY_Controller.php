@@ -2,7 +2,6 @@
 
 class MY_Controller extends CI_Controller{
 
-    var $username = '';
     var $cfg = null;
     var $dict = null;
 

@@ -71,7 +71,6 @@ class User extends MY_Controller {
                 if ($user){
                     $result['message'] = '登陆成功';
                     log_message('info', 'user logged in' . $username);
-                    Zuiwanclient::login($username);
                     # 获取用户具体信息
                     $result['user_detail'] = $user;
                 } else {
@@ -87,23 +86,23 @@ class User extends MY_Controller {
         }
     }
 
-    /**
-     * 登出
-     */
-    public function logout(){
-        if (METHOD == 'post'){
-            $result['status'] = 'success';
-            $result['message'] = '';
-            try {
-                Zuiwanclient::logout();
-            } catch(Exception $e){
-                $result['message'] = $e->getMessage();
-                $result['status'] = 'error';
-            }
-            $this->output->set_content_type('application/json');
-            $this->output->set_output(json_encode($result));
-        }
-    }
+//    /**
+//     * 登出
+//     */
+//    public function logout(){
+//        if (METHOD == 'post'){
+//            $result['status'] = 'success';
+//            $result['message'] = '';
+//            try {
+//                Zuiwanclient::logout();
+//            } catch(Exception $e){
+//                $result['message'] = $e->getMessage();
+//                $result['status'] = 'error';
+//            }
+//            $this->output->set_content_type('application/json');
+//            $this->output->set_output(json_encode($result));
+//        }
+//    }
 
     /**
      * 收藏文章
@@ -112,16 +111,18 @@ class User extends MY_Controller {
         if (METHOD == 'post'){
             $post_data = $this->input->post();
             $article_id = $post_data['article_id'];
+            $username = $post_data['username'];
+            $user = $this->user->get_user_by_name($username);
+            $collect_articles = $user['collect_article'];
+            $update_articles = $collect_articles ? $collect_articles . ',' . $article_id : $article_id;
 
-            $collect_article = $this->user_detail['collect_article'];
-            $update_article = $collect_article . ',' . $article_id;
-            $this->user_detail['collect_article'] = $update_article;
+            $user['collect_article'] = $update_articles;
 
             $result['status'] = 'success';
             $result['message'] = '';
             try {
                 //更新收藏信息
-                $this->user->update_user($this->user_detail);
+                $this->user->update_user($user);
             } catch(Exception $e){
                 $result['message'] = $e->getMessage();
                 $result['status'] = 'error';
@@ -138,16 +139,19 @@ class User extends MY_Controller {
         if (METHOD == 'post'){
             $post_data = $this->input->post();
             $media_id = $post_data['media_id'];
+            $username = $post_data['username'];
+            $user = $this->user->get_user_by_name($username);
 
-            $collect_media = $this->user_detail['collect_media'];
-            $update_media = $collect_media . ',' . $media_id;
-            $this->user_detail['collect_media'] = $update_media;
+            $origin_collect = $user['collect_media'];
+            $update_collect = $origin_collect ? $origin_collect . ',' . $media_id : $media_id;
+
+            $user['collect_media'] = $update_collect;
 
             $result['status'] = 'success';
             $result['message'] = '';
             try {
                 //更新收藏信息
-                $this->user->update_user($this->user_detail);
+                $this->user->update_user($user);
             } catch(Exception $e){
                 $result['message'] = $e->getMessage();
                 $result['status'] = 'error';
