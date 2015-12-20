@@ -24,6 +24,10 @@
         width: 24px;
         cursor: pointer;
     }
+    input[type="file"] {
+        display: inline-block;
+        margin-left: 16px;
+    }
 </style>
 <div class="container">
     <div class="content">
@@ -37,12 +41,13 @@
         </div>
         <ul class="tab-items">
             <li class="active">发布文章</li>
-            <li >所有文章</li>
+            <li>所有文章</li>
+            <li>媒体专题</li>
             <div class="clear"></div>
         </ul>
         <div id="admin-panel">
             <div id="add-article">
-                <form enctype="multipart/form-data" action="<?php echo site_url() ?>/admin/add_article" method="post">
+                <form enctype="multipart/form-data" action="<?php echo site_url() ?>/article/add_article" method="post">
                     <div class="form-group" style="width: 70%">
                         <label>文章标题</label>
                         <input type="text" class="form-control" name="article_title" placeholder="">
@@ -52,27 +57,22 @@
                         <input type="text" class="form-control" name="article_author" placeholder="">
                     </div>
                     <div class="form-group" style="width: 70%">
-                        <label>文章来源</label>
-                        <input type="text" class="form-control" name="article_source" placeholder="原创">
-                    </div>
-                    <div class="form-group" style="width: 70%">
-                        <label>文章类型</label>
-                        <select class="form-control" name="article_type">
-                            <option>新闻</option>
-                            <option>搞笑</option>
-                            <option>文艺</option>
-                            <option>故事</option>
-                            <option>体育</option>
+                        <label>文章媒体</label>
+                        <select class="form-control" name="article_source">
+                            <option >思存</option>
+                            <option>醉晚</option>
+                            <option>新闻中心</option>
+                            <option>华科学生会</option>
                         </select>
                     </div>
                     <div class="form-group" style="width: 70%">
                         <label>所属专题</label>
                         <select class="form-control" name="article_type">
-                            <option>艺术殿堂</option>
-                            <option>搞笑</option>
-                            <option>文艺</option>
-                            <option>故事</option>
-                            <option>体育</option>
+                            <option value="1">艺术殿堂</option>
+                            <option value="2">搞笑</option>
+                            <option value="3">文艺</option>
+                            <option value="4">故事</option>
+                            <option value="5">体育</option>
                         </select>
                     </div>
                     <div>
@@ -83,7 +83,7 @@
                         <label>文章简介</label>
                         <input type="text" class="form-control" name="article_intro" placeholder="">
                     </div>
-                    <textarea name="article_content" id="rich-editor" rows="16"></textarea>
+                    <textarea name="article_content" id="rich-editor" rows="30"></textarea>
                     <div style="margin-top: 10px;">
                         <button type="submit" class="btn btn-primary">发布</button>
                     </div>
@@ -105,9 +105,9 @@
                         <th class="none"></th>
                         <th>标题</th>
                         <th>作者</th>
-                        <th>类型</th>
+                        <th>专题</th>
                         <th>简介</th>
-                        <th>来源</th>
+                        <th>媒体</th>
                         <th class="none"></th>
                     </tr>
                     </thead>
@@ -131,6 +131,92 @@
                     <?php } } ?>
                     </tbody>
                 </table>
+            </div>
+            <div id="media-and-type" class="none">
+                <div id="media">
+                    <h2>媒体</h2>
+                    <table class="table table-bordered table-striped">
+                        <colgroup>
+                            <col class="col-xs-1">
+                            <col class="col-xs-2">
+                            <col class="col-xs-3">
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th class="none"></th>
+                            <th>媒体名称</th>
+                            <th>媒体头像</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td class="none"></td>
+                            <th>思存工作室</th>
+                            <th>
+                                <form enctype="multipart/form-data" method="post">
+                                    无<input class="file" type="file" name="sicun-avatar">
+                                    <button class="upload file-btn btn btn-success" style="height: 32px;">上传</button>
+                                </form>
+                            </th>
+                            <td class="edit-or-del">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td name="" class="none"></td>
+                            <th>醉晚亭</th>
+                            <th>
+                                无<input type="file">
+                            </th>
+                            <td class="edit-or-del">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <hr>
+                <div id="type">
+                    <h2>专题</h2>
+                    <table class="table table-bordered table-striped">
+                        <colgroup>
+                            <col class="col-xs-1">
+                            <col class="col-xs-2">
+                            <col class="col-xs-3">
+                            <col class="col-xs-1">
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th class="none"></th>
+                            <th>专题名称</th>
+                            <th>专题大图</th>
+                            <th class="none"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td name="" class="none"></td>
+                            <th>艺术殿堂</th>
+                            <th>
+                                无<input type="file">
+                            </th>
+                            <td class="edit-or-del">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td name="" class="none"></td>
+                            <th>体育</th>
+                            <th>
+                                无<input type="file">
+                            </th>
+                            <td class="edit-or-del">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
