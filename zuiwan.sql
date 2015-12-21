@@ -22,7 +22,7 @@ create table if not exists article (
     article_intro varchar(50), #文章简介
     article_content varchar(10000) NOT NULL, #内容
     article_author varchar(20) NOT NULL, #作者
-    article_source varchar(100), #转自，可以为空, 即"媒体"
+    article_media varchar(10), #"媒体"
     create_time varchar(30) NOT NULL, # 发布时间
     article_img VARCHAR(20), #文章展示图片,可选
     article_color varchar(6), #文章颜色
@@ -33,7 +33,7 @@ create table if not exists article (
 create table if not exists media (
     id int NOT NULL AUTO_INCREMENT,
     media_name varchar(10) NOT NULL, #媒体名称
-    media_avatar varchar(20), #媒体头像
+    media_avatar varchar(40), #媒体头像
     create_time varchar(30) NOT NULL, # 媒体加入时间
     PRIMARY KEY (id)
 ) default charset=utf8;
@@ -42,7 +42,7 @@ create table if not exists media (
 create table if not exists type (
     id int NOT NULL AUTO_INCREMENT,
     type_name varchar(10) NOT NULL, #专题名称
-    type_img varchar(20), #专题大图
+    type_img varchar(40), #专题大图
     create_time varchar(30) NOT NULL, # 专题成立时间
     PRIMARY KEY (id)
 ) DEFAULT CHARSET=utf8;

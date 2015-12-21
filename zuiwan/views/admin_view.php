@@ -12,13 +12,13 @@
 
 <?php $this->load->view('common/admin_header') ?>
 <style>
-    tbody tr td.edit-or-del {
+    tbody tr td.del, tbody tr td.edit-or-del {
         border: none;
         border-right: solid 1px #fff;
         border-bottom: solid 1px #fff;
         background: #fff;
     }
-    tbody tr td.edit-or-del .glyphicon {
+    tbody tr td.del .glyphicon, tbody tr td.edit-or-del .glyphicon {
         display: inline-block;
         line-height: 34px;
         width: 24px;
@@ -58,21 +58,18 @@
                     </div>
                     <div class="form-group" style="width: 70%">
                         <label>文章媒体</label>
-                        <select class="form-control" name="article_source">
-                            <option >思存</option>
-                            <option>醉晚</option>
-                            <option>新闻中心</option>
-                            <option>华科学生会</option>
+                        <select class="form-control" name="article_media">
+                            <?php if(isset($media)) foreach($media as $m){ ?>
+                                <option value="<?php echo $m['media_name'] ?>"><?php echo $m['media_name'] ?></option>
+                            <?php } ?>
                         </select>
                     </div>
                     <div class="form-group" style="width: 70%">
                         <label>所属专题</label>
                         <select class="form-control" name="article_type">
-                            <option value="1">艺术殿堂</option>
-                            <option value="2">搞笑</option>
-                            <option value="3">文艺</option>
-                            <option value="4">故事</option>
-                            <option value="5">体育</option>
+                            <?php if(isset($type)) foreach($type as $t){ ?>
+                                <option value="<?php echo $t['type_name'] ?>"><?php echo $t['type_name'] ?></option>
+                            <?php } ?>
                         </select>
                     </div>
                     <div>
@@ -92,22 +89,22 @@
             <div id="all-article" class="none">
                 <table class="can-more table table-bordered table-striped">
                     <colgroup>
-                        <col class="col-xs-1">
-                        <col class="col-xs-1">
+                        <col class="col-xs-2">
                         <col class="col-xs-1">
                         <col class="col-xs-1">
                         <col class="col-xs-4">
-                        <col class="col-xs-3">
+                        <col class="col-xs-2">
+                        <col class="col-xs-1">
                         <col class="col-xs-1">
                     </colgroup>
                     <thead>
                     <tr>
-                        <th class="none"></th>
                         <th>标题</th>
                         <th>作者</th>
                         <th>专题</th>
                         <th>简介</th>
                         <th>媒体</th>
+                        <th class="none"></th>
                         <th class="none"></th>
                     </tr>
                     </thead>
@@ -117,115 +114,158 @@
                     foreach ($articles as $a){
                     ?>
                     <tr>
-                        <td name="article_id" class="none"><?php echo $a['id'] ?></td>
-                        <th><?php echo $a['article_title'] ?></th>
-                        <th><?php echo $a['article_author'] ?></th>
-                        <td><?php echo $a['article_type'] ?></td>
-                        <td><?php echo $a['article_intro'] ?></td>
-                        <td><?php echo $a['article_source'] ?></td>
+                        <th><?php if(isset($a['article_title'])) echo $a['article_title'] ?></th>
+                        <th><?php if(isset($a['article_author'])) echo $a['article_author'] ?></th>
+                        <td><?php if(isset( $a['article_type'])) echo $a['article_type'] ?></td>
+                        <td><?php if(isset($a['article_intro'])) echo $a['article_intro'] ?></td>
+                        <td><?php if(isset($a['article_media'])) echo $a['article_media'] ?></td>
                         <td class="edit-or-del">
                             <span class="glyphicon glyphicon-edit"></span>
                             <span class="glyphicon glyphicon-remove"></span>
                         </td>
+                        <td name="article_id" class="none"><?php echo $a['id'] ?></td>
                     </tr>
                     <?php } } ?>
                     </tbody>
                 </table>
             </div>
             <div id="media-and-type" class="none">
-                <div id="media">
+                <div id="media-manage">
                     <h2>媒体</h2>
                     <table class="table table-bordered table-striped">
                         <colgroup>
-                            <col class="col-xs-1">
                             <col class="col-xs-2">
-                            <col class="col-xs-3">
+                            <col class="col-xs-6">
+                            <col class="col-xs-1">
+                            <col class="col-xs-1">
                         </colgroup>
                         <thead>
                         <tr>
-                            <th class="none"></th>
                             <th>媒体名称</th>
-                            <th>媒体头像</th>
+                            <th>媒体头像(建议裁剪成正方形)</th>
+                            <th class="none"></th>
                         </tr>
                         </thead>
                         <tbody>
+                        <?php if(isset($media)) foreach($media as $i => $m){ ?>
                         <tr>
-                            <td class="none"></td>
-                            <th>思存工作室</th>
-                            <th>
+                            <td><?php echo $m['media_name'] ?></td>
+                            <td>
                                 <form enctype="multipart/form-data" method="post">
-                                    <img src="/<?php echo DIR_IN_ROOT ?>/public/upload/img/default_media_avatar.jpg">
-                                    <input class="file" type="file" name="sicun-avatar">
-                                    <input name="media_name" type="hidden" value="sicun">
+                                    <img src="/<?php echo DIR_IN_ROOT; ?>/public/upload/img/<?php if (isset($m['media_avatar'])) echo $m['media_avatar']; else echo "default_media_avatar.jpg" ?>">
+                                    <input class="file" type="file" name="avatar">
+                                    <input name="media_name" type="hidden" value="<?php echo $m['media_name'] ?>">
                                     <button class="upload-file-btn btn btn-success">上传</button>
                                 </form>
-                            </th>
-                            <td class="edit-or-del">
+                            </td>
+                            <td class="del">
                                 <span class="glyphicon glyphicon-remove"></span>
                             </td>
+                            <td style="display: none;" name="id"><?php echo $m['id'] ?></td>
                         </tr>
-                        <tr>
-                            <td name="" class="none"></td>
-                            <th>醉晚亭</th>
-                            <th>
-                                <form enctype="multipart/form-data" method="post">
-                                    <img src="/<?php echo DIR_IN_ROOT ?>/public/upload/img/default_media_avatar.jpg">
-                                    <input class="file" type="file" name="sicun-avatar">
-                                    <input name="media_name" type="hidden" value="zuiwan">
-                                    <button class="upload-file-btn btn btn-success">上传</button>
-                                </form>
-                            </th>
-                            <td class="edit-or-del">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </td>
-                        </tr>
+                        <?php } ?>
                         </tbody>
                     </table>
+                    <div class="white-on-green more glyphicon glyphicon-plus" title="增加一项"></div>
                 </div>
                 <hr>
-                <div id="type">
+                <div id="type-manage">
                     <h2>专题</h2>
                     <table class="table table-bordered table-striped">
                         <colgroup>
-                            <col class="col-xs-1">
                             <col class="col-xs-2">
-                            <col class="col-xs-3">
+                            <col class="col-xs-6">
+                            <col class="col-xs-1">
                             <col class="col-xs-1">
                         </colgroup>
                         <thead>
                         <tr>
-                            <th class="none"></th>
                             <th>专题名称</th>
-                            <th>专题大图</th>
+                            <th>专题大图(建议裁剪成正方形)</th>
+                            <th class="none"></th>
                             <th class="none"></th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td name="" class="none"></td>
-                            <th>艺术殿堂</th>
+                        <tr class="none">
+                            <th name="type_name"></th>
                             <th>
-                                无<input type="file">
+                                <form enctype="multipart/form-data" method="post">
+                                    <img src="/<?php echo DIR_IN_ROOT; ?>/public/upload/img/default_media_avatar.jpg">
+                                    <input class="file" type="file" name="avatar">
+                                    <input name="type_name" type="hidden">
+                                    <button class="upload-file-btn btn btn-success">上传</button>
+                                </form>
                             </th>
-                            <td class="edit-or-del">
+                            <td class="del">
                                 <span class="glyphicon glyphicon-remove"></span>
                             </td>
+                            <td class="none" name="id"></td>
                         </tr>
+                        <?php if(isset($type)) foreach($type as $i => $t){ ?>
                         <tr>
-                            <td name="" class="none"></td>
-                            <th>体育</th>
+                            <th><?php echo $t['type_name'] ?></th>
                             <th>
-                                无<input type="file">
+                                <form enctype="multipart/form-data" method="post">
+                                    <img src="/<?php echo DIR_IN_ROOT; ?>/public/upload/img/<?php if (isset($t['type_img'])) echo $t['type_img']; else echo "default_media_avatar.jpg" ?>">
+                                    <input class="file" type="file" name="avatar">
+                                    <input name="type_name" type="hidden" value="<?php echo $t['type_name'] ?>">
+                                    <button class="upload-file-btn btn btn-success">上传</button>
+                                </form>
                             </th>
-                            <td class="edit-or-del">
+                            <td class="del">
                                 <span class="glyphicon glyphicon-remove"></span>
                             </td>
+                            <td style="display: none;" name="id"><?php echo $t['id']; ?></td>
                         </tr>
+                        <?php } ?>
                         </tbody>
                     </table>
+                    <div class="white-on-green more glyphicon glyphicon-plus" title="增加一项"></div>
                 </div>
             </div>
         </div>
     </div>
-    <?php $this->load->view('common/admin_js') ?>
 </div>
+<div id="add-media-modal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">增加媒体</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>媒体名称</label>
+                    <input name="media_name" type="text" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="add-media-confirm-btn" type="button" class="btn btn-primary">确定增加</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="add-type-modal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">增加专题</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>专题名称</label>
+                    <input name="type_name" type="text" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="add-type-confirm-btn" type="button" class="btn btn-primary">确定增加</button>
+            </div>
+        </div>
+    </div>
+</div>
+<?php $this->load->view('common/admin_js') ?>

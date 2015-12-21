@@ -110,3 +110,13 @@ button.upload-file-btn {
     padding-top: 0;
     padding-bottom: 0;
 }
+.more{
+    margin-left: 2px;
+    font-size: 13px;
+    height: 20px;
+    line-height: 20px;
+    width: 20px;
+    border-radius: 20px;
+    text-align: center;
+    cursor: pointer;
+}

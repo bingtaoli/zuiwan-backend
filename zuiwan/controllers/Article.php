@@ -9,6 +9,9 @@
 class Article extends MY_Controller
 {
 
+    var $article;
+    var $config;
+
     public function __construct()
     {
         parent::__construct();
@@ -54,7 +57,7 @@ class Article extends MY_Controller
             $article_type = $post_data['article_type'];
             $article_content = $post_data['article_content'];
             $article_author = $post_data['article_author'];
-            $article_source = $post_data['article_source'];
+            $article_media = $post_data['article_media'];
             $article_intro = $post_data['article_intro'];
             //时间格式 December 19, 2015
             //$create_time = date('Y-m-d H:m:s');
@@ -64,17 +67,16 @@ class Article extends MY_Controller
                 'article_type'    => $article_type,
                 'article_content' => $article_content,
                 'article_author'  => $article_author,
-                'article_source'  => $article_source,
+                'article_media'  =>  $article_media,
                 'create_time'     => $create_time,
                 'article_intro'   => $article_intro,
             ];
             try {
-                global $config;
                 if(is_uploaded_file($_FILES['article_img']['tmp_name'])) {
                     $file_name = $_FILES['article_img']['name'];
                     $file_type = pathinfo($file_name, PATHINFO_EXTENSION);
                     $store_file_name = uniqid() . "." . $file_type;
-                    $file_abs = $config["img_dir"] . "/" . $store_file_name;
+                    $file_abs = $this->config->config["img_dir"] . "/" . $store_file_name;
                     $file_host = STATIC_PATH . $file_abs;
                     if (move_uploaded_file($_FILES['article_img']['tmp_name'], $file_host) == false) {
                         throw new Exception("文章大图上传失败");
