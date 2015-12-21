@@ -96,3 +96,17 @@ ul li:hover {
 input[type="radio"] {
     cursor: pointer;
 }
+#media-and-type form img {
+    width:  60px;
+    height: 60px;
+    border-radius: 30px;
+}
+#media-and-type input[type="file"] {
+    width: 180px;
+}
+button.upload-file-btn {
+    line-height: 28px;
+    font-size: 14px;
+    padding-top: 0;
+    padding-bottom: 0;
+}

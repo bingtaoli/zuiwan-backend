@@ -44,21 +44,25 @@ class Media extends MY_Controller
             $result['message'] = '';
             if(is_uploaded_file($_FILES['sicun-avatar']['tmp_name']))
             {
+                $post_data = $this->input->post();
+                $media_name = $post_data['media_name'];
+
                 //判断上传文件是否允许
-                //$file_arr = pathinfo($_FILES['sicun-avatar']['name']);
-                //$file_type = $file_arr["extension"];
-                $file_abs = $config["img_dir"] . "/" . $_FILES["sicun-avatar"]['name'];
+                $file_arr = pathinfo($_FILES['sicun-avatar']['name']);
+                $file_type = $file_arr["extension"];
+                $random_file_name = uniqid() . "." . $file_type;
+                $file_abs = $config["img_dir"] . "/" . $random_file_name;
                 $file_host = STATIC_PATH . $file_abs;
-                echo $file_host . '\n';
-                echo $_FILES['sicun-avatar']['tmp_name'] . '\n' ;
-                if(move_uploaded_file($_FILES['sicun-avatar']['tmp_name'],$file_host))
-                {
-                    // ignore
-                }
-                else
-                {
-                    echo($_FILES['sicun-avatar']['tmp_name']);
-                    echo($file_host);
+                try {
+                    if(move_uploaded_file($_FILES['sicun-avatar']['tmp_name'], $file_host))
+                    {
+                        //把media的media_avatar更新
+                        $this->media->update_avatar($media_name, $random_file_name);
+                        $result['data'] = $random_file_name;
+                    }
+                } catch (Exception $e){
+                    $result['status'] = 'error';
+                    $result['message'] = $e->getMessage();
                 }
             }
             $this->output->set_content_type('application/json');

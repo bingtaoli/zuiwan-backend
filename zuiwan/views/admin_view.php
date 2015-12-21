@@ -154,8 +154,10 @@
                             <th>思存工作室</th>
                             <th>
                                 <form enctype="multipart/form-data" method="post">
-                                    无<input class="file" type="file" name="sicun-avatar">
-                                    <button class="upload file-btn btn btn-success" style="height: 32px;">上传</button>
+                                    <img src="/<?php echo DIR_IN_ROOT ?>/public/upload/img/default_media_avatar.jpg">
+                                    <input class="file" type="file" name="sicun-avatar">
+                                    <input name="media_name" type="hidden" value="sicun">
+                                    <button class="upload-file-btn btn btn-success">上传</button>
                                 </form>
                             </th>
                             <td class="edit-or-del">
@@ -166,7 +168,12 @@
                             <td name="" class="none"></td>
                             <th>醉晚亭</th>
                             <th>
-                                无<input type="file">
+                                <form enctype="multipart/form-data" method="post">
+                                    <img src="/<?php echo DIR_IN_ROOT ?>/public/upload/img/default_media_avatar.jpg">
+                                    <input class="file" type="file" name="sicun-avatar">
+                                    <input name="media_name" type="hidden" value="zuiwan">
+                                    <button class="upload-file-btn btn btn-success">上传</button>
+                                </form>
                             </th>
                             <td class="edit-or-del">
                                 <span class="glyphicon glyphicon-remove"></span>

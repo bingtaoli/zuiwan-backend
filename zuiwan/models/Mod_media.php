@@ -33,4 +33,10 @@ class Mod_media extends CI_Model {
         return $this->db->delete('media', array('id' => $id));
     }
 
+    public function update_media_avatar($media_name, $avatar_name){
+        $this->db->where('media_name', $media_name);
+        $this->db->set('avatar_name', $avatar_name);
+        $this->db->update('media');
+    }
+
 }

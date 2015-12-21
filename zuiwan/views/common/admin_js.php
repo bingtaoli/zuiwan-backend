@@ -74,12 +74,12 @@
     /**
      * 媒体专题上传图片
      */
-    $('.file-btn').on('click', function(e){
+    $('.upload-file-btn').on('click', function(e){
         e.preventDefault();
         var form = $(this).parents('form');
         var formData = new FormData($(form)[0]);
-        console.log($(form)[0]);
         var url = "<?php echo site_url() ?>/media/set_media_avatar/";
+        var tr = $(this).parents('tr');
         $.ajax({
             type: "POST",
             url: url,
@@ -93,12 +93,13 @@
             success: function (json) {
                 if (json.status == 'success'){
                     console.log("success");
+                    $(tr).find('img').src("<?php echo site_url() . "/public/upload/img/" ?>" + json.data);
                 } else if (json.status == 'error'){
-
+                    console.log(json.message);
                 }
             },
             error: function (e) {
-
+                console.log(e);
             }
         });
     })
