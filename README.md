@@ -30,10 +30,10 @@ json: status, message
 
 参数：
 
-* get_article()返回所有文章
-* get_article(1, "思存")返回媒体为“思存”的所有文章
-* get_article(2, "艺术殿堂")返回专题为“艺术殿堂”的所有文章
+* /get_article -> 返回所有文章
+* /get_article?type=1&name=思存 -> 返回媒体为“思存”的所有文章
+* get_article?type=2&name=艺术殿堂 -> 返回专题为“艺术殿堂”的所有文章
 
 /article/get_one_article
 
-* get_one_article(1) 返回文章id为1的某篇文章
+* get_one_article?id=1 -> 返回文章id为1的某篇文章
