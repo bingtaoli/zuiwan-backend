@@ -18,6 +18,12 @@ class Mod_type extends CI_Model
 
     public function get_type_by_name($name){
         $result = $this->db->get_where('type', ['type_name' => $name])->result_array();
+        $img_prefix = HOST . DIR_IN_ROOT .  "/public/upload/img/";
+        foreach($result as &$r){
+            if (isset($r['article_img'])){
+                $r['article_img'] = $img_prefix . $r['article_img'];
+            }
+        }
         if ($result){
             return $result[0];
         }

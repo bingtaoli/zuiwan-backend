@@ -329,6 +329,7 @@
             success: function (json) {
                 if (json.status == 'success'){
                     console.log("add article success");
+                    location.reload(true);
                 } else if (json.status == 'error'){
                     console.log("add article fail");
                 }

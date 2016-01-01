@@ -20,26 +20,21 @@ class Article extends MY_Controller
 
     /**
      * @param null $type
+     * @param null $name
      * @throws
      * 传media则获取某个media内容,否则获取所有内容
      */
-    public function get_article($type=null){
+    public function get_article($type=null, $name=null){
         if ($type){
             if ($type == 1){
-                $articles = $this->article->get_article_by_media();
+                $articles = $this->article->get_article_by_media($name);
             } else if ($type == 2){
-                $articles = $this->article->get_article_by_type();
+                $articles = $this->article->get_article_by_type($name);
             } else {
                 throw new Exception("未知类型文章,无法获取数据");
             }
         } else {
             $articles = $this->article->get_all_article();
-        }
-        $img_prefix = "http://115.28.75.190/" . DIR_IN_ROOT .  "/public/article_img/";
-        foreach ($articles as $a){
-            if (isset($a['article_img'])){
-                $a['article_img'] = $img_prefix . $a['article_img'];
-            }
         }
         header("Access-Control-Allow-Origin: *");
         $result = $articles;
@@ -52,6 +47,8 @@ class Article extends MY_Controller
             /**
              * TODO 只有root账户可以访问
              */
+            $result['status'] = 'success';
+            $result['message'] = '';
             $post_data = $this->input->post();
             $article_title = $post_data['article_title'];
             $article_type = $post_data['article_type'];
@@ -71,17 +68,19 @@ class Article extends MY_Controller
                 'article_media'   =>  $article_media,
                 'create_time'     => $create_time,
                 'article_intro'   => $article_intro,
-                'article_img'=> $article_img,
+                'article_img'     => $article_img,
             ];
             try {
                 $this->article->add_article($insert_data);
             } catch (IdentifyException $e){
-                $error_id = 1;
+                $result['status'] = 'error';
+                $result['message'] = $e->getMessage();
             } catch (Exception $e){
-                $error_id = 2;
+                $result['status'] = 'error';
+                $result['message'] = $e->getMessage();
             }
-            $url = isset($error_id) ? "/admin/index" : "/admin/index/" . $error_id;
-            redirect($url);
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
         }
     }
 

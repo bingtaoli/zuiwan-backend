@@ -301,6 +301,7 @@ switch (ENVIRONMENT)
 
 	define('VIEWPATH', $view_folder);
 	define('DIR_IN_ROOT', 'zuiwan-backend');
+	define('HOST', "http://" . $_SERVER['HTTP_HOST'] . "/");
 /*
  * --------------------------------------------------------------------
  * LOAD THE BOOTSTRAP FILE

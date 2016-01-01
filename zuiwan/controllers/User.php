@@ -47,6 +47,7 @@ class User extends MY_Controller {
                 $result['message'] = '未知错误，请联系管理员';
                 $result['status'] = 'error';
             }
+            header("Access-Control-Allow-Origin: *");
             $this->output->set_content_type('application/json');
             $this->output->set_output(json_encode($result));
         }
@@ -80,6 +81,7 @@ class User extends MY_Controller {
                 $result['message'] = '未知错误，请联系管理员';
                 $result['status'] = 'error';
             }
+            header("Access-Control-Allow-Origin: *");
             $this->output->set_content_type('application/json');
             $this->output->set_output(json_encode($result));
         }

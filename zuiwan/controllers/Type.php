@@ -23,12 +23,6 @@ class Type extends MY_Controller
 
     public function get_all_type(){
         $type = $this->type->get_all_type();
-        $img_prefix = "http://202.114.20.78/" . DIR_IN_ROOT .  "/public/upload/img/";
-        foreach ($type as $m){
-            if (isset($m['type_img'])){
-                $a['type_img'] = $img_prefix . $m['type_img'];
-            }
-        }
         $this->output->set_content_type('application/json');
         $this->output->set_output(json_encode($type));
     }
