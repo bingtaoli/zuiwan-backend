@@ -31,7 +31,7 @@ class Test extends MY_Controller
     }
 
     public function test_show_all_article(){
-        $data = $this->article->get_all_article();
+        $data = $this->article->get_article();
         var_dump($data);
     }
 

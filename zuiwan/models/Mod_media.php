@@ -17,12 +17,7 @@ class Mod_media extends CI_Model {
 
     public function get_media_by_name($name){
         $result = $this->db->get_where('media', ['media_name' => $name])->result_array();
-        $img_prefix = HOST . DIR_IN_ROOT .  "/public/upload/img/";
-        foreach($result as &$r){
-            if (isset($r['article_img'])){
-                $r['article_img'] = $img_prefix . $r['article_img'];
-            }
-        }
+        add_img_prefix($result);
         if ($result){
             return $result[0];
         }

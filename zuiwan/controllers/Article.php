@@ -27,19 +27,31 @@ class Article extends MY_Controller
     public function get_article($type=null, $name=null){
         if ($type){
             if ($type == 1){
-                $articles = $this->article->get_article_by_media($name);
+                $articles = $this->article->get_articles(1, $name);
             } else if ($type == 2){
-                $articles = $this->article->get_article_by_type($name);
+                $articles = $this->article->get_articles(2, $name);
             } else {
                 throw new Exception("未知类型文章,无法获取数据");
             }
         } else {
-            $articles = $this->article->get_all_article();
+            $articles = $this->article->get_articles();
         }
         header("Access-Control-Allow-Origin: *");
         $result = $articles;
         $this->output->set_content_type('application/json');
         $this->output->set_output(json_encode($result));
+    }
+
+    public function get_one_article($id){
+        $article = $this->article->get_article_by_id($id);
+        header("Access-Control-Allow-Origin: *");
+        $result = $article;
+        $this->output->set_content_type('application/json');
+        $this->output->set_output(json_encode($result));
+    }
+
+    public function test_get_article(){
+        $this->get_article(1, "思存");
     }
 
     public function add_article(){

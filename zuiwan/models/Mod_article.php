@@ -26,32 +26,27 @@ class Mod_article extends CI_Model
         $this->db->delete('article');
     }
 
-    public function get_all_article(){
-        $result = $this->db->get('article')->result_array();
-        //把article_img设置成绝对路径
-        $img_prefix = HOST . DIR_IN_ROOT .  "/public/upload/img/";
-        foreach($result as &$r){
-            if (isset($r['article_img'])){
-                $r['article_img'] = $img_prefix . $r['article_img'];
+    public function get_articles($type=null, $name=null){
+        if ($type){
+            if ($type == 1){
+                $result = $this->db->get_where('article', ['article_media' => $name])->result_array();
+            } else if ($type == 2){
+                $result = $this->db->get_where('article', ['article_type' => $name])->result_array();
             }
+        } else {
+            $result = $this->db->get('article')->result_array();
         }
+        add_img_prefix($result);
         return $result;
     }
 
     public function get_article_by_id($id){
         $result = $this->db->get_where('article', ['id' => $id])->result_array();
-        //把article_img设置成绝对路径
-        $img_prefix = HOST . DIR_IN_ROOT .  "/public/upload/img/";
-        foreach($result as &$r){
-            if (isset($r['article_img'])){
-                $r['article_img'] = $img_prefix . $r['article_img'];
-            }
-        }
+        add_img_prefix($result);
         if ($result){
             return $result[0];
         } else{
             throw new Exception("该文章已不存在");
         }
     }
-
 }
