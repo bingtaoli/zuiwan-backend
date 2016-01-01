@@ -75,9 +75,9 @@ $query_builder = TRUE;
 
 $db['zuiwan_m'] = array(
 	'dsn'	=> '',
-	'hostname' => '202.114.20.78',
+	'hostname' => '127.0.0.1',
 	'username' => 'root',
-	'password' => 'sicunnbforever',
+	'password' => '',
 	'database' => 'zuiwan_m',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
