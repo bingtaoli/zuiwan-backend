@@ -7,15 +7,10 @@
  */
 class Mod_type extends CI_Model
 {
-    var $db;
-
     public function __construct() {
         parent::__construct();
     }
 
-    public function init($db){
-        $this->db = $db;
-    }
 
     public function get_all_type(){
         return $this->db->get('type')->result_array();

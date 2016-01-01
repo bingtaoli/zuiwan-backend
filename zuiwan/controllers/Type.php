@@ -18,9 +18,7 @@ class Type extends MY_Controller
     {
         parent::__construct();
         $this->load->model('mod_article', 'article');
-        $this->article->init($this->db);
         $this->load->model('mod_type', 'type');
-        $this->type->init($this->db);
     }
 
     public function get_all_type(){

@@ -7,14 +7,9 @@
  */
 class Mod_media extends CI_Model {
 
-    var $db;
 
     public function __construct() {
         parent::__construct();
-    }
-
-    public function init($db){
-        $this->db = $db;
     }
 
     public function get_all_media(){

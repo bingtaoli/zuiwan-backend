@@ -21,13 +21,9 @@ class Admin extends MY_Controller
     {
         parent::__construct();
         $this->load->model('mod_user', 'user');
-        $this->user->init($this->db);
         $this->load->model('mod_article', 'article');
-        $this->article->init($this->db);
         $this->load->model('mod_type', 'type');
-        $this->type->init($this->db);
         $this->load->model('mod_media', 'media');
-        $this->media->init($this->db);
     }
 
     public function index($error_id=null){

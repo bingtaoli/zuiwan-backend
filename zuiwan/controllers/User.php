@@ -11,7 +11,6 @@ class User extends MY_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('mod_user', 'user');
-        $this->user->init($this->db);
     }
 
     /**
@@ -85,24 +84,6 @@ class User extends MY_Controller {
             $this->output->set_output(json_encode($result));
         }
     }
-
-//    /**
-//     * 登出
-//     */
-//    public function logout(){
-//        if (METHOD == 'post'){
-//            $result['status'] = 'success';
-//            $result['message'] = '';
-//            try {
-//                Zuiwanclient::logout();
-//            } catch(Exception $e){
-//                $result['message'] = $e->getMessage();
-//                $result['status'] = 'error';
-//            }
-//            $this->output->set_content_type('application/json');
-//            $this->output->set_output(json_encode($result));
-//        }
-//    }
 
     /**
      * 收藏文章
