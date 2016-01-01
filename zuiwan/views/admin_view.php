@@ -47,7 +47,7 @@
         </ul>
         <div id="admin-panel">
             <div id="add-article">
-                <form enctype="multipart/form-data" action="<?php echo site_url() ?>/article/add_article" method="post">
+                <div class="form">
                     <div class="form-group" style="width: 70%">
                         <label>文章标题</label>
                         <input type="text" class="form-control" name="article_title" placeholder="">
@@ -72,9 +72,16 @@
                             <?php } ?>
                         </select>
                     </div>
-                    <div>
-                        <label>文章大图: </label>
-                        <input name="article_img" type="file" style="display: inline-block;">
+                    <div id="article-img">
+                        <form>
+                            <label>文章大图: </label>
+                            <input type="hidden" name="article_img_name">
+                            <input name="article_img" type="file" style="display: inline-block;">
+                            <button type="button" class="upload-file-btn btn btn-success">上传</button>
+                            <div style="margin-top: 5px; margin-bottom: 8px;">
+                                <img style="width: 400px;" src="/<?php echo DIR_IN_ROOT; ?>/public/upload/img/huge.jpg?>">
+                            </div>
+                        </form>
                     </div>
                     <div class="form-group" style="width: 70%">
                         <label>文章简介</label>
@@ -82,9 +89,9 @@
                     </div>
                     <textarea name="article_content" id="rich-editor" rows="30"></textarea>
                     <div style="margin-top: 10px;">
-                        <button type="submit" class="btn btn-primary">发布</button>
+                        <button id="add-article-submit" type="submit" class="btn btn-primary">发布</button>
                     </div>
-                </form>
+                </div>
             </div>
             <div id="all-article" class="none">
                 <table class="can-more table table-bordered table-striped">

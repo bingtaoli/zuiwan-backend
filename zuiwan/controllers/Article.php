@@ -59,18 +59,36 @@ class Article extends MY_Controller
             $article_author = $post_data['article_author'];
             $article_media = $post_data['article_media'];
             $article_intro = $post_data['article_intro'];
+            $article_img = $post_data['article_img_name'];
             //时间格式 December 19, 2015
             //$create_time = date('Y-m-d H:m:s');
             $create_time = date('F d, Y'); # December 09, 2015
             $insert_data =[
-                'article_title'    => $article_title,
+                'article_title'   => $article_title,
                 'article_type'    => $article_type,
                 'article_content' => $article_content,
                 'article_author'  => $article_author,
-                'article_media'  =>  $article_media,
+                'article_media'   =>  $article_media,
                 'create_time'     => $create_time,
                 'article_intro'   => $article_intro,
+                'article_img'=> $article_img,
             ];
+            try {
+                $this->article->add_article($insert_data);
+            } catch (IdentifyException $e){
+                $error_id = 1;
+            } catch (Exception $e){
+                $error_id = 2;
+            }
+            $url = isset($error_id) ? "/admin/index" : "/admin/index/" . $error_id;
+            redirect($url);
+        }
+    }
+
+    public function set_article_img(){
+        if (METHOD == 'post'){
+            $result['status'] = 'success';
+            $result['message'] = '';
             try {
                 if(is_uploaded_file($_FILES['article_img']['tmp_name'])) {
                     $file_name = $_FILES['article_img']['name'];
@@ -81,17 +99,14 @@ class Article extends MY_Controller
                     if (move_uploaded_file($_FILES['article_img']['tmp_name'], $file_host) == false) {
                         throw new Exception("文章大图上传失败");
                     }
-                    //上传成功才增加文章
-                    $insert_data['article_img'] = $store_file_name;
+                    $result['data'] = $store_file_name;
                 }
-                $this->article->add_article($insert_data);
-            } catch (IdentifyException $e){
-                $error_id = 1;
-            } catch (Exception $e){
-                $error_id = 2;
+            } catch(Exception $e){
+                $result['status'] = 'error';
+                $result['message'] = $e->getMessage();
             }
-            $url = isset($error_id) ? "/admin/index" : "/admin/index/" . $error_id;
-            redirect($url);
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
         }
     }
 

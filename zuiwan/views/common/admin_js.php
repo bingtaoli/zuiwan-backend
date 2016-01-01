@@ -271,4 +271,71 @@
             }
         });
     });
+    /**
+     * 文章大图---大图上传
+     */
+    $("#article-img").on("click", ".upload-file-btn", function (e) {
+        e.preventDefault();
+        var form = $(this).parents('form');
+        var formData = new FormData($(form)[0]);
+        var url = "<?php echo site_url() ?>/article/set_article_img/";
+        $.ajax({
+            type: "POST",
+            url: url,
+            dataType: 'JSON',
+            data: formData,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            timeout : 80000,  // 80s超时时间
+            success: function (json) {
+                if (json.status == 'success'){
+                    console.log("success");
+                    $(form).find('img').attr("src", "<?php if(DIR_IN_ROOT) echo '/' . DIR_IN_ROOT ?>/public/upload/img/" + json.data);
+                    //设置article img name
+                    $(form).find("[name='article_img_name']").val(json.data);
+                } else if (json.status == 'error'){
+                    console.log(json.message);
+                }
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        });
+    });
+    /**
+     * 增加文章
+     */
+    $("#add-article-submit").on("click", function(){
+        console.log("hello");
+        editor.updateElement();
+        var form = $(this).parents(".form");
+        var url =  "<?php echo site_url() ?>/article/add_article/";
+        var data = {};
+        data.article_title = $(form).find("[name='article_title']").val();
+        data.article_author = $(form).find("[name='article_author']").val();
+        data.article_media = $(form).find("[name='article_media']").val();
+        data.article_type = $(form).find("[name='article_type']").val();
+        data.article_intro = $(form).find("[name='article_intro']").val();
+        data.article_img_name = $(form).find("[name='article_img_name']").val();
+        data.article_content = $(form).find("[name='article_content']").val();
+        $.ajax({
+            type: "POST",
+            url: url,
+            dataType: "json",
+            data: data,
+            timeout : 80000,  // 80s超时时间
+            success: function (json) {
+                if (json.status == 'success'){
+                    console.log("add article success");
+                } else if (json.status == 'error'){
+                    console.log("add article fail");
+                }
+            },
+            error: function (e) {
+                console.log("add article fail");
+            }
+        });
+    });
 </script>
