@@ -27,7 +27,7 @@ class Admin extends MY_Controller
     }
 
     public function index($error_id=null){
-        $articles = $this->article->get_all_article();
+        $articles = $this->article->get_articles();
         $media = $this->media->get_all_media();
         $type = $this->type->get_all_type();
         $data = [
