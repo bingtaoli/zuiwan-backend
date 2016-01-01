@@ -8,17 +8,11 @@
  */
 class Zuiwanclient{
 
-    private static $session_key_name = "HIA1HIA2HIA3HIA4";
-
     public static function login($username){
         if (self::login_check()){
             return;
         }
-        $CI = & get_instance();
-        $CI->load->library('session');
-        $CI->session->set_userdata(self::$session_key_name, $username);
-        $CI->load->helper('cookie');
-        set_cookie('username', $username);
+        $_SESSION['username'] = $username;
         return;
     }
 
@@ -30,17 +24,12 @@ class Zuiwanclient{
     }
 
     public static function get_session_client(){
-        $CI = & get_instance();
-        $CI->load->library('session');
-        $username = $CI->session->userdata(self::$session_key_name);
-        return $username;
+        return isset($_SESSION['username']) ? $_SESSION['username'] : null;
     }
 
     public static function logout(){
-        $CI = & get_instance();
-        $CI->load->library('session');
-        $CI->session->set_userdata(self::$session_key_name, '');
-        $CI->load->helper('cookie');
-        delete_cookie('username');
+        if(isset($_SESSION['username'])){
+            unset($_SESSION['username']);
+        }
     }
 }

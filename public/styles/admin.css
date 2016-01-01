@@ -6,6 +6,8 @@ body {
 .header {
     background: #353b5e;
     color: #fff;
+    padding: 10px 15px;
+    border-bottom: 2px solid #f3f5f7;
 }
 .header-main {
     width: 80%;
@@ -27,10 +29,6 @@ body {
 .one-row {
     display: block;
     width:100%;
-}
-.header {
-    padding: 10px 15px;
-    border-bottom: 2px solid #f3f5f7;
 }
 .identify {
     font-size: 16px;

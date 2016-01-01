@@ -25,6 +25,9 @@
     };
     window.editor = CKEDITOR.replace('rich-editor', config);
 
+    /**
+     * 弹出提醒消息
+     */
     function _show_alert_message(message_content, type){
         $('.alert').hide();
         var message;
@@ -40,12 +43,19 @@
         $('.content').prepend(clone_message);
         $(clone_message).show();
     }
-    $('#all-article .glyphicon-edit').on('click', function(){
+
+    /**
+     * 所有文章板块---文章编辑
+     */
+    $('#all-article').on('click', '.glyphicon-edit', function(){
         var id = $(this).parents('tr').find('td[name="article_id"]').text();
         var url = "<?php echo site_url() ?>/article/edit_article/" + id;
         window.location.href = url;
     });
-    $('#all-article .glyphicon-remove').on('click', function(){
+    /**
+     * 所有文章板块---文章删除
+     */
+    $('#all-article').on('click', '.glyphicon-remove', function(){
         var id = $(this).parents('tr').find('td[name="article_id"]').text();
         var url = "<?php echo site_url() ?>/article/del_article/";
         var tr = $(this).parents('tr');
@@ -71,8 +81,9 @@
             }
         });
     });
+
     /**
-     * 媒体
+     * 媒体专题板块---上传媒体头像
      */
     $('#media-manage').on('click', '.upload-file-btn', function(e){
         e.preventDefault();
@@ -103,9 +114,15 @@
             }
         });
     });
+    /**
+     * 媒体专题板块---新增媒体(弹出弹窗)
+     */
     $('#media-manage').on('click', '.more', function(){
         $('#add-media-modal').modal();
     });
+    /**
+     * 媒体专题板块---新增媒体(弹窗确定新增)
+     */
     $('#add-media-confirm-btn').on('click', function(){
         var media_name = $('#add-media-modal').find('[name="media_name"]').val();
         var url = "<?php echo site_url() ?>/media/add_media/";
@@ -130,6 +147,9 @@
             }
         });
     });
+    /**
+     * 媒体专题板块---删除媒体
+     */
     $('#media-manage').on('click', '.glyphicon-remove', function(){
         var id = $(this).parents('tr').find('td[name="id"]').text();
         var url = "<?php echo site_url() ?>/media/del_media/";
@@ -158,7 +178,7 @@
     });
 
     /**
-     * 专题
+     * 媒体专题模块---上传专题大图
      */
     $('#type-manage').on('click', '.upload-file-btn', function(e){
         e.preventDefault();
@@ -189,9 +209,15 @@
             }
         });
     });
+    /**
+     * 媒体专题板块---新增专题(弹出弹窗)
+     */
     $('#type-manage').on('click', '.more', function(){
         $('#add-type-modal').modal();
     });
+    /**
+     * 媒体专题板块---新增专题,弹出弹窗确认
+     */
     $('#add-type-confirm-btn').on('click', function(){
         var type_name = $('#add-type-modal').find('[name="type_name"]').val();
         var url = "<?php echo site_url() ?>/type/add_type/";
@@ -216,6 +242,9 @@
             }
         });
     });
+    /**
+     * 媒体专题板块---删除专题
+     */
     $('#type-manage').on('click', '.glyphicon-remove', function(){
         var id = $(this).parents('tr').find('td[name="id"]').text();
         var url = "<?php echo site_url() ?>/type/del_type/";

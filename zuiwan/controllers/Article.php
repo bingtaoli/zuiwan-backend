@@ -36,12 +36,13 @@ class Article extends MY_Controller
         } else {
             $articles = $this->article->get_all_article();
         }
-        $img_prefix = "http://202.114.20.78/" . DIR_IN_ROOT .  "/public/article_img/";
+        $img_prefix = "http://115.28.75.190/" . DIR_IN_ROOT .  "/public/article_img/";
         foreach ($articles as $a){
             if (isset($a['article_img'])){
                 $a['article_img'] = $img_prefix . $a['article_img'];
             }
         }
+        header("Access-Control-Allow-Origin: *");
         $result = $articles;
         $this->output->set_content_type('application/json');
         $this->output->set_output(json_encode($result));

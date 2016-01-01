@@ -25,12 +25,13 @@ class Media extends MY_Controller
 
     public function get_all_media(){
         $media = $this->media->get_all_media();
-        $img_prefix = "http://202.114.20.78/" . DIR_IN_ROOT .  "/public/upload/img/";
+        $img_prefix = "http://115.28.75.190/" . DIR_IN_ROOT .  "/public/upload/img/";
         foreach ($media as $m){
             if (isset($m['media_avatar'])){
                 $a['media_avatar'] = $img_prefix . $m['media_avatar'];
             }
         }
+        header("Access-Control-Allow-Origin: *");
         $this->output->set_content_type('application/json');
         $this->output->set_output(json_encode($media));
     }
