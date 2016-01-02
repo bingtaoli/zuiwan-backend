@@ -23,6 +23,10 @@ class Topic extends MY_Controller
 
     public function get_topic(){
         $topic = $this->topic->get_all_topic();
+        //获取每个专题文章总数
+        foreach($topic as &$t){
+            $t['article_count'] = $this->article->get_count_by_topic($t['id']);
+        }
         header("Access-Control-Allow-Origin: *");
         $this->output->set_content_type('application/json');
         $this->output->set_output(json_encode($topic));
@@ -107,5 +111,4 @@ class Topic extends MY_Controller
             $this->output->set_output(json_encode($result));
         }
     }
-
 }

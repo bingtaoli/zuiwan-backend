@@ -28,17 +28,24 @@ json: status, message
 
 ### 获取文章
 
-/article/get_article
-
-参数：
+**/article/get_article**
 
 * /get_article -> 返回所有文章
-* /get_article?type=1&name=思存 -> 返回媒体为“思存”的所有文章
-* get_article?type=2&name=艺术殿堂 -> 返回专题为“艺术殿堂”的所有文章
+* /get_article?type=1&id=1 -> 返回媒体id为1的所有文章
+* get_article?type=2&id=1 -> 返回专题id为1的所有文章
 
-/article/get_one_article
+**/article/get_one_article**
 
 * get_one_article?id=1 -> 返回文章id为1的某篇文章
+
+****
+
+返回的json数组每一项都有多个字段:
+
+* article_media: 媒体id
+* article_topic: 话题id
+* article_media_name: 媒体名称
+* article_topic_name: 话题名称
 
 ### 获取媒体列表
 
@@ -48,9 +55,13 @@ json: status, message
 
 ### 获取专题
 
-/type/get_topic
+/topic/get_topic
 
 获取所有专题，包括大图
+
+返回json每一项字段：
+
+* article_count 该专题文章总数
 
 ### 获取用户收藏的媒体
 

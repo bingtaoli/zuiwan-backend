@@ -18,11 +18,11 @@ create table if not exists user (
 create table if not exists article (
     id int NOT NULL AUTO_INCREMENT,
     article_title varchar(30) NOT NULL,
-    article_topic varchar(10) NOT NULL, #topic
+    article_topic int NOT NULL, #专题id
     article_intro varchar(50), #文章简介
     article_content varchar(10000) NOT NULL, #内容
     article_author varchar(20) NOT NULL, #作者
-    article_media varchar(10), #"媒体"
+    article_media int NOT NULL , #媒体id
     create_time varchar(30) NOT NULL, # 发布时间
     article_img VARCHAR(20), #文章展示图片,可选
     article_color varchar(6), #文章颜色

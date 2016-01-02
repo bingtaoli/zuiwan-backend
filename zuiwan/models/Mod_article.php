@@ -35,12 +35,12 @@ class Mod_article extends CI_Model
         }
     }
 
-    public function get_articles($type=null, $name=null){
+    public function get_articles($type=null, $id=null){
         if ($type){
             if ($type == 1){
-                $result = $this->db->get_where('article', ['article_media' => $name])->result_array();
+                $result = $this->db->get_where('article', ['article_media' => $id])->result_array();
             } else if ($type == 2){
-                $result = $this->db->get_where('article', ['article_type' => $name])->result_array();
+                $result = $this->db->get_where('article', ['article_type' => $id])->result_array();
             }
         } else {
             $result = $this->db->get('article')->result_array();
@@ -64,4 +64,10 @@ class Mod_article extends CI_Model
             throw new Exception("该文章已不存在");
         }
     }
+
+    public function get_count_by_topic($topic_id){
+        $this->db->where('article_topic', $topic_id);
+        return $this->db->count_all('article');
+    }
+
 }

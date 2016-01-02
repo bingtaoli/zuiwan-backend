@@ -27,17 +27,33 @@ class Article extends MY_Controller
             $get_data = $this->input->get();
             $type = isset($get_data['type']) ? $get_data['type'] : null;
             if ($type){
-                $name = $get_data['name'];
+                $id = $get_data['id'];
                 if ($type == 1){
-                    $articles = $this->article->get_articles(1, $name);
+                    $articles = $this->article->get_articles(1, $id);
                 } else if ($type == 2){
-
-                    $articles = $this->article->get_articles(2, $name);
+                    $articles = $this->article->get_articles(2, $id);
                 } else {
                     throw new Exception("未知类型文章,无法获取数据");
                 }
             } else {
                 $articles = $this->article->get_articles();
+            }
+            //获取topic name && media name
+            $this->load->model('mod_topic', 'topic');
+            $this->load->model('mod_media', 'media');
+            $topics = $this->topic->get_all_topic();
+            $medias = $this->media->get_all_media();
+            $topic_id_name = [];
+            foreach($topics as $t){
+                $topic_id_name[$t['id']] = $t['topic_name'];
+            }
+            $media_id_name = [];
+            foreach($medias as $m){
+                $media_id_name[$m['id']] = $m['media_name'];
+            }
+            foreach($articles as &$a){
+                $a['article_topic_name'] = $topic_id_name[$a['article_topic']];
+                $a['article_media_name'] = $media_id_name[$a['article_media']];
             }
             header("Access-Control-Allow-Origin: *");
             $result = $articles;
@@ -51,6 +67,21 @@ class Article extends MY_Controller
             $get_data = $this->input->get();
             $id = $get_data['id'];
             $article = $this->article->get_by_id($id);
+            //获取topic name && media name
+            $this->load->model('mod_topic', 'topic');
+            $this->load->model('mod_media', 'media');
+            $topics = $this->topic->get_all_topic();
+            $medias = $this->media->get_all_media();
+            foreach($topics as $t){
+                if ($article['article_topic'] == $t['id']){
+                    $article['article_topic_name'] = $t['topic_name'];
+                }
+            }
+            foreach($medias as $m){
+                if ($article['article_media'] == $m['id']){
+                    $article['article_media_name'] = $m['media_name'];
+                }
+            }
             header("Access-Control-Allow-Origin: *");
             $result = $article;
             $this->output->set_content_type('application/json');
