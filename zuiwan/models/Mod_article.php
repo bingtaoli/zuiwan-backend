@@ -40,7 +40,7 @@ class Mod_article extends CI_Model
             if ($type == 1){
                 $result = $this->db->get_where('article', ['article_media' => $id])->result_array();
             } else if ($type == 2){
-                $result = $this->db->get_where('article', ['article_type' => $id])->result_array();
+                $result = $this->db->get_where('article', ['article_topic' => $id])->result_array();
             }
         } else {
             $result = $this->db->get('article')->result_array();
