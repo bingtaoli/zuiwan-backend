@@ -38,4 +38,7 @@ CKEDITOR.editorConfig = function( config ) {
 
     config.image_previewText=' ';
 	config.filebrowserImageUploadUrl= "/zuiwan-backend/index.php/upload/upload_file";
+
+	config.enterMode = CKEDITOR.ENTER_BR;     //（去掉BR）
+	config.shiftEnterMode = CKEDITOR.ENTER_P; //(去掉P)
 };
