@@ -16,7 +16,6 @@ class Mod_article extends CI_Model
     public function add_article($data){
         try {
             $this->db->insert('article', $data);
-            //$sql = $this->db->
         } catch(Exception $e){
             throw new Exception($e);
         }
@@ -46,7 +45,7 @@ class Mod_article extends CI_Model
         } else {
             $result = $this->db->get('article')->result_array();
         }
-        add_img_prefix($result);
+        add_img_prefix($result, 'article_img');
         //此时不把article_content返给前端
         foreach($result as &$article){
             if (isset($article['article_content'])){
@@ -58,7 +57,7 @@ class Mod_article extends CI_Model
 
     public function get_article_by_id($id){
         $result = $this->db->get_where('article', ['id' => $id])->result_array();
-        add_img_prefix($result);
+        add_img_prefix($result, 'article_img');
         if ($result){
             return $result[0];
         } else{

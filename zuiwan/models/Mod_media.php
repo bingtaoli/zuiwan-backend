@@ -13,13 +13,13 @@ class Mod_media extends CI_Model {
 
     public function get_all_media(){
         $result = $this->db->get('media')->result_array();
-        add_img_prefix($result);
+        add_img_prefix($result, 'media_avatar');
         return $result;
     }
 
     public function get_media_by_name($name){
         $result = $this->db->get_where('media', ['media_name' => $name])->result_array();
-        add_img_prefix($result);
+        add_img_prefix($result, 'media_avatar');
         if ($result){
             return $result[0];
         }

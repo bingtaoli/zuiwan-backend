@@ -13,13 +13,13 @@ class Mod_topic extends CI_Model
 
     public function get_all_topic(){
         $result = $this->db->get('topic')->result_array();
-        add_img_prefix($result);
+        add_img_prefix($result, 'topic_img');
         return $result;
     }
 
     public function get_topic_by_name($name){
         $result = $this->db->get_where('topic', ['topic_name' => $name])->result_array();
-        add_img_prefix($result);
+        add_img_prefix($result, 'topic_img');
         if ($result){
             return $result[0];
         }

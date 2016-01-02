@@ -50,4 +50,4 @@ json: status, message
 
 /type/get_type
 
-获取所有专题大图
+获取所有专题，包括大图
