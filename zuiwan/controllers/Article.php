@@ -76,6 +76,10 @@ class Article extends MY_Controller
             //时间格式 December 19, 2015
             //$create_time = date('Y-m-d H:m:s');
             $create_time = date('F d, Y'); # December 09, 2015
+            //去除img包含的p标签
+            $reg = "/<p>(<img.+?)<\/p>/";
+            $replacement = '$1';
+            $article_content = preg_replace($reg, $replacement, $article_content);
             $insert_data =[
                 'article_title'   => $article_title,
                 'article_type'    => $article_type,
@@ -143,6 +147,11 @@ class Article extends MY_Controller
             $result['message'] = '';
             try {
                 $post_data = $this->input->post();
+                $article_content = $post_data['article_content'];
+                //去除img包含的p标签
+                $reg = "/<p>(<img.+?)<\/p>/";
+                $replacement = '$1';
+                $post_data['article_content'] = preg_replace($reg, $replacement, $article_content);
                 $this->article->update_article($post_data);
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
