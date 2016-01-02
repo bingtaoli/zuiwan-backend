@@ -60,7 +60,7 @@
                         <label>文章媒体</label>
                         <select class="form-control" name="article_media">
                             <?php if(isset($media)) foreach($media as $m){ ?>
-                                <option value="<?php echo $m['media_name'] ?>"><?php echo $m['media_name'] ?></option>
+                                <option value="<?php echo $m['id'] ?>"><?php echo $m['media_name'] ?></option>
                             <?php } ?>
                         </select>
                     </div>
@@ -68,7 +68,7 @@
                         <label>所属专题</label>
                         <select class="form-control" name="article_topic">
                             <?php if(isset($topic)) foreach($topic as $t){ ?>
-                                <option value="<?php echo $t['topic_name'] ?>"><?php echo $t['topic_name'] ?></option>
+                                <option value="<?php echo $t['id'] ?>"><?php echo $t['topic_name'] ?></option>
                             <?php } ?>
                         </select>
                     </div>
