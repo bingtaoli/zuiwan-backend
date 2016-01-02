@@ -171,7 +171,7 @@ class Article extends MY_Controller
             $get_data = $this->input->get();
             $id = isset($get_data['id']) ? $get_data['id'] : 0;
             try {
-                $article = $this->article->get_article_by_id($id);
+                $article = $this->article->get_by_id($id);
                 $data = [
                     'article' => $article,
                 ];
