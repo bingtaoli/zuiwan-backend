@@ -38,6 +38,12 @@ class Article extends MY_Controller
         } else {
             $articles = $this->article->get_articles();
         }
+        //此时不把article_content返给前端
+        foreach($articles as &$article){
+            if (isset($article['article_content'])){
+                unset($article['article_content']);
+            }
+        }
         header("Access-Control-Allow-Origin: *");
         $result = $articles;
         $this->output->set_content_type('application/json');
