@@ -16,6 +16,7 @@ class Mod_article extends CI_Model
     public function add_article($data){
         try {
             $this->db->insert('article', $data);
+            //$sql = $this->db->
         } catch(Exception $e){
             throw new Exception($e);
         }

@@ -180,11 +180,11 @@
     /**
      * 媒体专题模块---上传专题大图
      */
-    $('#type-manage').on('click', '.upload-file-btn', function(e){
+    $('#topic-manage').on('click', '.upload-file-btn', function(e){
         e.preventDefault();
         var form = $(this).parents('form');
         var formData = new FormData($(form)[0]);
-        var url = "<?php echo site_url() ?>/type/set_type_img/";
+        var url = "<?php echo site_url() ?>/topic/set_topic_img/";
         var tr = $(this).parents('tr');
         $.ajax({
             type: "POST",
@@ -212,17 +212,17 @@
     /**
      * 媒体专题板块---新增专题(弹出弹窗)
      */
-    $('#type-manage').on('click', '.more', function(){
-        $('#add-type-modal').modal();
+    $('#topic-manage').on('click', '.more', function(){
+        $('#add-topic-modal').modal();
     });
     /**
      * 媒体专题板块---新增专题,弹出弹窗确认
      */
-    $('#add-type-confirm-btn').on('click', function(){
-        var type_name = $('#add-type-modal').find('[name="type_name"]').val();
-        var url = "<?php echo site_url() ?>/type/add_type/";
+    $('#add-topic-confirm-btn').on('click', function(){
+        var topic_name = $('#add-topic-modal').find('[name="topic_name"]').val();
+        var url = "<?php echo site_url() ?>/topic/add_topic/";
         var data = {
-            'type_name': type_name
+            'topic_name': topic_name
         };
         $.ajax({
             type: "POST",
@@ -245,9 +245,9 @@
     /**
      * 媒体专题板块---删除专题
      */
-    $('#type-manage').on('click', '.glyphicon-remove', function(){
+    $('#topic-manage').on('click', '.glyphicon-remove', function(){
         var id = $(this).parents('tr').find('td[name="id"]').text();
-        var url = "<?php echo site_url() ?>/type/del_type/";
+        var url = "<?php echo site_url() ?>/topic/del_topic/";
         var tr = $(this).parents('tr');
         var data = {
             'id': id
@@ -315,7 +315,7 @@
         data.article_title = $(form).find("[name='article_title']").val();
         data.article_author = $(form).find("[name='article_author']").val();
         data.article_media = $(form).find("[name='article_media']").val();
-        data.article_type = $(form).find("[name='article_type']").val();
+        data.article_topic = $(form).find("[name='article_topic']").val();
         data.article_intro = $(form).find("[name='article_intro']").val();
         data.article_img_name = $(form).find("[name='article_img_name']").val();
         data.article_content = $(form).find("[name='article_content']").val();

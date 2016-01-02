@@ -18,7 +18,7 @@ create table if not exists user (
 create table if not exists article (
     id int NOT NULL AUTO_INCREMENT,
     article_title varchar(30) NOT NULL,
-    article_type varchar(10) NOT NULL, #topic
+    article_topic varchar(10) NOT NULL, #topic
     article_intro varchar(50), #文章简介
     article_content varchar(10000) NOT NULL, #内容
     article_author varchar(20) NOT NULL, #作者
@@ -39,10 +39,10 @@ create table if not exists media (
 ) default charset=utf8;
 
 #专题表
-create table if not exists type (
+create table if not exists topic (
     id int NOT NULL AUTO_INCREMENT,
-    type_name varchar(10) NOT NULL, #专题名称
-    type_img varchar(40), #专题大图
+    topic_name varchar(10) NOT NULL, #专题名称
+    topic_img varchar(40), #专题大图
     create_time varchar(30) NOT NULL, # 专题成立时间
     PRIMARY KEY (id)
 ) DEFAULT CHARSET=utf8;

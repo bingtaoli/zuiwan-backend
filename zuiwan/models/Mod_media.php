@@ -12,7 +12,9 @@ class Mod_media extends CI_Model {
     }
 
     public function get_all_media(){
-        return $this->db->get('media')->result_array();
+        $result = $this->db->get('media')->result_array();
+        add_img_prefix($result);
+        return $result;
     }
 
     public function get_media_by_name($name){

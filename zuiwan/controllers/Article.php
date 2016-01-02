@@ -67,7 +67,7 @@ class Article extends MY_Controller
             $result['message'] = '';
             $post_data = $this->input->post();
             $article_title = $post_data['article_title'];
-            $article_type = $post_data['article_type'];
+            $article_topic = $post_data['article_topic'];
             $article_content = $post_data['article_content'];
             $article_author = $post_data['article_author'];
             $article_media = $post_data['article_media'];
@@ -82,7 +82,7 @@ class Article extends MY_Controller
             $article_content = preg_replace($reg, $replacement, $article_content);
             $insert_data =[
                 'article_title'   => $article_title,
-                'article_type'    => $article_type,
+                'article_topic'    => $article_topic,
                 'article_content' => $article_content,
                 'article_author'  => $article_author,
                 'article_media'   =>  $article_media,
