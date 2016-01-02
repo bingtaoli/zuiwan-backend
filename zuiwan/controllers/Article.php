@@ -75,11 +75,13 @@ class Article extends MY_Controller
             foreach($topics as $t){
                 if ($article['article_topic'] == $t['id']){
                     $article['article_topic_name'] = $t['topic_name'];
+                    break;
                 }
             }
             foreach($medias as $m){
-                if ($article['article_media'] == $m['id']){
+                if ($article['article_media'] == $m['id']) {
                     $article['article_media_name'] = $m['media_name'];
+                    break;
                 }
             }
             header("Access-Control-Allow-Origin: *");

@@ -32,6 +32,18 @@ class Topic extends MY_Controller
         $this->output->set_output(json_encode($topic));
     }
 
+    public function get_one_topic(){
+        if (METHOD == 'get') {
+            $get_data = $this->input->get();
+            $id = $get_data['id'];
+            $topic = $this->topic->get_by_id($id);
+            header("Access-Control-Allow-Origin: *");
+            $result = $topic;
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
+        }
+    }
+
     public function set_topic_img(){
         if (METHOD == 'post'){
             $result['status'] = 'success';

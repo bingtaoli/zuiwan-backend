@@ -17,6 +17,15 @@ class Mod_topic extends CI_Model
         return $result;
     }
 
+    public function get_by_id($id){
+        $result = $this->db->get_where('topic', ['id' => $id])->result_array();
+        add_img_prefix($result, 'topic_img');
+        if ($result){
+            return $result[0];
+        }
+        return null;
+    }
+
     public function get_topic_by_name($name){
         $result = $this->db->get_where('topic', ['topic_name' => $name])->result_array();
         add_img_prefix($result, 'topic_img');

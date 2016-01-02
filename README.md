@@ -38,8 +38,6 @@ json: status, message
 
 * get_one_article?id=1 -> 返回文章id为1的某篇文章
 
-****
-
 返回的json数组每一项都有多个字段:
 
 * article_media: 媒体id
@@ -55,13 +53,17 @@ json: status, message
 
 ### 获取专题
 
-/topic/get_topic
+**/topic/get_topic**
 
 获取所有专题，包括大图
 
 返回json每一项字段：
 
 * article_count 该专题文章总数
+
+**/topic/get_one_topic**
+
+* get_one_topic?id=1 返回topic id为1的专题信息
 
 ### 获取用户收藏的媒体
 
