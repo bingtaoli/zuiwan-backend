@@ -49,7 +49,7 @@
      */
     $('#all-article').on('click', '.glyphicon-edit', function(){
         var id = $(this).parents('tr').find('td[name="article_id"]').text();
-        var url = "<?php echo site_url() ?>/article/edit_article/" + id;
+        var url = "<?php echo site_url() ?>/article/edit_article?id=" + id;
         window.location.href = url;
     });
     /**
@@ -308,7 +308,6 @@
      * 增加文章
      */
     $("#add-article-submit").on("click", function(){
-        console.log("hello");
         editor.updateElement();
         var form = $(this).parents(".form");
         var url =  "<?php echo site_url() ?>/article/add_article/";
@@ -334,8 +333,36 @@
                     console.log("add article fail");
                 }
             },
-            error: function (e) {
+            error: function () {
                 console.log("add article fail");
+            }
+        });
+    });
+    /**
+     * 编辑保存文章
+     */
+    $("#edit-article-submit").on("click", function(){
+        editor.updateElement();
+        var url =  "<?php echo site_url() ?>/article/edit_article/";
+        var data = {};
+        data.id = $("[name='article_id']").val();
+        data.article_content = $("[name='article_content']").val();
+        $.ajax({
+            type: "POST",
+            url: url,
+            dataType: "json",
+            data: data,
+            timeout : 80000,  // 80s超时时间
+            success: function (json) {
+                if (json.status == 'success'){
+                    console.log("edit article success");
+                    location.reload(true);
+                } else if (json.status == 'error'){
+                    console.log("edit article fail");
+                }
+            },
+            error: function (e) {
+                console.log("edit article fail", e.message);
             }
         });
     });

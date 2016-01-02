@@ -125,15 +125,31 @@ class Article extends MY_Controller
         }
     }
 
-    public function edit_article($id){
-        try {
-            $article = $this->article->get_article_by_id($id);
-            $data = [
-                'article' => $article,
-            ];
-            $this->load->view('admin_article_edit', $data);
-        } catch (Exception $e){
-            echo $e->getMessage();
+    public function edit_article(){
+        if (METHOD == 'get'){
+            $get_data = $this->input->get();
+            $id = isset($get_data['id']) ? $get_data['id'] : 0;
+            try {
+                $article = $this->article->get_article_by_id($id);
+                $data = [
+                    'article' => $article,
+                ];
+                $this->load->view('admin_article_edit', $data);
+            } catch (Exception $e){
+                echo $e->getMessage();
+            }
+        } else if (METHOD == 'post'){
+            $result['status'] = 'success';
+            $result['message'] = '';
+            try {
+                $post_data = $this->input->post();
+                $this->article->update_article($post_data);
+            } catch (Exception $e) {
+                $result['message'] = $e->getMessage();
+                $result['status'] = 'error';
+            }
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
         }
     }
 

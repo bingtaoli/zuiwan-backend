@@ -26,6 +26,15 @@ class Mod_article extends CI_Model
         $this->db->delete('article');
     }
 
+    public function update_article($data){
+        try {
+            $this->db->where('id', $data['id']);
+            $this->db->update('article', $data);
+        } catch (Exception $e){
+            throw new Exception($e);
+        }
+    }
+
     public function get_articles($type=null, $name=null){
         if ($type){
             if ($type == 1){

@@ -21,6 +21,7 @@
             <span class="message"></span>
         </div>
         <div>
+            <input name="article_id" type="hidden" value="<?php if(isset($article)) echo $article['id'] ?>">
             <label>文章大图: </label>
             <input type="hidden" name="article_img_name">
             <input name="article_img" type="file" style="display: inline-block;">
@@ -29,9 +30,9 @@
                 <img style="width: 400px;" src="<?php if(isset($article['article_img'])) echo $article['article_img']; ?>">
             </div>
         </div>
-        <textarea id="rich-editor"><?php if(isset($article)) {echo $article['article_content'];}?></textarea>
+        <textarea name="article_content" id="rich-editor"><?php if(isset($article)) {echo $article['article_content'];}?></textarea>
         <div style="margin-top: 10px;">
-            <button id="publish" class="btn btn-primary">保存更改</button>
+            <button type="button" id="edit-article-submit" class="btn btn-primary">保存更改</button>
         </div>
     </div>
     <?php $this->load->view('common/admin_js') ?>

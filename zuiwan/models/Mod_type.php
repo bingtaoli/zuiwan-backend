@@ -11,7 +11,6 @@ class Mod_type extends CI_Model
         parent::__construct();
     }
 
-
     public function get_all_type(){
         return $this->db->get('type')->result_array();
     }
