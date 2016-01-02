@@ -37,6 +37,12 @@ class Mod_article extends CI_Model
             $result = $this->db->get('article')->result_array();
         }
         add_img_prefix($result);
+        //此时不把article_content返给前端
+        foreach($result as &$article){
+            if (isset($article['article_content'])){
+                unset($article['article_content']);
+            }
+        }
         return $result;
     }
 
