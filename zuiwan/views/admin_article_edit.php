@@ -9,8 +9,14 @@
 <!doctype html>
 <html>
 <?php $this->load->view('common/admin_header') ?>
-<div class="container" style="margin-top: 20px;">
-    <p>文章编辑:</p>
+<style>
+    .my-header {
+        margin: 10px 0 10px;
+        border-bottom: 1px solid #eee;
+    }
+</style>
+<div class="container">
+    <div class="my-header"><h2>文章编辑</h2></div>
     <div class="content">
         <div class="alert alert-warning alert-dismissible" role="alert" style="display: none;">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -27,7 +33,10 @@
             <input name="article_img" type="file" style="display: inline-block;">
             <button type="button" class="upload-file-btn btn btn-success">上传</button>
             <div style="margin-top: 5px; margin-bottom: 8px;">
-                <img style="width: 400px;" src="<?php if(isset($article['article_img'])) echo $article['article_img']; ?>">
+                <img <?php if(!isset($article['article_img']) || $article['article_img'] == '') echo "style=\"display: none;\""; ?>
+                     style="width: 400px;"
+                     src="<?php if(isset($article['article_img'])) echo $article['article_img']; ?>"
+                >
             </div>
         </div>
         <textarea name="article_content" id="rich-editor"><?php if(isset($article)) {echo $article['article_content'];}?></textarea>
