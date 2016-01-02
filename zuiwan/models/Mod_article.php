@@ -55,7 +55,7 @@ class Mod_article extends CI_Model
         return $result;
     }
 
-    public function get_article_by_id($id){
+    public function get_by_id($id){
         $result = $this->db->get_where('article', ['id' => $id])->result_array();
         add_img_prefix($result, 'article_img');
         if ($result){

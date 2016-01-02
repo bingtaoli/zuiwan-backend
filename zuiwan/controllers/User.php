@@ -146,4 +146,48 @@ class User extends MY_Controller {
         }
     }
 
+    public function get_collect_media(){
+        if (METHOD == 'get') {
+            $get_data = $this->input->get();
+            $username = isset($get_data['username']) ? $get_data['username'] : null;
+            $user = $this->user->get_user_by_name($username);
+            if ($user){
+                $collect = $user['collect_media'];
+                $collect_arr = explode(',', $collect);
+                $this->load->model('mod_media', 'media');
+                $medias = [];
+                foreach($collect_arr as $c){
+                    $medias[] =  $this->media->get_by_id($c);
+                }
+                $result = $medias;
+            } else {
+                $result = [];
+            }
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
+        }
+    }
+
+    public function get_collect_article(){
+        if (METHOD == 'get') {
+            $get_data = $this->input->get();
+            $username = isset($get_data['username']) ? $get_data['username'] : null;
+            $user = $this->user->get_user_by_name($username);
+            if ($user){
+                $collect = $user['collect_article'];
+                $collect_arr = explode(',', $collect);
+                $this->load->model('mod_article', 'article');
+                $medias = [];
+                foreach($collect_arr as $c){
+                    $medias[] =  $this->article->get_by_id($c);
+                }
+                $result = $medias;
+            } else {
+                $result = [];
+            }
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
+        }
+    }
+
 }

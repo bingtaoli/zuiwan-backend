@@ -17,6 +17,15 @@ class Mod_media extends CI_Model {
         return $result;
     }
 
+    public function get_by_id($id){
+        $result = $this->db->get_where('media', ['id' => $id])->result_array();
+        add_img_prefix($result, 'media_avatar');
+        if ($result){
+            return $result[0];
+        }
+        return null;
+    }
+
     public function get_media_by_name($name){
         $result = $this->db->get_where('media', ['media_name' => $name])->result_array();
         add_img_prefix($result, 'media_avatar');

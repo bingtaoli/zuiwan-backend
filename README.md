@@ -48,6 +48,18 @@ json: status, message
 
 ### 获取专题
 
-/type/get_type
+/type/get_topic
 
 获取所有专题，包括大图
+
+### 获取用户收藏的媒体
+
+/user/get_collect_media?username=123
+
+获取用户名为123的所有收藏的媒体
+
+### 获取用户收藏的文章
+
+/user/get_collect_article?username=123
+
+获取用户名为123的所有收藏的文章

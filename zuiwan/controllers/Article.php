@@ -23,35 +23,39 @@ class Article extends MY_Controller
      * 传media则获取某个media内容,否则获取所有内容
      */
     public function get_article(){
-        $get_data = $this->input->get();
-        $type = isset($get_data['type']) ? $get_data['type'] : null;
-        if ($type){
-            $name = $get_data['name'];
-            if ($type == 1){
-                $articles = $this->article->get_articles(1, $name);
-            } else if ($type == 2){
+        if (METHOD == 'get'){
+            $get_data = $this->input->get();
+            $type = isset($get_data['type']) ? $get_data['type'] : null;
+            if ($type){
+                $name = $get_data['name'];
+                if ($type == 1){
+                    $articles = $this->article->get_articles(1, $name);
+                } else if ($type == 2){
 
-                $articles = $this->article->get_articles(2, $name);
+                    $articles = $this->article->get_articles(2, $name);
+                } else {
+                    throw new Exception("未知类型文章,无法获取数据");
+                }
             } else {
-                throw new Exception("未知类型文章,无法获取数据");
+                $articles = $this->article->get_articles();
             }
-        } else {
-            $articles = $this->article->get_articles();
+            header("Access-Control-Allow-Origin: *");
+            $result = $articles;
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
         }
-        header("Access-Control-Allow-Origin: *");
-        $result = $articles;
-        $this->output->set_content_type('application/json');
-        $this->output->set_output(json_encode($result));
     }
 
     public function get_one_article(){
-        $get_data = $this->input->get();
-        $id = $get_data['id'];
-        $article = $this->article->get_article_by_id($id);
-        header("Access-Control-Allow-Origin: *");
-        $result = $article;
-        $this->output->set_content_type('application/json');
-        $this->output->set_output(json_encode($result));
+        if (METHOD == 'get'){
+            $get_data = $this->input->get();
+            $id = $get_data['id'];
+            $article = $this->article->get_by_id($id);
+            header("Access-Control-Allow-Origin: *");
+            $result = $article;
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
+        }
     }
 
     public function test_get_article(){
