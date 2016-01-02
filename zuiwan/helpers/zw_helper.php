@@ -12,8 +12,10 @@ if (!function_exists("add_img_prefix")){
         //把article_img设置成绝对路径
         $img_prefix = HOST . DIR_IN_ROOT .  "/public/upload/img/";
         foreach($result as &$r){
-            if (isset($r['article_img'])){
+            if (isset($r['article_img']) && $r['article_img'] != ''){
                 $r['article_img'] = $img_prefix . $r['article_img'];
+            } else if ($r['article_img'] == ''){
+                $r['article_img'] = null;
             }
         }
     }
