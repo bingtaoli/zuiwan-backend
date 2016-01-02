@@ -159,7 +159,7 @@
                             <td><?php echo $m['media_name'] ?></td>
                             <td>
                                 <form enctype="multipart/form-data" method="post">
-                                    <img src="/<?php echo DIR_IN_ROOT; ?>/public/upload/img/<?php if (isset($m['media_avatar'])) echo $m['media_avatar']; else echo "default_media_avatar.jpg" ?>">
+                                    <img src="<?php if (isset($m['media_avatar'])) echo $m['media_avatar'];?>">
                                     <input class="file" type="file" name="avatar">
                                     <input name="media_name" type="hidden" value="<?php echo $m['media_name'] ?>">
                                     <button class="upload-file-btn btn btn-success">上传</button>
@@ -214,7 +214,7 @@
                             <th><?php echo $t['topic_name'] ?></th>
                             <th>
                                 <form enctype="multipart/form-data" method="post">
-                                    <img src="/<?php echo DIR_IN_ROOT; ?>/public/upload/img/<?php if (isset($t['topic_img'])) echo $t['topic_img']; else echo "default_media_avatar.jpg" ?>">
+                                    <img src="<?php if (isset($t['topic_img'])) echo $t['topic_img']; ?>">
                                     <input class="file" type="file" name="avatar">
                                     <input name="topic_name" type="hidden" value="<?php echo $t['topic_name'] ?>">
                                     <button class="upload-file-btn btn btn-success">上传</button>
@@ -246,6 +246,10 @@
                     <label>媒体名称</label>
                     <input name="media_name" type="text" class="form-control">
                 </div>
+                <div class="form-group">
+                    <label>媒体简介</label>
+                    <input name="media_intro" type="text" class="form-control">
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -266,6 +270,10 @@
                 <div class="form-group">
                     <label>专题名称</label>
                     <input name="topic_name" type="text" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>专题简介</label>
+                    <input name="topic_intro" type="text" class="form-control">
                 </div>
             </div>
             <div class="modal-footer">

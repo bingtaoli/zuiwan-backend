@@ -34,6 +34,7 @@ create table if not exists media (
     id int NOT NULL AUTO_INCREMENT,
     media_name varchar(10) NOT NULL, #媒体名称
     media_avatar varchar(40), #媒体头像
+    media_intro VARCHAR(80), #媒体简介
     create_time varchar(30) NOT NULL, # 媒体加入时间
     PRIMARY KEY (id)
 ) default charset=utf8;
@@ -43,6 +44,7 @@ create table if not exists topic (
     id int NOT NULL AUTO_INCREMENT,
     topic_name varchar(10) NOT NULL, #专题名称
     topic_img varchar(40), #专题大图
+    topic_intro VARCHAR(80), #专题简介
     create_time varchar(30) NOT NULL, # 专题成立时间
     PRIMARY KEY (id)
 ) DEFAULT CHARSET=utf8;

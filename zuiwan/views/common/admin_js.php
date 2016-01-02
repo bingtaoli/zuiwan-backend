@@ -47,7 +47,8 @@
     /**
      * 所有文章板块---文章编辑
      */
-    $('#all-article').on('click', '.glyphicon-edit', function(){
+    var all_article = $("#all-article");
+    $(all_article).on('click', '.glyphicon-edit', function(){
         var id = $(this).parents('tr').find('td[name="article_id"]').text();
         var url = "<?php echo site_url() ?>/article/edit_article?id=" + id;
         window.location.href = url;
@@ -55,7 +56,7 @@
     /**
      * 所有文章板块---文章删除
      */
-    $('#all-article').on('click', '.glyphicon-remove', function(){
+    $(all_article).on('click', '.glyphicon-remove', function(){
         var id = $(this).parents('tr').find('td[name="article_id"]').text();
         var url = "<?php echo site_url() ?>/article/del_article/";
         var tr = $(this).parents('tr');
@@ -85,7 +86,8 @@
     /**
      * 媒体专题板块---上传媒体头像
      */
-    $('#media-manage').on('click', '.upload-file-btn', function(e){
+    var media_manage = $('#media-manage');
+    $(media_manage).on('click', '.upload-file-btn', function(e){
         e.preventDefault();
         var form = $(this).parents('form');
         var formData = new FormData($(form)[0]);
@@ -117,18 +119,18 @@
     /**
      * 媒体专题板块---新增媒体(弹出弹窗)
      */
-    $('#media-manage').on('click', '.more', function(){
+    $(media_manage).on('click', '.more', function(){
         $('#add-media-modal').modal();
     });
     /**
      * 媒体专题板块---新增媒体(弹窗确定新增)
      */
     $('#add-media-confirm-btn').on('click', function(){
-        var media_name = $('#add-media-modal').find('[name="media_name"]').val();
+        var modal = $('#add-media-modal');
+        var data = {};
+        data.media_name = $(modal).find('[name="media_name"]').val();
+        data.media_intro = $(modal).find('[name="media_intro"]').val();
         var url = "<?php echo site_url() ?>/media/add_media/";
-        var data = {
-            'media_name': media_name
-        };
         $.ajax({
             type: "POST",
             url: url,
@@ -150,7 +152,7 @@
     /**
      * 媒体专题板块---删除媒体
      */
-    $('#media-manage').on('click', '.glyphicon-remove', function(){
+    $(media_manage).on('click', '.glyphicon-remove', function(){
         var id = $(this).parents('tr').find('td[name="id"]').text();
         var url = "<?php echo site_url() ?>/media/del_media/";
         var tr = $(this).parents('tr');
@@ -180,7 +182,8 @@
     /**
      * 媒体专题模块---上传专题大图
      */
-    $('#topic-manage').on('click', '.upload-file-btn', function(e){
+    var topic_manage =  $('#topic-manage');
+    $(topic_manage).on('click', '.upload-file-btn', function(e){
         e.preventDefault();
         var form = $(this).parents('form');
         var formData = new FormData($(form)[0]);
@@ -212,18 +215,18 @@
     /**
      * 媒体专题板块---新增专题(弹出弹窗)
      */
-    $('#topic-manage').on('click', '.more', function(){
+    $(topic_manage).on('click', '.more', function(){
         $('#add-topic-modal').modal();
     });
     /**
      * 媒体专题板块---新增专题,弹出弹窗确认
      */
     $('#add-topic-confirm-btn').on('click', function(){
-        var topic_name = $('#add-topic-modal').find('[name="topic_name"]').val();
+        var modal = $('#add-topic-modal');
+        var data = {};
+        data.topic_name = $(modal).find('[name="topic_name"]').val();
+        data.topic_intro = $(modal).find('[name="topic_intro"]').val();
         var url = "<?php echo site_url() ?>/topic/add_topic/";
-        var data = {
-            'topic_name': topic_name
-        };
         $.ajax({
             type: "POST",
             url: url,
@@ -245,7 +248,7 @@
     /**
      * 媒体专题板块---删除专题
      */
-    $('#topic-manage').on('click', '.glyphicon-remove', function(){
+    $(topic_manage).on('click', '.glyphicon-remove', function(){
         var id = $(this).parents('tr').find('td[name="id"]').text();
         var url = "<?php echo site_url() ?>/topic/del_topic/";
         var tr = $(this).parents('tr');

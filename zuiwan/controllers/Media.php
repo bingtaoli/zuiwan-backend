@@ -69,10 +69,9 @@ class Media extends MY_Controller
     public function add_media(){
         if (METHOD == 'post'){
             $post_data = $this->input->post();
-            $media_name = $post_data['media_name'];
             $data = [
-                'media_name'   => $media_name,
-                'create_time'  => date('Y-m-d'),
+                'media_name'   => $post_data['media_name'],
+                'media_intro'  => $post_data['media_intro'],
                 'media_avatar' => "default_media_avatar.jpg",
             ];
             $result = [

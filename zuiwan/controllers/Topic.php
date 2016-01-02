@@ -69,10 +69,9 @@ class Topic extends MY_Controller
     public function add_topic(){
         if (METHOD == 'post'){
             $post_data = $this->input->post();
-            $topic_name = $post_data['topic_name'];
             $data = [
-                'topic_name'   => $topic_name,
-                'create_time' => date('Y-m-d'),
+                'topic_name'   => $post_data['topic_name'],
+                'topic_intro'   => $post_data['topic_intro'],
                 'topic_img'    => "default_topic_img.jpg",
             ];
             $result = [
