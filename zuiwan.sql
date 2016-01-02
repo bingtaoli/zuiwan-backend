@@ -6,7 +6,7 @@ create table if not exists user (
     id int NOT NULL AUTO_INCREMENT,
     username varchar(10) NOT NULL,
     password varchar(32) NOT NULL ,
-    identify int NOT NULL, # 身份，用户或者管理员
+    #identify int NOT NULL, # 身份，用户或者管理员
     user_avatar varchar(50), #用户头像图片地址
     create_time varchar(30) NOT NULL, # time of this user been creates, date(Y:m:d H:i:s)
     collect_article varchar(1000), #收藏的文章， 使用id， 比如 1,2,3说明收藏了1,2,3这三篇文章
@@ -48,3 +48,12 @@ create table if not exists topic (
     create_time varchar(30) NOT NULL, # 专题成立时间
     PRIMARY KEY (id)
 ) DEFAULT CHARSET=utf8;
+
+#后台管理员
+create table if not exists admin(
+    id int not null auto_increment,
+    admin_name varchar(10) NOT NULL ,
+    admin_password varchar(10) NOT NULL,
+    admin_avartar varchar(32) NOT NULL ,
+    PRIMARY KEY (id)
+)default charset = utf8;

@@ -77,9 +77,11 @@ class Media extends MY_Controller
             $result = [
                 'status' => 'success',
                 'message' => '',
+                'data'    => '',
             ];
             try {
-                $this->media->add_media($data);
+                $id = $this->media->add_media($data);
+                $result['data'] = $id;
             } catch (Exception $e){
                 $result['message'] = '未知错误，请联系管理员';
                 $result['status'] = 'error';

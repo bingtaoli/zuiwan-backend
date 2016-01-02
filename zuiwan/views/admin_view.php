@@ -154,6 +154,21 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <tr class="none media-template">
+                            <td></td>
+                            <td>
+                                <form enctype="multipart/form-data" method="post">
+                                    <img src="/<?php echo DIR_IN_ROOT; ?>/public/upload/img/default_media_avatar.jpg">
+                                    <input class="file" type="file" name="avatar">
+                                    <input name="media_name" type="hidden" value="">
+                                    <button class="upload-file-btn btn btn-success">上传</button>
+                                </form>
+                            </td>
+                            <td class="del">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </td>
+                            <td name="id"></td>
+                        </tr>
                         <?php if(isset($media)) foreach($media as $i => $m){ ?>
                         <tr>
                             <td><?php echo $m['media_name'] ?></td>
@@ -194,11 +209,11 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr class="none">
-                            <th name="topic_name"></th>
+                        <tr class="none topic-template">
+                            <td name="topic_name"></td>
                             <th>
                                 <form enctype="multipart/form-data" method="post">
-                                    <img src="/<?php echo DIR_IN_ROOT; ?>/public/upload/img/default_media_avatar.jpg">
+                                    <img src="/<?php echo DIR_IN_ROOT; ?>/public/upload/img/default_topic_img.jpg">
                                     <input class="file" type="file" name="avatar">
                                     <input name="topic_name" type="hidden">
                                     <button class="upload-file-btn btn btn-success">上传</button>

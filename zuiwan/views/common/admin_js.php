@@ -140,6 +140,15 @@
             success: function (json) {
                 if (json.status == 'success'){
                     console.log("success");
+                    var id = json.data;
+                    //增加一行
+                    var clone = $(".media-template:hidden").clone();
+                    clone.show();
+                    $(clone).find("td").eq(0).text(data.media_name);
+                    $(clone).find("td").last().text(id);
+                    clone.removeClass("media-template");
+                    $(media_manage).find('tbody').append(clone);
+                    modal.modal('hide');
                 } else if (json.status == 'error'){
                     console.log(json.message);
                 }
@@ -236,6 +245,15 @@
             success: function (json) {
                 if (json.status == 'success'){
                     console.log("success");
+                    var id = json.data;
+                    //增加一行
+                    var clone = $(".topic-template:hidden").clone();
+                    clone.show();
+                    clone.removeClass("topic-template");
+                    $(clone).find("td").eq(0).text(data.topic_name);
+                    $(clone).find("td").last().text(id);
+                    $(topic_manage).find('tbody').append(clone);
+                    modal.modal('hide');
                 } else if (json.status == 'error'){
                     console.log(json.message);
                 }

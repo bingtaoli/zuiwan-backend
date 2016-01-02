@@ -28,6 +28,7 @@ class Mod_topic extends CI_Model
 
     public function add_topic($data){
         $this->db->insert('topic', $data);
+        return $this->db->insert_id();
     }
 
     public function del_topic($id){

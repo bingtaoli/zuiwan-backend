@@ -28,6 +28,7 @@ class Mod_media extends CI_Model {
 
     public function add_media($data){
         $this->db->insert('media', $data);
+        return $this->db->insert_id();
     }
 
     public function del_media($id){
