@@ -8,7 +8,6 @@ class MY_Controller extends CI_Controller{
     public function __construct(){
         error_reporting(10);
         parent::__construct();
-        $this->db = $this->load->database('zuiwan_m', TRUE);
     }
 
     protected function _json($data,$code=1,$msg=null){

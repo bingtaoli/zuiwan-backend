@@ -7,22 +7,28 @@
  */
 class Mod_media extends CI_Model {
 
-    var $db;
-
     public function __construct() {
         parent::__construct();
     }
 
-    public function init($db){
-        $this->db = $db;
+    public function get_all_media(){
+        $result = $this->db->get('media')->result_array();
+        add_img_prefix($result, 'media_avatar');
+        return $result;
     }
 
-    public function get_all_media(){
-        return $this->db->get('media')->result_array();
+    public function get_by_id($id){
+        $result = $this->db->get_where('media', ['id' => $id])->result_array();
+        add_img_prefix($result, 'media_avatar');
+        if ($result){
+            return $result[0];
+        }
+        return null;
     }
 
     public function get_media_by_name($name){
         $result = $this->db->get_where('media', ['media_name' => $name])->result_array();
+        add_img_prefix($result, 'media_avatar');
         if ($result){
             return $result[0];
         }
@@ -31,6 +37,7 @@ class Mod_media extends CI_Model {
 
     public function add_media($data){
         $this->db->insert('media', $data);
+        return $this->db->insert_id();
     }
 
     public function del_media($id){

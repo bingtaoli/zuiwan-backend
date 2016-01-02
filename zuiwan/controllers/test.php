@@ -11,13 +11,15 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Test extends MY_Controller
 {
+
+    var $user;
+    var $article;
+
     public function __construct()
     {
         parent::__construct();
         $this->load->model('mod_user', 'user');
-        $this->user->init($this->db);
         $this->load->model('mod_article', 'article');
-        $this->article->init($this->db);
     }
 
     public function test_add_user(){
@@ -29,7 +31,7 @@ class Test extends MY_Controller
     }
 
     public function test_show_all_article(){
-        $data = $this->article->get_all_article();
+        $data = $this->article->get_article();
         var_dump($data);
     }
 

@@ -58,7 +58,7 @@ $autoload['packages'] = array();
 |
 |	$autoload['libraries'] = array('user_agent' => 'ua');
 */
-$autoload['libraries'] = array('Zuiwanclient');
+$autoload['libraries'] = array('Zuiwanclient', 'database');
 
 /*
 | -------------------------------------------------------------------
@@ -83,7 +83,7 @@ $autoload['drivers'] = array();
 |
 |	$autoload['helper'] = array('url', 'file');
 */
-$autoload['helper'] = array('url', 'exceptions','utl');
+$autoload['helper'] = array('url', 'exceptions', 'zw');
 
 /*
 | -------------------------------------------------------------------

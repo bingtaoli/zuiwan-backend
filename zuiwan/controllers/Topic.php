@@ -6,7 +6,7 @@
  * Time: 下午12:26
  * 专题 Type
  */
-class Type extends MY_Controller
+class Topic extends MY_Controller
 {
     var $input;
     var $article;
@@ -18,31 +18,40 @@ class Type extends MY_Controller
     {
         parent::__construct();
         $this->load->model('mod_article', 'article');
-        $this->article->init($this->db);
-        $this->load->model('mod_type', 'type');
-        $this->type->init($this->db);
+        $this->load->model('mod_topic', 'topic');
     }
 
-    public function get_all_type(){
-        $type = $this->type->get_all_type();
-        $img_prefix = "http://202.114.20.78/" . DIR_IN_ROOT .  "/public/upload/img/";
-        foreach ($type as $m){
-            if (isset($m['type_img'])){
-                $a['type_img'] = $img_prefix . $m['type_img'];
-            }
+    public function get_topic(){
+        $topic = $this->topic->get_all_topic();
+        //获取每个专题文章总数
+        foreach($topic as &$t){
+            $t['article_count'] = $this->article->get_count_by_topic($t['id']);
         }
+        header("Access-Control-Allow-Origin: *");
         $this->output->set_content_type('application/json');
-        $this->output->set_output(json_encode($type));
+        $this->output->set_output(json_encode($topic));
     }
 
-    public function set_type_img(){
+    public function get_one_topic(){
+        if (METHOD == 'get') {
+            $get_data = $this->input->get();
+            $id = $get_data['id'];
+            $topic = $this->topic->get_by_id($id);
+            header("Access-Control-Allow-Origin: *");
+            $result = $topic;
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
+        }
+    }
+
+    public function set_topic_img(){
         if (METHOD == 'post'){
             $result['status'] = 'success';
             $result['message'] = '';
             if(is_uploaded_file($_FILES['avatar']['tmp_name']))
             {
                 $post_data = $this->input->post();
-                $type_name = $post_data['type_name'];
+                $topic_name = $post_data['topic_name'];
 
                 //判断上传文件是否允许
                 $file_arr = pathinfo($_FILES['avatar']['name']);
@@ -54,13 +63,13 @@ class Type extends MY_Controller
                     if(move_uploaded_file($_FILES['avatar']['tmp_name'], $file_host))
                     {
                         //把以前的图片删除
-                        $type = $this->type->get_type_by_name($type_name);
-                        $origin = $type['type_img'];
+                        $topic = $this->topic->get_topic_by_name($topic_name);
+                        $origin = $topic['topic_img'];
                         $origin_pos = STATIC_PATH . $this->config->config['img_dir'] . "/" . $origin;
                         unlink($origin_pos);
 
-                        //把type的type_avatar更新
-                        $this->type->update_type_img($type_name, $random_file_name);
+                        //把topic的topic_avatar更新
+                        $this->topic->update_topic_img($topic_name, $random_file_name);
                         $result['data'] = $random_file_name;
                     }
                 } catch (Exception $e){
@@ -73,21 +82,22 @@ class Type extends MY_Controller
         }
     }
 
-    public function add_type(){
+    public function add_topic(){
         if (METHOD == 'post'){
             $post_data = $this->input->post();
-            $type_name = $post_data['type_name'];
             $data = [
-                'type_name'   => $type_name,
-                'create_time' => date('Y-m-d'),
-                'type_img'    => "default_type_img.jpg",
+                'topic_name'   => $post_data['topic_name'],
+                'topic_intro'   => $post_data['topic_intro'],
+                'topic_img'    => "default_topic_img.jpg",
             ];
             $result = [
                 'status' => 'success',
                 'message' => '',
+                'data'    => '',
             ];
             try {
-                $this->type->add_type($data);
+                $id = $this->topic->add_topic($data);
+                $result['data'] = $id;
             } catch (Exception $e){
                 $result['message'] = '未知错误，请联系管理员';
                 $result['status'] = 'error';
@@ -97,14 +107,14 @@ class Type extends MY_Controller
         }
     }
 
-    public function del_type(){
+    public function del_topic(){
         if (METHOD == 'post') {
             $result['status'] = 'success';
             $result['message'] = '';
             try {
                 $post_data = $this->input->post();
                 $id = $post_data['id'];
-                $this->type->del_type($id);
+                $this->topic->del_topic($id);
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
                 $result['status'] = 'error';
@@ -113,5 +123,4 @@ class Type extends MY_Controller
             $this->output->set_output(json_encode($result));
         }
     }
-
 }

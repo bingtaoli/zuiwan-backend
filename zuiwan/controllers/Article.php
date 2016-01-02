@@ -16,36 +16,83 @@ class Article extends MY_Controller
     {
         parent::__construct();
         $this->load->model('mod_article', 'article');
-        $this->article->init($this->db);
     }
 
     /**
-     * @param null $type
      * @throws
      * 传media则获取某个media内容,否则获取所有内容
      */
-    public function get_article($type=null){
-        if ($type){
-            if ($type == 1){
-                $articles = $this->article->get_article_by_media();
-            } else if ($type == 2){
-                $articles = $this->article->get_article_by_type();
+    public function get_article(){
+        if (METHOD == 'get'){
+            $get_data = $this->input->get();
+            $type = isset($get_data['type']) ? $get_data['type'] : null;
+            if ($type){
+                $id = $get_data['id'];
+                if ($type == 1){
+                    $articles = $this->article->get_articles(1, $id);
+                } else if ($type == 2){
+                    $articles = $this->article->get_articles(2, $id);
+                } else {
+                    throw new Exception("未知类型文章,无法获取数据");
+                }
             } else {
-                throw new Exception("未知类型文章,无法获取数据");
+                $articles = $this->article->get_articles();
             }
-        } else {
-            $articles = $this->article->get_all_article();
-        }
-        $img_prefix = "http://115.28.75.190/" . DIR_IN_ROOT .  "/public/article_img/";
-        foreach ($articles as $a){
-            if (isset($a['article_img'])){
-                $a['article_img'] = $img_prefix . $a['article_img'];
+            //获取topic name && media name
+            $this->load->model('mod_topic', 'topic');
+            $this->load->model('mod_media', 'media');
+            $topics = $this->topic->get_all_topic();
+            $medias = $this->media->get_all_media();
+            $topic_id_name = [];
+            foreach($topics as $t){
+                $topic_id_name[$t['id']] = $t['topic_name'];
             }
+            $media_id_name = [];
+            foreach($medias as $m){
+                $media_id_name[$m['id']] = $m['media_name'];
+            }
+            foreach($articles as &$a){
+                $a['article_topic_name'] = $topic_id_name[$a['article_topic']];
+                $a['article_media_name'] = $media_id_name[$a['article_media']];
+            }
+            header("Access-Control-Allow-Origin: *");
+            $result = $articles;
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
         }
-        header("Access-Control-Allow-Origin: *");
-        $result = $articles;
-        $this->output->set_content_type('application/json');
-        $this->output->set_output(json_encode($result));
+    }
+
+    public function get_one_article(){
+        if (METHOD == 'get'){
+            $get_data = $this->input->get();
+            $id = $get_data['id'];
+            $article = $this->article->get_by_id($id);
+            //获取topic name && media name
+            $this->load->model('mod_topic', 'topic');
+            $this->load->model('mod_media', 'media');
+            $topics = $this->topic->get_all_topic();
+            $medias = $this->media->get_all_media();
+            foreach($topics as $t){
+                if ($article['article_topic'] == $t['id']){
+                    $article['article_topic_name'] = $t['topic_name'];
+                    break;
+                }
+            }
+            foreach($medias as $m){
+                if ($article['article_media'] == $m['id']) {
+                    $article['article_media_name'] = $m['media_name'];
+                    break;
+                }
+            }
+            header("Access-Control-Allow-Origin: *");
+            $result = $article;
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
+        }
+    }
+
+    public function test_get_article(){
+        $this->get_article(1, "思存");
     }
 
     public function add_article(){
@@ -53,25 +100,51 @@ class Article extends MY_Controller
             /**
              * TODO 只有root账户可以访问
              */
+            $result['status'] = 'success';
+            $result['message'] = '';
             $post_data = $this->input->post();
             $article_title = $post_data['article_title'];
-            $article_type = $post_data['article_type'];
+            $article_topic = $post_data['article_topic'];
             $article_content = $post_data['article_content'];
             $article_author = $post_data['article_author'];
             $article_media = $post_data['article_media'];
             $article_intro = $post_data['article_intro'];
+            $article_img = $post_data['article_img_name'];
             //时间格式 December 19, 2015
             //$create_time = date('Y-m-d H:m:s');
             $create_time = date('F d, Y'); # December 09, 2015
+            //去除img包含的p标签
+            $reg = "/<p>(<img.+?)<\/p>/";
+            $replacement = '$1';
+            $article_content = preg_replace($reg, $replacement, $article_content);
             $insert_data =[
-                'article_title'    => $article_title,
-                'article_type'    => $article_type,
+                'article_title'   => $article_title,
+                'article_topic'    => $article_topic,
                 'article_content' => $article_content,
                 'article_author'  => $article_author,
-                'article_media'  =>  $article_media,
+                'article_media'   =>  $article_media,
                 'create_time'     => $create_time,
                 'article_intro'   => $article_intro,
+                'article_img'     => $article_img,
             ];
+            try {
+                $this->article->add_article($insert_data);
+            } catch (IdentifyException $e){
+                $result['status'] = 'error';
+                $result['message'] = $e->getMessage();
+            } catch (Exception $e){
+                $result['status'] = 'error';
+                $result['message'] = $e->getMessage();
+            }
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
+        }
+    }
+
+    public function set_article_img(){
+        if (METHOD == 'post'){
+            $result['status'] = 'success';
+            $result['message'] = '';
             try {
                 if(is_uploaded_file($_FILES['article_img']['tmp_name'])) {
                     $file_name = $_FILES['article_img']['name'];
@@ -82,29 +155,47 @@ class Article extends MY_Controller
                     if (move_uploaded_file($_FILES['article_img']['tmp_name'], $file_host) == false) {
                         throw new Exception("文章大图上传失败");
                     }
-                    //上传成功才增加文章
-                    $insert_data['article_img'] = $store_file_name;
+                    $result['data'] = $store_file_name;
                 }
-                $this->article->add_article($insert_data);
-            } catch (IdentifyException $e){
-                $error_id = 1;
-            } catch (Exception $e){
-                $error_id = 2;
+            } catch(Exception $e){
+                $result['status'] = 'error';
+                $result['message'] = $e->getMessage();
             }
-            $url = isset($error_id) ? "/admin/index" : "/admin/index/" . $error_id;
-            redirect($url);
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
         }
     }
 
-    public function edit_article($id){
-        try {
-            $article = $this->article->get_article_by_id($id);
-            $data = [
-                'article' => $article,
-            ];
-            $this->load->view('admin_article_edit', $data);
-        } catch (Exception $e){
-            echo $e->getMessage();
+    public function edit_article(){
+        if (METHOD == 'get'){
+            $get_data = $this->input->get();
+            $id = isset($get_data['id']) ? $get_data['id'] : 0;
+            try {
+                $article = $this->article->get_by_id($id);
+                $data = [
+                    'article' => $article,
+                ];
+                $this->load->view('admin_article_edit', $data);
+            } catch (Exception $e){
+                echo $e->getMessage();
+            }
+        } else if (METHOD == 'post'){
+            $result['status'] = 'success';
+            $result['message'] = '';
+            try {
+                $post_data = $this->input->post();
+                $article_content = $post_data['article_content'];
+                //去除img包含的p标签
+                $reg = "/<p>(<img.+?)<\/p>/";
+                $replacement = '$1';
+                $post_data['article_content'] = preg_replace($reg, $replacement, $article_content);
+                $this->article->update_article($post_data);
+            } catch (Exception $e) {
+                $result['message'] = $e->getMessage();
+                $result['status'] = 'error';
+            }
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
         }
     }
 

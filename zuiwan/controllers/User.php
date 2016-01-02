@@ -11,7 +11,6 @@ class User extends MY_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('mod_user', 'user');
-        $this->user->init($this->db);
     }
 
     /**
@@ -48,6 +47,7 @@ class User extends MY_Controller {
                 $result['message'] = '未知错误，请联系管理员';
                 $result['status'] = 'error';
             }
+            header("Access-Control-Allow-Origin: *");
             $this->output->set_content_type('application/json');
             $this->output->set_output(json_encode($result));
         }
@@ -81,28 +81,11 @@ class User extends MY_Controller {
                 $result['message'] = '未知错误，请联系管理员';
                 $result['status'] = 'error';
             }
+            header("Access-Control-Allow-Origin: *");
             $this->output->set_content_type('application/json');
             $this->output->set_output(json_encode($result));
         }
     }
-
-//    /**
-//     * 登出
-//     */
-//    public function logout(){
-//        if (METHOD == 'post'){
-//            $result['status'] = 'success';
-//            $result['message'] = '';
-//            try {
-//                Zuiwanclient::logout();
-//            } catch(Exception $e){
-//                $result['message'] = $e->getMessage();
-//                $result['status'] = 'error';
-//            }
-//            $this->output->set_content_type('application/json');
-//            $this->output->set_output(json_encode($result));
-//        }
-//    }
 
     /**
      * 收藏文章
@@ -127,6 +110,7 @@ class User extends MY_Controller {
                 $result['message'] = $e->getMessage();
                 $result['status'] = 'error';
             }
+            header("Access-Control-Allow-Origin: *");
             $this->output->set_content_type('application/json');
             $this->output->set_output(json_encode($result));
         }
@@ -155,6 +139,51 @@ class User extends MY_Controller {
             } catch(Exception $e){
                 $result['message'] = $e->getMessage();
                 $result['status'] = 'error';
+            }
+            header("Access-Control-Allow-Origin: *");
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
+        }
+    }
+
+    public function get_collect_media(){
+        if (METHOD == 'get') {
+            $get_data = $this->input->get();
+            $username = isset($get_data['username']) ? $get_data['username'] : null;
+            $user = $this->user->get_user_by_name($username);
+            if ($user){
+                $collect = $user['collect_media'];
+                $collect_arr = explode(',', $collect);
+                $this->load->model('mod_media', 'media');
+                $medias = [];
+                foreach($collect_arr as $c){
+                    $medias[] =  $this->media->get_by_id($c);
+                }
+                $result = $medias;
+            } else {
+                $result = [];
+            }
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
+        }
+    }
+
+    public function get_collect_article(){
+        if (METHOD == 'get') {
+            $get_data = $this->input->get();
+            $username = isset($get_data['username']) ? $get_data['username'] : null;
+            $user = $this->user->get_user_by_name($username);
+            if ($user){
+                $collect = $user['collect_article'];
+                $collect_arr = explode(',', $collect);
+                $this->load->model('mod_article', 'article');
+                $medias = [];
+                foreach($collect_arr as $c){
+                    $medias[] =  $this->article->get_by_id($c);
+                }
+                $result = $medias;
+            } else {
+                $result = [];
             }
             $this->output->set_content_type('application/json');
             $this->output->set_output(json_encode($result));

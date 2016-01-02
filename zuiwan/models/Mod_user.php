@@ -11,18 +11,8 @@
  */
 class Mod_user extends CI_Model {
 
-    var $db;
-
     public function __construct() {
         parent::__construct();
-    }
-
-    /**
-     * @param $db
-     * not via magic method, so pass $db
-     */
-    public function init($db){
-        $this->db = $db;
     }
 
     /**

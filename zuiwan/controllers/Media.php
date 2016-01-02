@@ -18,19 +18,11 @@ class Media extends MY_Controller
     {
         parent::__construct();
         $this->load->model('mod_article', 'article');
-        $this->article->init($this->db);
         $this->load->model('mod_media', 'media');
-        $this->media->init($this->db);
     }
 
-    public function get_all_media(){
+    public function get_media(){
         $media = $this->media->get_all_media();
-        $img_prefix = "http://115.28.75.190/" . DIR_IN_ROOT .  "/public/upload/img/";
-        foreach ($media as $m){
-            if (isset($m['media_avatar'])){
-                $a['media_avatar'] = $img_prefix . $m['media_avatar'];
-            }
-        }
         header("Access-Control-Allow-Origin: *");
         $this->output->set_content_type('application/json');
         $this->output->set_output(json_encode($media));
@@ -77,18 +69,19 @@ class Media extends MY_Controller
     public function add_media(){
         if (METHOD == 'post'){
             $post_data = $this->input->post();
-            $media_name = $post_data['media_name'];
             $data = [
-                'media_name'   => $media_name,
-                'create_time'  => date('Y-m-d'),
+                'media_name'   => $post_data['media_name'],
+                'media_intro'  => $post_data['media_intro'],
                 'media_avatar' => "default_media_avatar.jpg",
             ];
             $result = [
                 'status' => 'success',
                 'message' => '',
+                'data'    => '',
             ];
             try {
-                $this->media->add_media($data);
+                $id = $this->media->add_media($data);
+                $result['data'] = $id;
             } catch (Exception $e){
                 $result['message'] = '未知错误，请联系管理员';
                 $result['status'] = 'error';
