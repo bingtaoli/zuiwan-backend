@@ -1,3 +1,5 @@
+
+
 ### 收藏文章
 
 /user/collect_article
@@ -37,3 +39,15 @@ json: status, message
 /article/get_one_article
 
 * get_one_article?id=1 -> 返回文章id为1的某篇文章
+
+### 获取媒体列表
+
+/media/get_media
+
+获取所有媒体，包括媒体大图
+
+### 获取专题
+
+/type/get_type
+
+获取所有专题大图

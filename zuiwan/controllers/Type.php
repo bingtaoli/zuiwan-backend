@@ -21,7 +21,7 @@ class Type extends MY_Controller
         $this->load->model('mod_type', 'type');
     }
 
-    public function get_all_type(){
+    public function get_type(){
         $type = $this->type->get_all_type();
         $this->output->set_content_type('application/json');
         $this->output->set_output(json_encode($type));

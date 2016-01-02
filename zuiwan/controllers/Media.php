@@ -21,7 +21,7 @@ class Media extends MY_Controller
         $this->load->model('mod_media', 'media');
     }
 
-    public function get_all_media(){
+    public function get_media(){
         $media = $this->media->get_all_media();
         header("Access-Control-Allow-Origin: *");
         $this->output->set_content_type('application/json');
