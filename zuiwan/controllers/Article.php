@@ -24,7 +24,7 @@ class Article extends MY_Controller
      */
     public function get_article(){
         $get_data = $this->input->get();
-        $type = $get_data['type'];
+        $type = isset($get_data['type']) ? $get_data['type'] : null;
         if ($type){
             $name = $get_data['name'];
             if ($type == 1){
