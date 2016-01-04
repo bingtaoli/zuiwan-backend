@@ -37,6 +37,8 @@ class Topic extends MY_Controller
             $get_data = $this->input->get();
             $id = $get_data['id'];
             $topic = $this->topic->get_by_id($id);
+            //设置文章count
+            $topic['article_count'] = $this->article->get_count_by_topic($topic['id']);
             header("Access-Control-Allow-Origin: *");
             $result = $topic;
             $this->output->set_content_type('application/json');
