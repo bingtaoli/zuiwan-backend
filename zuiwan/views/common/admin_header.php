@@ -21,7 +21,7 @@
 <body>
 <div class="header">
     <div class="header-main">
-        <div class="fl dian-logo"><img src="/<?php echo DIR_IN_ROOT ?>/public/img/avatar.png" height="42px;"></div>
+        <div class="fl dian-logo"><img src="<?php echo base_url() ?>/public/img/avatar.png" height="42px;"></div>
         <div class="fr logout white-on-green" title="登出"><span class="glyphicon glyphicon-log-out"></span></div>
         <div class="fr split">/</div>
         <div class="fr identify">Hi, <span>李冰涛</span></div>
