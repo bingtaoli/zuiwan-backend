@@ -61,7 +61,7 @@ class Mod_article extends CI_Model
         if ($result){
             return $result[0];
         } else{
-            throw new Exception("该文章已不存在");
+            return null;
         }
     }
 

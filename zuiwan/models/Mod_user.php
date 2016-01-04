@@ -57,6 +57,11 @@ class Mod_user extends CI_Model {
     }
 
     public function get_user_by_name_password($username, $password){
-        return $this->db->get_where('user', ['username' => $username, 'password' => $password])->result();
+        $result =  $this->db->get_where('user', ['username' => $username, 'password' => $password])->result_array();
+        if ($result){
+            return $result[0];
+        } else {
+            return NULL;
+        }
     }
 }
