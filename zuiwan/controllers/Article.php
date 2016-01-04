@@ -70,19 +70,13 @@ class Article extends MY_Controller
             //获取topic name && media name
             $this->load->model('mod_topic', 'topic');
             $this->load->model('mod_media', 'media');
-            $topics = $this->topic->get_all_topic();
-            $medias = $this->media->get_all_media();
-            foreach($topics as $t){
-                if ($article['article_topic'] == $t['id']){
-                    $article['article_topic_name'] = $t['topic_name'];
-                    break;
-                }
+            $topic = $this->topic->get_by_id($article['article_topic']);
+            if (isset($topic)){
+                $article['article_topic_name'] = $topic['topic_name'];
             }
-            foreach($medias as $m){
-                if ($article['article_media'] == $m['id']) {
-                    $article['article_media_name'] = $m['media_name'];
-                    break;
-                }
+            $media = $this->media->get_by_id($article['article_media']);
+            if (isset($media)){
+                $article['article_media_name'] = $media['media_name'];
             }
             header("Access-Control-Allow-Origin: *");
             $result = $article;
