@@ -106,7 +106,7 @@
             success: function (json) {
                 if (json.status == 'success'){
                     console.log("success");
-                    $(tr).find('img').attr("src", "<?php if(DIR_IN_ROOT) echo '/' . DIR_IN_ROOT ?>/public/upload/img/" + json.data);
+                    $(tr).find('img').attr("src", "<?php echo base_url() ?>public/upload/img/" + json.data);
                 } else if (json.status == 'error'){
                     console.log(json.message);
                 }
@@ -211,7 +211,7 @@
             success: function (json) {
                 if (json.status == 'success'){
                     console.log("success");
-                    $(tr).find('img').attr("src", "<?php if(DIR_IN_ROOT) echo '/' . DIR_IN_ROOT ?>/public/upload/img/" + json.data);
+                    $(tr).find('img').attr("src", "<?php echo base_url() ?>/public/upload/img/" + json.data);
                 } else if (json.status == 'error'){
                     console.log(json.message);
                 }
@@ -313,7 +313,7 @@
             success: function (json) {
                 if (json.status == 'success'){
                     console.log("success");
-                    $(form).find('img').attr("src", "<?php if(DIR_IN_ROOT) echo '/' . DIR_IN_ROOT ?>/public/upload/img/" + json.data);
+                    $(form).find('img').attr("src", "<?php echo base_url() ?>/public/upload/img/" + json.data);
                     //设置article img name
                     $(form).find("[name='article_img_name']").val(json.data);
                 } else if (json.status == 'error'){
