@@ -57,13 +57,13 @@ json: status, message
 
 获取所有专题，包括大图
 
-返回json每一项字段：
-
-* article_count 该专题文章总数
-
 **/topic/get_one_topic**
 
 * get_one_topic?id=1 返回topic id为1的专题信息
+
+返回json每一项字段：
+
+* article_count 该专题文章总数
 
 ### 获取用户收藏的媒体
 
