@@ -79,7 +79,7 @@
                             <input name="article_img" type="file" style="display: inline-block;">
                             <button type="button" class="upload-file-btn btn btn-success">上传</button>
                             <div style="margin-top: 5px; margin-bottom: 8px;">
-                                <img style="width: 400px;" src="/<?php echo DIR_IN_ROOT; ?>/public/upload/img/huge.jpg?>">
+                                <img style="width: 400px;" src="<?php echo base_url(); ?>public/upload/img/huge.jpg?>">
                             </div>
                         </form>
                     </div>
@@ -158,7 +158,7 @@
                             <td></td>
                             <td>
                                 <form enctype="multipart/form-data" method="post">
-                                    <img src="/<?php echo DIR_IN_ROOT; ?>/public/upload/img/default_media_avatar.jpg">
+                                    <img src="<?php echo base_url(); ?>public/upload/img/default_media_avatar.jpg">
                                     <input class="file" type="file" name="avatar">
                                     <input name="media_name" type="hidden" value="">
                                     <button class="upload-file-btn btn btn-success">上传</button>
@@ -213,7 +213,7 @@
                             <td name="topic_name"></td>
                             <th>
                                 <form enctype="multipart/form-data" method="post">
-                                    <img src="/<?php echo DIR_IN_ROOT; ?>/public/upload/img/default_topic_img.jpg">
+                                    <img src="<?php echo base_url(); ?>public/upload/img/default_topic_img.jpg">
                                     <input class="file" type="file" name="avatar">
                                     <input name="topic_name" type="hidden">
                                     <button class="upload-file-btn btn btn-success">上传</button>
