@@ -2,6 +2,7 @@ body {
     font-family: Microsoft Yahei;
     font-style: normal;
     position: relative;
+    background: #fff;
 }
 .header {
     background: #353b5e;
@@ -18,7 +19,7 @@ body {
     background: #fff;
 }
 .none {
-    display: none;
+    display: none !important;
 }
 .fl {
     float: left;
@@ -68,11 +69,7 @@ ul {
 }
 ul li {
     float: left;
-    width: 100px;
     margin-right: 20px;
-    padding-left: 5px;
-    padding-bottom: 8px;
-    padding-top: 8px;
     font-size: 16px;
     font-weight: bold;
     color: #a9b0b6;
@@ -94,12 +91,12 @@ ul li:hover {
 input[type="radio"] {
     cursor: pointer;
 }
-#media-and-topic form img {
+#media-manage form img, #topic-manage form img {
     width:  60px;
     height: 60px;
     border-radius: 30px;
 }
-#media-and-topic input[type="file"] {
+#media-manage input[type="file"], #topic-manage input[type="file"] {
     width: 180px;
 }
 button.upload-file-btn {
@@ -109,6 +106,8 @@ button.upload-file-btn {
     padding-bottom: 0;
 }
 .more{
+    position: relative;
+    top: -12px; /* closer to table */
     margin-left: 2px;
     font-size: 13px;
     height: 20px;
@@ -117,4 +116,64 @@ button.upload-file-btn {
     border-radius: 20px;
     text-align: center;
     cursor: pointer;
+}
+.article-img {
+    height: 150px;
+}
+.article-img-wrapper{
+    margin-top: 5px; margin-bottom: 8px;
+}
+#edit-article-submit {
+    margin-top: 10px;
+}
+.header-section {
+    margin: 10px 0 10px;
+    border-bottom: 1px solid #eee;
+}
+.header-section #back-to-articles {
+    line-height: 37px;
+    display: inline-block;
+    padding-top: 10px;
+}
+#admin-panel .form-group {
+    width: 70%;
+}
+#edit-article-submit {
+    margin-bottom: 15px;
+}
+tbody tr td.del, tbody tr td.edit-or-del {
+    border: none;
+    border-right: solid 1px #fff;
+    border-bottom: solid 1px #fff;
+    background: #fff;
+}
+tbody tr td.del .glyphicon, tbody tr td.edit-or-del .glyphicon {
+    display: inline-block;
+    line-height: 34px;
+    width: 24px;
+    cursor: pointer;
+}
+input[type="file"] {
+    display: inline-block;
+    margin-left: 16px;
+}
+.header-title {
+    font-size: 26px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+.shadow {
+    display: none;
+}
+.shadow.active {
+    display: block;
+}
+.tab-items li {
+    padding: 0 2px;
+}
+.tab-items a {
+    text-decoration: none;
+    display: inline-block;
+    padding: 6px;
+    color: #a9b0b6;
 }
