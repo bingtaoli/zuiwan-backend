@@ -1,62 +1,27 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: bingtao
- * Date: 2015/12/6
- * Time: 13:35
- */
-?>
-
 <!doctype html>
 <html>
-
 <?php $this->load->view('common/admin_header') ?>
-<style>
-    tbody tr td.del, tbody tr td.edit-or-del {
-        border: none;
-        border-right: solid 1px #fff;
-        border-bottom: solid 1px #fff;
-        background: #fff;
-    }
-    tbody tr td.del .glyphicon, tbody tr td.edit-or-del .glyphicon {
-        display: inline-block;
-        line-height: 34px;
-        width: 24px;
-        cursor: pointer;
-    }
-    input[type="file"] {
-        display: inline-block;
-        margin-left: 16px;
-    }
-</style>
 <div class="container">
     <div class="content">
-        <div class="alert alert-warning alert-dismissible" role="alert" style="display: none;">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <span class="message"></span>
-        </div>
-        <div class="alert alert-info alert-dismissible" role="alert" style="display: none;">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <span class="message"></span>
-        </div>
+        <?php $this->load->view("common/alert") ?>
         <ul class="tab-items">
-            <li class="active">发布文章</li>
-            <li>所有文章</li>
-            <li>媒体专题</li>
+            <li class="active"><a href="#/">发布文章</a></li>
+            <li><a href="#/articles">所有文章</a></li>
+            <li><a href="#/media-topic">媒体专题</a></li>
             <div class="clear"></div>
         </ul>
-        <div id="admin-panel">
-            <div id="add-article">
+        <div id="publish" class="shadow active">
+            <div>
                 <div class="form">
-                    <div class="form-group" style="width: 70%">
+                    <div class="form-group">
                         <label>文章标题</label>
                         <input type="text" class="form-control" name="article_title" placeholder="">
                     </div>
-                    <div class="form-group" style="width: 70%">
+                    <div class="form-group">
                         <label>文章作者</label>
                         <input type="text" class="form-control" name="article_author" placeholder="">
                     </div>
-                    <div class="form-group" style="width: 70%">
+                    <div class="form-group">
                         <label>文章媒体</label>
                         <select class="form-control" name="article_media">
                             <?php if(isset($media)) foreach($media as $m){ ?>
@@ -64,7 +29,7 @@
                             <?php } ?>
                         </select>
                     </div>
-                    <div class="form-group" style="width: 70%">
+                    <div class="form-group">
                         <label>所属专题</label>
                         <select class="form-control" name="article_topic">
                             <?php if(isset($topic)) foreach($topic as $t){ ?>
@@ -72,18 +37,18 @@
                             <?php } ?>
                         </select>
                     </div>
-                    <div id="article-img">
+                    <div class="article-img-upload">
                         <form>
                             <label>文章大图: </label>
                             <input type="hidden" name="article_img_name">
                             <input name="article_img" type="file" style="display: inline-block;">
                             <button type="button" class="upload-file-btn btn btn-success">上传</button>
                             <div style="margin-top: 5px; margin-bottom: 8px;">
-                                <img style="width: 400px;" src="<?php echo base_url(); ?>public/upload/img/huge.jpg?>">
+                                <img class="article-img" src="<?php echo base_url(); ?>public/upload/img/huge.jpg?>">
                             </div>
                         </form>
                     </div>
-                    <div class="form-group" style="width: 70%">
+                    <div class="form-group">
                         <label>文章简介</label>
                         <input type="text" class="form-control" name="article_intro" placeholder="">
                     </div>
@@ -93,7 +58,9 @@
                     </div>
                 </div>
             </div>
-            <div id="all-article" class="none">
+        </div>
+        <div id="articles" class="shadow">
+            <div id="all-article">
                 <table class="can-more table table-bordered table-striped">
                     <colgroup>
                         <col class="col-xs-2">
@@ -136,115 +103,115 @@
                     </tbody>
                 </table>
             </div>
-            <div id="media-and-topic" class="none">
-                <div id="media-manage">
-                    <h2>媒体</h2>
-                    <table class="table table-bordered table-striped">
-                        <colgroup>
-                            <col class="col-xs-2">
-                            <col class="col-xs-6">
-                            <col class="col-xs-1">
-                            <col class="col-xs-1">
-                        </colgroup>
-                        <thead>
-                        <tr>
-                            <th>媒体名称</th>
-                            <th>媒体头像(建议裁剪成正方形)</th>
-                            <th class="none"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr class="none media-template">
-                            <td></td>
-                            <td>
-                                <form enctype="multipart/form-data" method="post">
-                                    <img src="<?php echo base_url(); ?>public/upload/img/default_media_avatar.jpg">
-                                    <input class="file" type="file" name="avatar">
-                                    <input name="media_name" type="hidden" value="">
-                                    <button class="upload-file-btn btn btn-success">上传</button>
-                                </form>
-                            </td>
-                            <td class="del">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </td>
-                            <td name="id"></td>
-                        </tr>
-                        <?php if(isset($media)) foreach($media as $i => $m){ ?>
-                        <tr>
-                            <td><?php echo $m['media_name'] ?></td>
-                            <td>
-                                <form enctype="multipart/form-data" method="post">
-                                    <img src="<?php if (isset($m['media_avatar'])) echo $m['media_avatar'];?>">
-                                    <input class="file" type="file" name="avatar">
-                                    <input name="media_name" type="hidden" value="<?php echo $m['media_name'] ?>">
-                                    <button class="upload-file-btn btn btn-success">上传</button>
-                                </form>
-                            </td>
-                            <td class="del">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </td>
-                            <td style="display: none;" name="id"><?php echo $m['id'] ?></td>
-                        </tr>
-                        <?php } ?>
-                        </tbody>
-                    </table>
-                    <div class="white-on-green more glyphicon glyphicon-plus" title="增加一项"></div>
-                </div>
-                <hr>
-                <div id="topic-manage">
-                    <h2>专题</h2>
-                    <table class="table table-bordered table-striped">
-                        <colgroup>
-                            <col class="col-xs-2">
-                            <col class="col-xs-6">
-                            <col class="col-xs-1">
-                            <col class="col-xs-1">
-                        </colgroup>
-                        <thead>
-                        <tr>
-                            <th>专题名称</th>
-                            <th>专题大图(建议裁剪成正方形)</th>
-                            <th class="none"></th>
-                            <th class="none"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr class="none topic-template">
-                            <td name="topic_name"></td>
-                            <th>
-                                <form enctype="multipart/form-data" method="post">
-                                    <img src="<?php echo base_url(); ?>public/upload/img/default_topic_img.jpg">
-                                    <input class="file" type="file" name="avatar">
-                                    <input name="topic_name" type="hidden">
-                                    <button class="upload-file-btn btn btn-success">上传</button>
-                                </form>
-                            </th>
-                            <td class="del">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </td>
-                            <td class="none" name="id"></td>
-                        </tr>
-                        <?php if(isset($topic)) foreach($topic as $i => $t){ ?>
-                        <tr>
-                            <th><?php echo $t['topic_name'] ?></th>
-                            <th>
-                                <form enctype="multipart/form-data" method="post">
-                                    <img src="<?php if (isset($t['topic_img'])) echo $t['topic_img']; ?>">
-                                    <input class="file" type="file" name="avatar">
-                                    <input name="topic_name" type="hidden" value="<?php echo $t['topic_name'] ?>">
-                                    <button class="upload-file-btn btn btn-success">上传</button>
-                                </form>
-                            </th>
-                            <td class="del">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </td>
-                            <td style="display: none;" name="id"><?php echo $t['id']; ?></td>
-                        </tr>
-                        <?php } ?>
-                        </tbody>
-                    </table>
-                    <div class="white-on-green more glyphicon glyphicon-plus" title="增加一项"></div>
-                </div>
+        </div>
+        <div class="media-topic shadow">
+            <div id="media-manage">
+                <h2>媒体</h2>
+                <table class="table table-bordered table-striped">
+                    <colgroup>
+                        <col class="col-xs-2">
+                        <col class="col-xs-6">
+                        <col class="col-xs-1">
+                        <col class="col-xs-1">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>媒体名称</th>
+                        <th>媒体头像(建议裁剪成正方形)</th>
+                        <th class="none"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="none media-template">
+                        <td></td>
+                        <td>
+                            <form enctype="multipart/form-data" method="post">
+                                <img src="<?php echo base_url(); ?>public/upload/img/default_media_avatar.jpg">
+                                <input class="file" type="file" name="avatar">
+                                <input name="media_name" type="hidden" value="">
+                                <button class="upload-file-btn btn btn-success">上传</button>
+                            </form>
+                        </td>
+                        <td class="del">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </td>
+                        <td name="id"></td>
+                    </tr>
+                    <?php if(isset($media)) foreach($media as $i => $m){ ?>
+                    <tr>
+                        <td><?php echo $m['media_name'] ?></td>
+                        <td>
+                            <form enctype="multipart/form-data" method="post">
+                                <img src="<?php if (isset($m['media_avatar'])) echo $m['media_avatar'];?>">
+                                <input class="file" type="file" name="avatar">
+                                <input name="media_name" type="hidden" value="<?php echo $m['media_name'] ?>">
+                                <button class="upload-file-btn btn btn-success">上传</button>
+                            </form>
+                        </td>
+                        <td class="del">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </td>
+                        <td class="none" name="id"><?php echo $m['id'] ?></td>
+                    </tr>
+                    <?php } ?>
+                    </tbody>
+                </table>
+                <div class="white-on-green more glyphicon glyphicon-plus" title="增加一项"></div>
+            </div>
+            <hr>
+            <div id="topic-manage">
+                <h2>专题</h2>
+                <table class="table table-bordered table-striped">
+                    <colgroup>
+                        <col class="col-xs-2">
+                        <col class="col-xs-6">
+                        <col class="col-xs-1">
+                        <col class="col-xs-1">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>专题名称</th>
+                        <th>专题大图(建议裁剪成正方形)</th>
+                        <th class="none"></th>
+                        <th class="none"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="none topic-template">
+                        <td name="topic_name"></td>
+                        <th>
+                            <form enctype="multipart/form-data" method="post">
+                                <img src="<?php echo base_url(); ?>public/upload/img/default_topic_img.jpg">
+                                <input class="file" type="file" name="avatar">
+                                <input name="topic_name" type="hidden">
+                                <button class="upload-file-btn btn btn-success">上传</button>
+                            </form>
+                        </th>
+                        <td class="del">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </td>
+                        <td class="none" name="id"></td>
+                    </tr>
+                    <?php if(isset($topic)) foreach($topic as $i => $t){ ?>
+                    <tr>
+                        <th><?php echo $t['topic_name'] ?></th>
+                        <th>
+                            <form enctype="multipart/form-data" method="post">
+                                <img src="<?php if (isset($t['topic_img'])) echo $t['topic_img']; ?>">
+                                <input class="file" type="file" name="avatar">
+                                <input name="topic_name" type="hidden" value="<?php echo $t['topic_name'] ?>">
+                                <button class="upload-file-btn btn btn-success">上传</button>
+                            </form>
+                        </th>
+                        <td class="del">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </td>
+                        <td class="none" name="id"><?php echo $t['id']; ?></td>
+                    </tr>
+                    <?php } ?>
+                    </tbody>
+                </table>
+                <div class="white-on-green more glyphicon glyphicon-plus" title="增加一项"></div>
             </div>
         </div>
     </div>
@@ -298,4 +265,38 @@
         </div>
     </div>
 </div>
-<?php $this->load->view('common/admin_js') ?>
+<script src="https://rawgit.com/leeluolee/stateman/master/stateman.js"></script>
+<script>
+    var stateman = new StateMan();
+    var shadows = $(".shadow");
+    var lis = $(".tab-items").find("li");
+    var publish = {
+        enter: function(){
+            $(shadows[0]).siblings().removeClass("active");
+            $(shadows[0]).addClass("active");
+            $(lis[0]).addClass("active");
+            $(lis[0]).siblings().removeClass("active");
+        }
+    };
+    var article = {
+        enter: function(){
+            $(shadows[1]).siblings().removeClass("active");
+            $(shadows[1]).addClass("active");
+            $(lis[1]).addClass("active");
+            $(lis[1]).siblings().removeClass("active");
+        }
+    };
+    var media_topic = {
+        enter: function(){
+            $(shadows[2]).siblings().removeClass("active");
+            $(shadows[2]).addClass("active");
+            $(lis[2]).addClass("active");
+            $(lis[2]).siblings().removeClass("active");
+        }
+    };
+    stateman
+        .state('/', publish)
+        .state('articles', article)
+        .state('media-topic', media_topic)
+        .start({});
+</script>

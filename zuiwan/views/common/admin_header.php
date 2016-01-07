@@ -9,14 +9,7 @@
 <head>
     <meta charset="UTF-8">
     <title>醉晚后台管理系统</title>
-    <?php $this->load->view('common/bootstrap');?>
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>public/styles/admin.css" />
-    <script src="<?php echo base_url(); ?>public/third_part/ckeditor/ckeditor.js"></script>
-    <style>
-        .none {
-            display: none;
-        }
-    </style>
+    <?php $this->load->view('common/css_js');?>
 </head>
 <body>
 <div class="header">
