@@ -17,9 +17,10 @@ class Article extends MY_Controller
     {
         parent::__construct();
         $this->load->model('mod_article', 'article');
-        $m = new Memcached();
-        $m->addServer('localhost', 11211);
-        $this->memcached = $m;
+        if (MEMCACHED) {
+            $this->memcached = new Memcached();
+            $this->memcached->addServer('localhost', 11211);
+        }
     }
 
     /**
@@ -89,6 +90,9 @@ class Article extends MY_Controller
             $result = $articles;
             $this->output->set_content_type('application/json');
             $this->output->set_output(json_encode($result));
+            if (MEMCACHED){
+                memcache_close($this->memcached);
+            }
         }
     }
 
