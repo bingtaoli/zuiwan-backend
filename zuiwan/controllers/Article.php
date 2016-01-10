@@ -11,11 +11,15 @@ class Article extends MY_Controller
 
     var $article;
     var $config;
+    var $memcached;
 
     public function __construct()
     {
         parent::__construct();
         $this->load->model('mod_article', 'article');
+        $m = new Memcached();
+        $m->addServer('localhost', 11211);
+        $this->memcached = $m;
     }
 
     /**
@@ -26,17 +30,43 @@ class Article extends MY_Controller
         if (METHOD == 'get'){
             $get_data = $this->input->get();
             $type = isset($get_data['type']) ? $get_data['type'] : null;
-            if ($type){
-                $id = $get_data['id'];
-                if ($type == 1){
-                    $articles = $this->article->get_articles(1, $id);
-                } else if ($type == 2){
-                    $articles = $this->article->get_articles(2, $id);
+            $id = isset($get_data['id']) ? $get_data['id'] : null;
+            #memcached
+            if (MEMCACHED){
+                if ($type && $id){
+                    if ($type == 1){
+                        //media
+                        $articles = $this->memcached->get("articles-media-$id");
+                    } else if ($type == 2){
+                        $articles = $this->memcached->get("articles-topic-$id");
+                    } else {
+                        throw new Exception("未知类型文章,无法获取数据");
+                    }
                 } else {
-                    throw new Exception("未知类型文章,无法获取数据");
+                    $articles = $this->memcached->get("articles");
                 }
-            } else {
-                $articles = $this->article->get_articles();
+            }
+            if (!isset($articles)){
+                if ($type && $id ){
+                    if ($type == 1){
+                        $articles = $this->article->get_articles(1, $id);
+                        if (MEMCACHED){
+                            $this->memcached->set("articles-media-$id", $articles);
+                        }
+                    } else if ($type == 2){
+                        $articles = $this->article->get_articles(2, $id);
+                        if (MEMCACHED){
+                            $this->memcached->set("articles-topic-$id", $articles);
+                        }
+                    } else {
+                        throw new Exception("未知类型文章,无法获取数据");
+                    }
+                } else {
+                    $articles = $this->article->get_articles();
+                    if (MEMCACHED){
+                        $this->memcached->set("articles", $articles);
+                    }
+                }
             }
             //获取topic name && media name
             $this->load->model('mod_topic', 'topic');
