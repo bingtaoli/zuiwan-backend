@@ -69,6 +69,7 @@ class Article extends MY_Controller
                     $articles = $this->article->get_articles();
                     if (MEMCACHED){
                         $this->memcached->set("articles", $articles);
+                        echo "set memcached\n";
                     }
                 }
             }
