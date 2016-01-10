@@ -47,7 +47,7 @@ class Article extends MY_Controller
                     $articles = $this->memcached->get("articles");
                 }
             }
-            if (!isset($articles)){
+            if (!isset($articles) || $articles == null){
                 if ($type && $id ){
                     if ($type == 1){
                         $articles = $this->article->get_articles(1, $id);
@@ -91,7 +91,7 @@ class Article extends MY_Controller
             $this->output->set_content_type('application/json');
             $this->output->set_output(json_encode($result));
             if (MEMCACHED){
-                memcache_close($this->memcached);
+                $this->memcached->quit();
             }
         }
     }
