@@ -69,25 +69,6 @@ class Article extends MY_Controller
                     }
                 }
             }
-            //获取topic name && media name
-            $this->load->model('mod_topic', 'topic');
-            $this->load->model('mod_media', 'media');
-            $topics = $this->topic->get_all_topic();
-            $medias = $this->media->get_all_media();
-            $topic_id_name = [];
-            foreach($topics as $t){
-                $topic_id_name[$t['id']] = $t['topic_name'];
-            }
-            $media_id_name = [];
-            foreach($medias as $m){
-                $media_id_name[$m['id']] = $m['media_name'];
-            }
-            foreach($articles as &$a){
-                $a['article_topic_name'] = $topic_id_name[$a['article_topic']];
-                if (isset( $a['article_media']) && isset($media_id_name[$a['article_media']])){
-                    $a['article_media_name'] = $media_id_name[$a['article_media']];
-                }
-            }
             header("Access-Control-Allow-Origin: *");
             $result = $articles;
             $this->output->set_content_type('application/json');
@@ -158,6 +139,13 @@ class Article extends MY_Controller
                 'article_img'     => $article_img,
             ];
             try {
+                //获取topic name && media name
+                $this->load->model('mod_topic', 'topic');
+                $this->load->model('mod_media', 'media');
+                $media = $this->media->get_by_id($article_media);
+                $topic = $this->media->get_by_id($article_topic);
+                $insert_data['article_media_name'] = $media['media_name'];
+                $insert_data['article_topic_name'] = $topic['topic_name'];
                 $this->article->add_article($insert_data);
             } catch (IdentifyException $e){
                 $result['status'] = 'error';
