@@ -46,9 +46,6 @@ class Article extends MY_Controller
                 } else {
                     $articles = $this->memcached->get("articles");
                 }
-                if (isset($articles)){
-                    echo "articles got from memcached\n";
-                }
             }
             if (!isset($articles) || $articles == null){
                 if ($type && $id ){
@@ -69,7 +66,6 @@ class Article extends MY_Controller
                     $articles = $this->article->get_articles();
                     if (MEMCACHED){
                         $this->memcached->set("articles", $articles);
-                        echo "set memcached\n";
                     }
                 }
             }
