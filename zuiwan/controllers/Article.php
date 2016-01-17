@@ -88,7 +88,9 @@ class Article extends MY_Controller
             }
             foreach($articles as &$a){
                 $a['article_topic_name'] = $topic_id_name[$a['article_topic']];
-                $a['article_media_name'] = $media_id_name[$a['article_media']];
+                if (isset( $a['article_media']) && isset($media_id_name[$a['article_media']])){
+                    $a['article_media_name'] = $media_id_name[$a['article_media']];
+                }
             }
             header("Access-Control-Allow-Origin: *");
             $result = $articles;
