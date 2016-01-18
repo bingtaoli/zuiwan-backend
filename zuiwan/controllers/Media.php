@@ -50,8 +50,8 @@ class Media extends MY_Controller
                         $media = $this->media->get_media_by_name($media_name);
                         $origin = $media['media_avatar'];
                         $origin_pos = STATIC_PATH . $this->config->config['img_dir'] . "/" . $origin;
-                        if (file_exists($origin_pos)){
-                            unlink($origin_pos);
+                        if (file_exists($origin_pos) && $origin != 'default_media_avatar.png'){
+                            @unlink($origin_pos);
                         }
                         //把media的media_avatar更新
                         $this->media->update_media_avatar($media_name, $random_file_name);

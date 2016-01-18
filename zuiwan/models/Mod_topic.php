@@ -11,15 +11,20 @@ class Mod_topic extends CI_Model
         parent::__construct();
     }
 
+    private function _add_prefix(&$result){
+        add_img_prefix($result, 'topic_img');
+        add_img_prefix($result, 'topic_detail_back');
+    }
+
     public function get_all_topic(){
         $result = $this->db->get('topic')->result_array();
-        add_img_prefix($result, 'topic_img');
+        $this->_add_prefix($result);
         return $result;
     }
 
     public function get_by_id($id){
         $result = $this->db->get_where('topic', ['id' => $id])->result_array();
-        add_img_prefix($result, 'topic_img');
+        $this->_add_prefix($result);
         if ($result){
             return $result[0];
         }
@@ -28,7 +33,7 @@ class Mod_topic extends CI_Model
 
     public function get_topic_by_name($name){
         $result = $this->db->get_where('topic', ['topic_name' => $name])->result_array();
-        add_img_prefix($result, 'topic_img');
+        $this->_add_prefix($result);
         if ($result){
             return $result[0];
         }

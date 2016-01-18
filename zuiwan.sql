@@ -18,13 +18,16 @@ create table if not exists user (
 create table if not exists article (
     id int NOT NULL AUTO_INCREMENT,
     article_title varchar(30) NOT NULL,
-    article_topic int NOT NULL, #专题id
     article_intro varchar(50), #文章简介
     article_content varchar(10000) NOT NULL, #内容
     article_author varchar(20) NOT NULL, #作者
     article_media int NOT NULL , #媒体id
+    article_media_name VARCHAR(30) NOT NULL,
+    article_topic int NOT NULL, #专题id
+    article_topic_name VARCHAR(30) NOT NULL, #专题id
     create_time varchar(30) NOT NULL, # 发布时间
-    article_img VARCHAR(20), #文章展示图片,可选
+    article_img VARCHAR(40) NOT NULL , #文章展示图片,可选
+    is_recommanded int DEFAULT 0, #是否推荐,默认不推荐
     article_color varchar(6), #文章颜色
     PRIMARY KEY (id)
 ) default charset=utf8;
@@ -32,20 +35,20 @@ create table if not exists article (
 #媒体表
 create table if not exists media (
     id int NOT NULL AUTO_INCREMENT,
-    media_name varchar(10) NOT NULL, #媒体名称
-    media_avatar varchar(40), #媒体头像
-    media_intro VARCHAR(80), #媒体简介
-    create_time varchar(30) NOT NULL, # 媒体加入时间
+    media_name varchar(30) NOT NULL, #媒体名称
+    media_intro VARCHAR(80) NOT NULL, #媒体简介
+    media_avatar varchar(40) NOT NULL, #媒体头像
+    media_detail_back VARCHAR(40) NOT NULL, #媒体大图
     PRIMARY KEY (id)
 ) default charset=utf8;
 
 #专题表
 create table if not exists topic (
     id int NOT NULL AUTO_INCREMENT,
-    topic_name varchar(10) NOT NULL, #专题名称
-    topic_img varchar(40), #专题大图
-    topic_intro VARCHAR(80), #专题简介
-    create_time varchar(30) NOT NULL, # 专题成立时间
+    topic_name varchar(30) NOT NULL, #专题名称
+    topic_intro VARCHAR(80) NOT NULL , #专题简介
+    topic_img varchar(40) NOT NULL , #专题大图
+    topic_detail_back VARCHAR(40) NOT NULL, #专题细节背景
     PRIMARY KEY (id)
 ) DEFAULT CHARSET=utf8;
 
