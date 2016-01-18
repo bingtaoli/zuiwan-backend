@@ -13,6 +13,10 @@ class Mod_article extends CI_Model
         parent::__construct();
     }
 
+    private function _add_prefix(&$result){
+        add_img_prefix($result, 'article_img');
+    }
+
     public function add_article($data){
         try {
             $this->db->insert('article', $data);
@@ -45,7 +49,7 @@ class Mod_article extends CI_Model
         } else {
             $result = $this->db->get('article')->result_array();
         }
-        add_img_prefix($result, 'article_img');
+        $this->_add_prefix($result);
         //此时不把article_content返给前端
         foreach($result as &$article){
             if (isset($article['article_content'])){
@@ -57,7 +61,7 @@ class Mod_article extends CI_Model
 
     public function get_by_id($id){
         $result = $this->db->get_where('article', ['id' => $id])->result_array();
-        add_img_prefix($result, 'article_img');
+        $this->_add_prefix($result);
         if ($result){
             return $result[0];
         } else{

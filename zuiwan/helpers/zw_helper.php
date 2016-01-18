@@ -10,7 +10,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 if (!function_exists("add_img_prefix")){
     function add_img_prefix(&$result, $name){
         //把article_img设置成绝对路径
-        $img_prefix = base_url() .  "public/upload/img/";
+        $img_prefix = 'http://115.28.75.190/zuiwan-admin/' .  "public/upload/img/";
         foreach($result as &$r){
             if (!isset($r[$name])){
                 continue;
