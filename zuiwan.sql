@@ -26,7 +26,7 @@ create table if not exists article (
     article_topic int NOT NULL, #专题id
     article_topic_name VARCHAR(30) NOT NULL, #专题id
     create_time varchar(30) NOT NULL, # 发布时间
-    article_img VARCHAR(20), #文章展示图片,可选
+    article_img VARCHAR(40) NOT NULL , #文章展示图片,可选
     is_recommanded int DEFAULT 0, #是否推荐,默认不推荐
     article_color varchar(6), #文章颜色
     PRIMARY KEY (id)
