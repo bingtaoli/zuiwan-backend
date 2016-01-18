@@ -12,7 +12,7 @@ class Mod_media extends CI_Model {
     }
 
     private function _add_prefix(&$result){
-        add_img_prefix($result, 'media_img');
+        add_img_prefix($result, 'media_avatar');
         add_img_prefix($result, 'media_detail_back');
     }
 
