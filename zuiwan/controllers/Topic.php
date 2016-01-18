@@ -68,11 +68,10 @@ class Topic extends MY_Controller
                         $topic = $this->topic->get_topic_by_name($topic_name);
                         $origin = $topic['topic_img'];
                         $origin_pos = STATIC_PATH . $this->config->config['img_dir'] . "/" . $origin;
-                        if (file_exists($origin_pos)){
+                        if (file_exists($origin_pos) && $origin != 'default_topic_img.png'){
                             unlink($origin_pos);
                         }
-
-                        //把topic的topic_avatar更新
+                        //把topic的topic_img更新
                         $this->topic->update_topic_img($topic_name, $random_file_name);
                         $result['data'] = $random_file_name;
                     }
