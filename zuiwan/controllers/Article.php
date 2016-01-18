@@ -84,17 +84,6 @@ class Article extends MY_Controller
             $get_data = $this->input->get();
             $id = $get_data['id'];
             $article = $this->article->get_by_id($id);
-            //获取topic name && media name
-            $this->load->model('mod_topic', 'topic');
-            $this->load->model('mod_media', 'media');
-            $topic = $this->topic->get_by_id($article['article_topic']);
-            if (isset($topic)){
-                $article['article_topic_name'] = $topic['topic_name'];
-            }
-            $media = $this->media->get_by_id($article['article_media']);
-            if (isset($media)){
-                $article['article_media_name'] = $media['media_name'];
-            }
             header("Access-Control-Allow-Origin: *");
             $result = $article;
             $this->output->set_content_type('application/json');
