@@ -155,7 +155,9 @@ class Article extends MY_Controller
                     $data['id'] = $post_data['id'];
                     $this->article->update_article($data);
                 }
-
+                if (MEMCACHED){
+                    @$this->memcached->delete("articles");
+                }
             } catch (IdentifyException $e){
                 $result['status'] = 'error';
                 $result['message'] = $e->getMessage();
@@ -194,6 +196,9 @@ class Article extends MY_Controller
                     if ($originImg && $originImg != 'default_article_img.jpg' ){
                         @unlink(STATIC_PATH . $originImg);
                     }
+                    if (MEMCACHED){
+                        @$this->memcached->delete("articles");
+                    }
                 }
             } catch(Exception $e){
                 $result['status'] = 'error';
@@ -213,6 +218,9 @@ class Article extends MY_Controller
                 $post_data = $this->input->post();
                 $article_id = $post_data['id'];
                 $this->article->del_article($article_id);
+                if (MEMCACHED){
+                    @$this->memcached->delete("articles");
+                }
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
                 $result['status'] = 'error';
