@@ -40,6 +40,8 @@ class Mod_article extends CI_Model
     }
 
     public function get_articles($type=null, $id=null){
+        $this->db->select('id, article_title, article_intro, article_author, article_media, article_media_name,
+                          article_topic, article_topic_name, create_time, article_img, is_recommended');
         if ($type){
             if ($type == 1){
                 $result = $this->db->get_where('article', ['article_media' => $id])->result_array();
@@ -50,12 +52,15 @@ class Mod_article extends CI_Model
             $result = $this->db->get('article')->result_array();
         }
         $this->_add_prefix($result);
-        //此时不把article_content返给前端
-        foreach($result as &$article){
-            if (isset($article['article_content'])){
-                unset($article['article_content']);
-            }
-        }
+        return $result;
+    }
+
+    public function get_page_articles($index, $numberPerPage){
+        $this->db->select('id, article_title, article_intro, article_author, article_media, article_media_name,
+                          article_topic, article_topic_name, create_time, article_img, is_recommended');
+        $this->db->limit($numberPerPage, $index*$numberPerPage);
+        $result = $this->db->get('article')->result_array();
+        $this->_add_prefix($result);
         return $result;
     }
 
