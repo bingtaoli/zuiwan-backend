@@ -79,6 +79,22 @@ class Article extends MY_Controller
         }
     }
 
+    //后台管理分页
+    public function get_page_article(){
+        $get_data = $this->input->get();
+        $numberPerPage = $get_data['numberPerPage'];
+        $index = $get_data['index'];
+        if ($numberPerPage && isset($index)){
+            $result = $this->article->get_page_articles($index, $numberPerPage);
+        } else {
+            $result = [];
+            $result['error'] = "必须设定正确的索引和每页数目";
+        }
+        header("Access-Control-Allow-Origin: *");
+        $this->output->set_content_type('application/json');
+        $this->output->set_output(json_encode($result));
+    }
+
     public function get_one_article(){
         if (METHOD == 'get'){
             $get_data = $this->input->get();
