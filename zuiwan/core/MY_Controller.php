@@ -9,18 +9,18 @@ class MY_Controller extends CI_Controller{
     public function __construct(){
         error_reporting(10);
         parent::__construct();
-        if ($username = $this->zw_client->get_session_client()){
-            $this->username = $username;
-        } else {
-            //检查cookie,如果有name则解密
-            if (isset($_COOKIE['zw_username']) && $_COOKIE['zw_username'] != ""){
-                $username = $this->zw_client->decode($_COOKIE['zw_username']);
-                //去除加密算法带来的空格
-                $username = rtrim($username);
-                $this->zw_client->login($username);
-                $this->username = $username;
-            }
-        }
+//        if ($username = $this->zw_client->get_session_client()){
+//            $this->username = $username;
+//        } else {
+//            //检查cookie,如果有name则解密
+//            if (isset($_COOKIE['zw_username']) && $_COOKIE['zw_username'] != ""){
+//                $username = $this->zw_client->decode($_COOKIE['zw_username']);
+//                //去除加密算法带来的空格
+//                $username = rtrim($username);
+//                $this->zw_client->login($username);
+//                $this->username = $username;
+//            }
+//        }
     }
 
     protected function _json($data,$code=1,$msg=null){
