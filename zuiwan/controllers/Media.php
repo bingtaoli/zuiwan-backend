@@ -104,20 +104,6 @@ class Media extends MY_Controller
                 } else {
                     throw new Exception("沒有上传头像");
                 }
-                //存media detail back
-                if(is_uploaded_file($_FILES['detail']['tmp_name'])) {
-                    $file_name = $_FILES['detail']['name'];
-                    $file_type = pathinfo($file_name, PATHINFO_EXTENSION);
-                    $store_file_name = uniqid() . "." . $file_type;
-                    $file_abs = $this->config->config["img_dir"] . "/" . $store_file_name;
-                    $file_host = STATIC_PATH . $file_abs;
-                    if (move_uploaded_file($_FILES['detail']['tmp_name'], $file_host) == false) {
-                        throw new Exception("media detail上传失败");
-                    }
-                    $data['media_detail_back'] = $store_file_name;
-                } else {
-                    throw new Exception("沒有上传detail back");
-                }
                 $this->media->add_media($data);
             } catch (Exception $e){
                 $result['message'] = '未知错误，请联系管理员';

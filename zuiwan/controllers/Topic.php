@@ -91,7 +91,6 @@ class Topic extends MY_Controller
             $data = [
                 'topic_name'   => $post_data['topic_name'],
                 'topic_intro'   => $post_data['topic_intro'],
-                'topic_img'    => "default_topic_img.jpg",
             ];
             $result = [
                 'status' => 'success',
@@ -99,6 +98,20 @@ class Topic extends MY_Controller
                 'data'    => '',
             ];
             try {
+                //topic img
+                if(is_uploaded_file($_FILES['topic_img']['tmp_name'])) {
+                    $file_name = $_FILES['topic_img']['name'];
+                    $file_type = pathinfo($file_name, PATHINFO_EXTENSION);
+                    $store_file_name = uniqid() . "." . $file_type;
+                    $file_abs = $this->config->config["img_dir"] . "/" . $store_file_name;
+                    $file_host = STATIC_PATH . $file_abs;
+                    if (move_uploaded_file($_FILES['topic_img']['tmp_name'], $file_host) == false) {
+                        throw new Exception("topic img上传失败");
+                    }
+                    $data['topic_img'] = $store_file_name;
+                } else {
+                    throw new Exception("沒有上传头像");
+                }
                 $id = $this->topic->add_topic($data);
                 $result['data'] = $id;
             } catch (Exception $e){
