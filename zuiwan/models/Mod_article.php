@@ -55,6 +55,20 @@ class Mod_article extends CI_Model
         return $result;
     }
 
+    public function get_recommended_articles(){
+        $this->db->select('id, article_title, article_media_name, article_topic_name, article_img, article_color');
+        $result = $this->db->get_where('article', ['is_recommended' => 1])->result_array();
+        $this->_add_prefix($result);
+        return $result;
+    }
+
+    public function get_banner_articles(){
+        $this->db->select('id, article_title, article_intro, article_media_name, article_topic_name, article_img');
+        $result = $this->db->get_where('article', ['is_banner' => 1])->result_array();
+        $this->_add_prefix($result);
+        return $result;
+    }
+
     public function get_page_articles($index, $numberPerPage){
         $this->db->select('id, article_title, article_intro, article_author, article_media, article_media_name,
                           article_topic, article_topic_name, create_time, article_img, is_recommended');
@@ -65,6 +79,7 @@ class Mod_article extends CI_Model
     }
 
     public function get_by_id($id){
+        $this->db->select('article_img, create_time, article_title, article_author, article_media, article_topic, article_content');
         $result = $this->db->get_where('article', ['id' => $id])->result_array();
         $this->_add_prefix($result);
         if ($result){
@@ -74,9 +89,23 @@ class Mod_article extends CI_Model
         }
     }
 
+    public function get_by_topic($id){
+        $this->db->select('id, article_title, article_intro, article_media_name, article_topic_name, article_img, create_time');
+        $result = $this->db->get_where('article', ['article_topic' => $id])->result_array();
+        $this->_add_prefix($result);
+        return $result;
+    }
+
+    public function get_by_media($id){
+        $this->db->select('id, article_title, article_media_name, article_topic_name, article_img, article_color');
+        $result = $this->db->get_where('article', ['article_media' => $id])->result_array();
+        $this->_add_prefix($result);
+        return $result;
+    }
+
     public function get_count_by_topic($topic_id){
         $this->db->where('article_topic', $topic_id);
-        return $this->db->count_all('article');
+        return $this->db->count_all_results('article');
     }
 
 }

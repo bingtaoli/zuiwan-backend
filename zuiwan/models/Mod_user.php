@@ -43,7 +43,7 @@ class Mod_user extends CI_Model {
     }
 
     public function get_all_user(){
-        return $this->db->get('user')->result();
+        return $this->db->get('user')->result_array();
     }
 
     public function get_user_by_name($username){
@@ -63,5 +63,20 @@ class Mod_user extends CI_Model {
         } else {
             return NULL;
         }
+    }
+
+    public function get_media_fans($media_id){
+        $this->db->select('id, collect_media');
+        $result = $this->db->get('user')->result_array();
+        $num = 0;
+        foreach($result as $r){
+            if ($r['collect_media']){
+                $arr = json_decode($r['collect_media'], true);
+                if (in_array($media_id, $arr)){
+                    $num++;
+                }
+            }
+        }
+        return $num;
     }
 }

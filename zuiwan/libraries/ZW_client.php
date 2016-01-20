@@ -21,41 +21,41 @@ class ZW_client{
     }
 
     public function login($username, $remember=0){
-        $_SESSION['username'] = $username;
+        $_SESSION['zw_username'] = $username;
         if ($remember){
             $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
             //加密后存cookie
-            $username = $this->_encode($username);
-            setcookie('username', $username, time()+60*60*24*365, '/', $domain, false);
+            $username = $this->encode($username);
+            setcookie('zw_username', $username, time()+60*60*24*365, '/', $domain, false);
         }
         return;
     }
 
-    public static function login_check(){
-        if (isset($_SESSION['username'])){
+    public function login_check(){
+        if (isset($_SESSION['zw_username'])){
             return true;
         }
         return false;
     }
 
-    public static function get_session_client(){
-        $username = isset($_SESSION['username']) ? $_SESSION['username'] : null;
+    public function get_session_client(){
+        $username = isset($_SESSION['zw_username']) ? $_SESSION['zw_username'] : null;
         return $username;
     }
 
     public function logout(){
-        if (isset($_SESSION['username'])){
-            unset($_SESSION['username']);
+        if (isset($_SESSION['zw_username'])){
+            unset($_SESSION['zw_username']);
         }
         //delete cookie
-        if (isset($_COOKIE['username'])){
+        if (isset($_COOKIE['zw_username'])){
             $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
             $username = "";
-            setcookie('username', $username, time()+60*60*24*365, '/', $domain, false);
+            setcookie('zw_username', $username, time()+60*60*24*365, '/', $domain, false);
         }
     }
 
-    public function _encode($str){
+    public function encode($str){
         $key = $this->key;
         $iv = $this->iv;
         # creates a cipher text compatible with AES (Rijndael block size = 128)
@@ -73,7 +73,7 @@ class ZW_client{
         return $cipher_text_base64;
     }
 
-    private function _decode($cipher_text_base64){
+    public function decode($cipher_text_base64){
         # --- DECRYPTION ---
         $iv_size = $this->iv_size;
         $key = $this->key;

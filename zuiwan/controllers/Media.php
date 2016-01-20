@@ -19,6 +19,7 @@ class Media extends MY_Controller
         parent::__construct();
         $this->load->model('mod_article', 'article');
         $this->load->model('mod_media', 'media');
+        $this->load->model('mod_user', 'user');
     }
 
     public function get_media(){
@@ -32,6 +33,12 @@ class Media extends MY_Controller
         $get_data = $this->input->get();
         $id = $get_data['id'];
         $media = $this->media->get_by_id($id);
+        // is_focus
+        $media['is_focus'] = 1;
+        //fans_num
+        $media['fans_num'] = $this->user->get_media_fans($id);
+        //articles
+        $media['articles'] = $this->article->get_by_media($id);
         header("Access-Control-Allow-Origin: *");
         $this->output->set_content_type('application/json');
         $this->output->set_output(json_encode($media));

@@ -39,8 +39,6 @@ class User extends MY_Controller {
                 ];
                 log_message('info', 'register user: ' . $s);
                 $this->user->add_user($data);
-                $user = $this->user->get_user_by_name($username);
-                $result['user_detail'] = $user;
             } catch (IdentifyException $e){
                 if ($e->getCode() == 0){
                     $result['message'] = '该用户已经注册';
@@ -72,58 +70,9 @@ class User extends MY_Controller {
             try {
                 $user = $this->user->get_user_by_name_password($username, $password);
                 if ($user){
-                    //设置$user->collect_media
-                    if (isset($user['collect_media'])){
-                        $arr = explode(',', $user['collect_media']);
-                        $collect_media = [];
-                        $collect_media_item = [];
-                        foreach($arr as $a){
-                            $media = $this->media->get_by_id($a);
-                            if (isset($media)){
-                                $collect_media_item['id'] = $media['id'];
-                                $collect_media_item['media_intro'] = $media['media_intro'];
-                                $collect_media_item['media_avatar'] = $media['media_avatar'];
-                                $collect_media_item['media_name'] = $media['media_name'];
-                                //add
-                                $collect_media[] = $collect_media_item;
-                            } else {
-                                //todo 取消收藏
-                            }
-                        }
-                        $user['collect_media'] = $collect_media_item;
-                    }
-                    //设置$user->collect_article
-                    if (isset($user['collect_article'])){
-                        $arr = explode(',', $user['collect_article']);
-                        $collect_article = [];
-                        $collect_item = [];
-                        foreach($arr as $a){
-                            $article = $this->article->get_by_id($a);
-                            if (isset($article)){
-                                $collect_item['id'] = $article['id'];
-                                $collect_item['article_title'] = $article['article_title'];
-                                $topic = $this->topic->get_by_id($article['article_topic']);
-                                if (isset($topic)){
-                                    $collect_item['article_topic_name'] = $topic['topic_name'];
-                                }
-                                $media = $this->media->get_by_id($article['article_media']);
-                                if (isset($media)){
-                                    $collect_item['article_media_name'] = $media['media_name'];
-                                }
-                                $collect_item['article_intro'] = isset($article['article_intro']) ? $article['article_intro'] : null;
-                                $collect_item['article_img'] = isset($article['article_img']) ? $article['article_img'] : null;
-                                //add
-                                $collect_article[] = $collect_item;
-                            } else {
-                                //todo 把用户收藏的这篇文章取消
-                            }
-                        }
-                        $user['collect_article'] = $collect_article;
-                    }
                     $result['message'] = '登陆成功';
+                    $this->zw_client->login($username, 1);
                     log_message('info', 'user logged in' . $username);
-                    # 获取用户具体信息
-                    $result['user_detail'] = $user;
                 } else {
                     $result['message'] = '用户名或密码错误';
                     $result['status'] = 'error';
@@ -146,16 +95,27 @@ class User extends MY_Controller {
             $post_data = $this->input->post();
             $article_id = $post_data['article_id'];
             $username = $post_data['username'];
-            $user = $this->user->get_user_by_name($username);
-            $collect_articles = $user['collect_article'];
-            $arr = $collect_articles ? explode(',', $collect_articles) : []; // old collect
-            $arr[] = $article_id; // add new
-            $arr = array_unique($arr); // unique
-            $update_articles = implode(',', $arr);
-            $user['collect_article'] = $update_articles;
+            $action = $post_data['action'];
+
             $result['status'] = 'success';
             $result['message'] = '';
             try {
+                $user = $this->user->get_user_by_name($username);
+                $collect_articles = $user['collect_article'];
+                $arr = $collect_articles ? json_decode($collect_articles, true) : []; // old collect
+                if ($action == 1){
+                    //collect
+                    if (array_search($article_id, $arr) == false){
+                        $arr[] = $article_id;
+                    }
+                } else if ($action == 0){
+                    //undo collect
+                    if ($index = array_search($article_id, $arr)){
+                        unset($arr[$index]);
+                    }
+                }
+                $update_articles = json_encode($arr);
+                $user['collect_article'] = $update_articles;
                 //更新收藏信息
                 $this->user->update_user($user);
             } catch(Exception $e){
@@ -169,24 +129,34 @@ class User extends MY_Controller {
     }
 
     /**
-     * 收藏媒体
+     * 关注媒体
      */
-    public function collect_media(){
+    public function focus_media(){
         if (METHOD == 'post'){
             $post_data = $this->input->post();
             $media_id = $post_data['media_id'];
             $username = $post_data['username'];
-            $user = $this->user->get_user_by_name($username);
-            $origin_collect = $user['collect_media'];
-            $arr = $origin_collect ? explode(',', $origin_collect) : []; // old collect
-            $arr[] = $media_id; // add new
-            $arr = array_unique($arr); // unique
-            $update_collect = implode(',', $arr);
-            $user['collect_media'] = $update_collect;
+            $action = $post_data['action'];
 
             $result['status'] = 'success';
             $result['message'] = '';
             try {
+                $user = $this->user->get_user_by_name($username);
+                $origin_collect = $user['collect_media'];
+                $arr = $origin_collect ? json_decode($origin_collect, true) : []; // old collect
+                if ($action == 1){
+                    //collect
+                    if (array_search($media_id, $arr) == false){
+                        $arr[] = $media_id;
+                    }
+                } else if ($action == 0){
+                    //undo collect
+                    if ($index = array_search($media_id, $arr)){
+                        unset($arr[$index]);
+                    }
+                }
+                $update_collect = json_encode($arr);
+                $user['collect_media'] = $update_collect;
                 //更新收藏信息
                 $this->user->update_user($user);
             } catch(Exception $e){
@@ -199,48 +169,26 @@ class User extends MY_Controller {
         }
     }
 
-    public function get_collect_media(){
-        if (METHOD == 'get') {
-            $get_data = $this->input->get();
-            $username = isset($get_data['username']) ? $get_data['username'] : null;
-            $user = $this->user->get_user_by_name($username);
-            if ($user){
-                $collect = $user['collect_media'];
-                $collect_arr = explode(',', $collect);
-                $this->load->model('mod_media', 'media');
-                $medias = [];
-                foreach($collect_arr as $c){
-                    $medias[] =  $this->media->get_by_id($c);
-                }
-                $result = $medias;
-            } else {
-                $result = [];
+    public function temp_store_string_to_json(){
+        return;
+        //取出users的collect media
+        $users = $this->user->get_all_user();
+        foreach($users as $user){
+            if ($user['collect_media']){
+                $string = $user['collect_media'];
+                $array = explode(',', $string);
+                $json_str = json_encode($array);
+                $user['collect_media'] = $json_str;
             }
-            $this->output->set_content_type('application/json');
-            $this->output->set_output(json_encode($result));
-        }
-    }
-
-    public function get_collect_article(){
-        if (METHOD == 'get') {
-            $get_data = $this->input->get();
-            $username = isset($get_data['username']) ? $get_data['username'] : null;
-            $user = $this->user->get_user_by_name($username);
-            if ($user){
-                $collect = $user['collect_article'];
-                $collect_arr = explode(',', $collect);
-                $this->load->model('mod_article', 'article');
-                $medias = [];
-                foreach($collect_arr as $c){
-                    $medias[] =  $this->article->get_by_id($c);
-                }
-                $result = $medias;
-            } else {
-                $result = [];
+            if ($user['collect_article']){
+                $string = $user['collect_article'];
+                $array = explode(',', $string);
+                $json_str = json_encode($array);
+                $user['collect_article'] = $json_str;
             }
-            $this->output->set_content_type('application/json');
-            $this->output->set_output(json_encode($result));
+            $this->user->update_user($user);
         }
+        echo "success\n";
     }
 
 }

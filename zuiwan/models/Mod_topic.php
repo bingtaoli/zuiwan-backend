@@ -17,12 +17,24 @@ class Mod_topic extends CI_Model
     }
 
     public function get_all_topic(){
+        $this->db->select('id, topic_name, topic_intro, topic_img');
         $result = $this->db->get('topic')->result_array();
         $this->_add_prefix($result);
         return $result;
     }
 
+    public function select_by_id($select, $id){
+        $this->db->select($select);
+        $result = $this->db->get_where('topic', ['id' => $id])->result_array();
+        $this->_add_prefix($result);
+        if ($result){
+            return $result[0];
+        }
+        return null;
+    }
+
     public function get_by_id($id){
+        $this->db->select('topic_name, topic_intro, topic_img');
         $result = $this->db->get_where('topic', ['id' => $id])->result_array();
         $this->_add_prefix($result);
         if ($result){

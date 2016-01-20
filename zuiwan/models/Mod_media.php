@@ -17,12 +17,24 @@ class Mod_media extends CI_Model {
     }
 
     public function get_all_media(){
+        $this->db->select('id, media_name, media_intro, media_avatar');
         $result = $this->db->get('media')->result_array();
         $this->_add_prefix($result);
         return $result;
     }
 
+    public function select_by_id($select, $id){
+        $this->db->select($select);
+        $result = $this->db->get_where('media', ['id' => $id])->result_array();
+        $this->_add_prefix($result);
+        if ($result){
+            return $result[0];
+        }
+        return null;
+    }
+
     public function get_by_id($id){
+        $this->db->select('media_name, media_intro, media_avatar');
         $result = $this->db->get_where('media', ['id' => $id])->result_array();
         $this->_add_prefix($result);
         if ($result){

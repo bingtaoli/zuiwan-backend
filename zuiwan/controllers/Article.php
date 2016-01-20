@@ -17,6 +17,8 @@ class Article extends MY_Controller
     {
         parent::__construct();
         $this->load->model('mod_article', 'article');
+        $this->load->model('mod_media', 'media');
+        $this->load->model('mod_topic', 'topic');
         if (MEMCACHED) {
             $this->memcached = new Memcached();
             $this->memcached->addServer('localhost', 11211);
@@ -79,6 +81,17 @@ class Article extends MY_Controller
         }
     }
 
+    public function get_recommend(){
+        $result = [];
+        $recommended = $this->article->get_recommended_articles();
+        $banner = $this->article->get_banner_articles();
+        $result['recommended'] = $recommended;
+        $result['banner'] = $banner;
+        header("Access-Control-Allow-Origin: *");
+        $this->output->set_content_type('application/json');
+        $this->output->set_output(json_encode($result));
+    }
+
     //后台管理分页
     public function get_page_article(){
         $get_data = $this->input->get();
@@ -100,6 +113,14 @@ class Article extends MY_Controller
             $get_data = $this->input->get();
             $id = $get_data['id'];
             $article = $this->article->get_by_id($id);
+            $article['is_focus'] = 0;
+            $media_id = $article['article_media'];
+            $topic_id = $article['article_topic'];
+            unset($article['article_media']);
+            unset($article['article_topic']);
+            $article['media'] = $this->media->select_by_id('id, media_name, media_avatar', $media_id);
+            $article['topic'] = $this->topic->select_by_id('id, topic_name, topic_intro, topic_img', $topic_id);
+            $article['topic']['article_count'] = $this->article->get_count_by_topic($article['topic']['id']);
             header("Access-Control-Allow-Origin: *");
             $result = $article;
             $this->output->set_content_type('application/json');
@@ -128,8 +149,8 @@ class Article extends MY_Controller
             $article_media = $post_data['article_media'];
             $article_intro = $post_data['article_intro'];
             $isUpdate = isset($post_data['is_update']) ? $post_data['is_update'] : null;
-            //时间格式 December 19, 2015
-            $create_time = date('F d, Y'); # December 09, 2015
+            //时间格式 2016-1-1 12:00:00
+            $create_time = date('Y-m-d H:m:s');
             //去除img包含的p标签
             $reg = "/<p>(<img.+?)<\/p>/";
             $replacement = '$1';
