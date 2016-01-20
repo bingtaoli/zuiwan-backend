@@ -1,78 +1,307 @@
+### 推荐页
 
+* GET  article/get_recommend  
 
-### 收藏文章
+结果:
 
-/user/collect_article
-
-post参数:
-
-* article_id
-* username
-
-返回:
-
-json: status, message
-
-### 收藏媒体
-
-user/collect_media
-
-post参数:
-
-* media_id
-* username
-
-返回:
-
-json: status, message
-
-### 获取文章
-
-**/article/get_article**
-
-* /get_article -> 返回所有文章
-* /get_article?type=1&id=1 -> 返回媒体id为1的所有文章
-* get_article?type=2&id=1 -> 返回专题id为1的所有文章
-
-**/article/get_one_article**
-
-* get_one_article?id=1 -> 返回文章id为1的某篇文章
-
-返回的json数组每一项都有多个字段:
-
-* article_media: 媒体id
-* article_topic: 话题id
-* article_media_name: 媒体名称
-* article_topic_name: 话题名称
-
-### 获取媒体列表
-
-/media/get_media
-
-获取所有媒体，包括媒体大图
+```
+{
+	'banner': [
+		{
+			'id': xxx,
+			'article_title': xxx,
+			'article_intro': xxx,
+			'article_media_name': xxx,
+			'article_topic_name': xxx,
+			'article_img': xxx,
+		},
+		{
+			//article 2
+		},
+		{
+			//article 3
+		},
+	],
+	'recommend': [
+		{
+			'id': xxx,
+			'article_title': xxx,
+			'article_media_name': xxx,
+			'article_topic_name': xxx,
+			'article_img': xxx,
+			'article_color': '#dddddd',
+		},
+		{
+			//...
+		}
+	]
+}
+```
 
 ### 获取专题
 
-**/topic/get_topic**
+**GET /topic/get_topic**
+
+结果：
+
+```
+[
+	{
+		'id': xxx,
+		'topic_name': xxx,
+		'topic_intro': xxx,
+		'article_count': int,
+		'topic_img': xxx,
+	}
+]
+```
 
 获取所有专题，包括大图
 
-**/topic/get_one_topic**
+**GET /topic/get_one_topic**
 
-* get_one_topic?id=1 返回topic id为1的专题信息
+请求:
 
-返回json每一项字段：
+```
+{
+	id: topic_id
+}
+```
 
-* article_count 该专题文章总数
+结果:
 
-### 获取用户收藏的媒体
+```
+{
+	'topic_name': xxx,
+	'topic_intro': xxx,
+	'article_count': int,
+	'topic_img': xxx,
+	'articles': [
+		{
+			'id': xxx,
+			'article_title': xxx,
+			'article_intro': xxx,
+			'article_media_name': xxx,
+			'article_topic_name': xxx,
+			'article_img': xxx,
+			'create_time': '2015-1-1 12:00:00',
+		},
+		{
+			//...
+		}
+	]
+}
+```
 
-/user/get_collect_media?username=123
+### 媒体列表
 
-获取用户名为123的所有收藏的媒体
+**GET /media/get_media**
 
-### 获取用户收藏的文章
+结果:
 
-/user/get_collect_article?username=123
+```
+[
+	{
+		'id': xxx,
+		'media_name': xxx,
+		'media_intro': xxx,
+		'media_avatar': xxx,
+	},
+	{
+		//...
+	}
+]
+```
 
-获取用户名为123的所有收藏的文章
+**GET /media/get\_one\_media**
+
+请求:
+
+```
+{
+	id: xxx,
+}
+```
+
+结果:
+
+```
+{
+	'media_name': xxx,
+	'media_avatar': xxx,
+	'media_intro': xxx,
+	'article_count': int,
+	'is_focus': 0, //default
+	'fans_num': int,
+	'articles': [
+		{
+			'id': xxx,
+			'article_title': xxx,
+			'article_media_name': xxx,
+			'article_topic_name': xxx,
+			'article_img': xxx,
+			'article_color': '#',
+		},
+		{
+			//...
+		}
+	]
+}
+```
+
+### 获取文章
+
+**GET /article/get_one_article**
+
+请求:
+
+```
+{
+	id: xxx,
+}
+```
+
+结果:
+
+```
+{
+	'article_img': xxx,
+	'create_time': xxx,
+	'article_title': xxx,
+	'article_author': xxx,
+	'article_content': xxx,
+	'is_focus': 0,
+	'media': {
+		'id': int,
+		'media_avatar': xxx,
+		'media_name': xxx,
+	},
+	'topic'	: {
+		'id': int,
+		'topic_name': xxx,
+		'topic_intro': xxx,
+		'topic_img': xxx,
+		'article_count': int,
+	}
+}
+```
+
+### 收藏或取消收藏文章
+
+**POST /user/collect_article**
+
+参数:
+
+```
+{
+	article_id: xxx,
+	action: 0 or 1, (0:取消， 1:收藏)
+}
+```
+
+结果:
+
+```
+{
+	status: 0 or 1, (int, 0: success, 1: error),
+	message: 'xxxxx',
+}
+```
+
+### 关注或取消关注媒体
+
+**POST /user/focus_media**
+
+请求:
+
+```
+{
+	media_id: xxx,
+	action: 0 or 1, (0:取消， 1:关注)
+}
+```
+
+结果:
+
+```
+{
+	status: 0 or 1, (int, 0: success, 1: error),
+	message: 'xxxxx',
+}
+```
+
+### 登陆
+
+**POST /user/login**
+
+请求:
+
+```
+{
+	username: xxx,
+	password: xxx, (加密过后)
+}
+```
+
+结果:
+
+```
+{
+	status: 0 or 1, (int, 0: success, 1: error),
+	message: 'xxxxx',
+}
+```
+
+### 注册
+
+请求:
+
+```
+{
+	username: xxx,
+	password: xxx, (加密过后)
+}
+```
+
+结果:
+
+```
+{
+	status: 0 or 1, (int, 0: success, 1: error),
+	message: 'xxxxx',
+}
+```
+
+### 账户信息
+
+**GET /user/get_detail**
+
+不需要参数，使用cookie
+
+结果:
+
+```
+{
+	user_avatar: xxx,
+	username: xxx,
+	medias: [
+		{
+			'id': int,
+			'media_name': xxx,
+			'media_avatar': xxx,
+		},
+		//...
+	],
+	articles: [
+		{
+			'id': xxx,
+			'article_title': xxx,
+			'article_media_name': xxx,
+			'article_topic_name': xxx,
+			'article_img': xxx,
+			'article_color': '#dddddd',
+		},
+		//...
+	]
+}
+```
