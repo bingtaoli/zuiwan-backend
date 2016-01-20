@@ -255,13 +255,11 @@ class Article extends MY_Controller
                 $post_data = $this->input->post();
                 $article_id = $post_data['id'];
                 $this->article->del_article($article_id);
-                if (MEMCACHED){
-                    @$this->memcached->delete("articles");
-                }
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
                 $result['status'] = 'error';
             }
+            header("Access-Control-Allow-Origin: *");
             $this->output->set_content_type('application/json');
             $this->output->set_output(json_encode($result));
         }
