@@ -7,7 +7,7 @@ class MY_Controller extends CI_Controller{
     var $zw_client;
 
     public function __construct(){
-        error_reporting(10);
+        error_reporting(0);
         parent::__construct();
 //        if ($username = $this->zw_client->get_session_client()){
 //            $this->username = $username;
