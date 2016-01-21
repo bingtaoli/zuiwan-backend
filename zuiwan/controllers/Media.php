@@ -8,22 +8,15 @@
 
 class Media extends MY_Controller
 {
-
-    var $article;
-    var $media;
-    var $output;
     var $config;  // in config/config.php
 
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('mod_article', 'article');
-        $this->load->model('mod_media', 'media');
-        $this->load->model('mod_user', 'user');
     }
 
     public function get_media(){
-        $media = $this->media->get_all_media();
+        $media = $this->media->select_all('id, media_name, media_intro, media_avatar');
         header("Access-Control-Allow-Origin: *");
         $this->output->set_content_type('application/json');
         $this->output->set_output(json_encode($media));
@@ -63,7 +56,7 @@ class Media extends MY_Controller
                     if(move_uploaded_file($_FILES['avatar']['tmp_name'], $file_host))
                     {
                         //把以前的图片删除
-                        $media = $this->media->get_media_by_name($media_name);
+                        $media = $this->media->select_by_name('media_avatar', $media_name);
                         $origin = $media['media_avatar'];
                         $origin_pos = STATIC_PATH . $this->config->config['img_dir'] . "/" . $origin;
                         if (file_exists($origin_pos) && $origin != 'default_media_avatar.png'){

@@ -16,8 +16,8 @@ class Mod_topic extends CI_Model
         add_img_prefix($result, 'topic_detail_back');
     }
 
-    public function get_all_topic(){
-        $this->db->select('id, topic_name, topic_intro, topic_img');
+    public function select_all($select){
+        $this->db->select($select);
         $result = $this->db->get('topic')->result_array();
         $this->_add_prefix($result);
         return $result;

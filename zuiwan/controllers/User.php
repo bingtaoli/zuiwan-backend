@@ -10,10 +10,6 @@ class User extends MY_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('mod_user', 'user');
-        $this->load->model('mod_media', 'media');
-        $this->load->model('mod_article', 'article');
-        $this->load->model('mod_topic', 'topic');
     }
 
     /**
@@ -68,7 +64,7 @@ class User extends MY_Controller {
                 //不返回用户信息
             ];
             try {
-                $user = $this->user->get_user_by_name_password($username, $password);
+                $user = $this->user->get_by_name_password($username, $password);
                 if ($user){
                     $result['message'] = '登陆成功';
                     $this->zw_client->login($username, 1);
@@ -92,7 +88,7 @@ class User extends MY_Controller {
         if (!$username){
             return;
         }
-        $user = $this->user->select_user_by_name('username, user_avatar, collect_media, collect_article', $username);
+        $user = $this->user->select_by_name('username, user_avatar, collect_media, collect_article', $username);
         //medias
         $collect_media = $user['collect_media'];
         unset($user['collect_media']);
@@ -132,7 +128,7 @@ class User extends MY_Controller {
             $result['status'] = 'success';
             $result['message'] = '';
             try {
-                $user = $this->user->select_user_by_name('collect_article', $username);
+                $user = $this->user->select_by_name('collect_article', $username);
                 $collect_articles = $user['collect_article'];
                 $arr = $collect_articles ? json_decode($collect_articles, true) : []; // old collect
                 if ($action == 1){
@@ -173,7 +169,7 @@ class User extends MY_Controller {
             $result['status'] = 'success';
             $result['message'] = '';
             try {
-                $user = $this->user->select_user_by_name('collect_media', $username);
+                $user = $this->user->select_by_name('collect_media', $username);
                 $origin_collect = $user['collect_media'];
                 $arr = $origin_collect ? json_decode($origin_collect, true) : []; // old collect
                 if ($action == 1){

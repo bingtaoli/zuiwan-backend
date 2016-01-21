@@ -1,14 +1,31 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+/**
+ * Class MY_Controller
+ * @property CI_DB $db
+ * @property CI_Model $model
+ * @property CI_Input $input
+ * @property CI_Output $output
+ * @property Mod_article $article
+ * @property Mod_media $media
+ * @property Mod_topic $topic
+ * @property Mod_user $user
+ * @property ZW_client $zw_client
+ */
 class MY_Controller extends CI_Controller{
 
     var $cfg = null;
     var $dict = null;
-    var $zw_client;
 
     public function __construct(){
         error_reporting(0);
         parent::__construct();
+        //load module, singleModule
+        $this->load->model('mod_article', 'article');
+        $this->load->model('mod_media', 'media');
+        $this->load->model('mod_topic', 'topic');
+        $this->load->model('mod_topic', 'user');
+
         if ($username = $this->zw_client->get_session_client()){
             $this->username = $username;
         } else {

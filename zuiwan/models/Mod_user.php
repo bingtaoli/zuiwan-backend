@@ -50,7 +50,7 @@ class Mod_user extends CI_Model {
         return $this->db->get('user')->result_array();
     }
 
-    public function select_user_by_name($select, $username){
+    public function select_by_name($select, $username){
         $this->db->select($select);
         $this->db->where('username', $username);
         $result = $this->db->get('user')->result_array();
@@ -62,7 +62,7 @@ class Mod_user extends CI_Model {
         }
     }
 
-    public function get_user_by_name_password($username, $password){
+    public function get_by_name_password($username, $password){
         $result =  $this->db->get_where('user', ['username' => $username, 'password' => $password])->result_array();
         if ($result){
             return $result[0];

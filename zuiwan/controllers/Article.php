@@ -8,17 +8,12 @@
 
 class Article extends MY_Controller
 {
-
-    var $article;
     var $config;
     var $memcached;
 
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('mod_article', 'article');
-        $this->load->model('mod_media', 'media');
-        $this->load->model('mod_topic', 'topic');
         if (MEMCACHED) {
             $this->memcached = new Memcached();
             $this->memcached->addServer('localhost', 11211);

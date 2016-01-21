@@ -16,8 +16,8 @@ class Mod_media extends CI_Model {
         add_img_prefix($result, 'media_detail_back');
     }
 
-    public function get_all_media(){
-        $this->db->select('id, media_name, media_intro, media_avatar');
+    public function select_all($select){
+        $this->db->select($select);
         $result = $this->db->get('media')->result_array();
         $this->_add_prefix($result);
         return $result;
@@ -33,7 +33,8 @@ class Mod_media extends CI_Model {
         return null;
     }
 
-    public function get_media_by_name($name){
+    public function select_by_name($select, $name){
+        $this->db->select($select);
         $result = $this->db->get_where('media', ['media_name' => $name])->result_array();
         $this->_add_prefix($result);
         if ($result){

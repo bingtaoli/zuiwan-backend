@@ -8,21 +8,15 @@
  */
 class Topic extends MY_Controller
 {
-    var $input;
-    var $article;
-    var $type;
-    var $output;
     var $config;
 
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('mod_article', 'article');
-        $this->load->model('mod_topic', 'topic');
     }
 
     public function get_topic(){
-        $topic = $this->topic->get_all_topic();
+        $topic = $this->topic->select_all('id, topic_name, topic_intro, topic_img');
         //获取每个专题文章总数
         foreach($topic as &$t){
             $t['article_count'] = $this->article->get_count_by_topic($t['id']);

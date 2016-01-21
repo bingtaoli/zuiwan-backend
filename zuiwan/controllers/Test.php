@@ -12,14 +12,9 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 class Test extends MY_Controller
 {
 
-    var $user;
-    var $article;
-
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('mod_user', 'user');
-        $this->load->model('mod_article', 'article');
     }
 
     public function test_add_user(){
