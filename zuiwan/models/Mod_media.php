@@ -33,16 +33,6 @@ class Mod_media extends CI_Model {
         return null;
     }
 
-    public function get_by_id($id){
-        $this->db->select('media_name, media_intro, media_avatar');
-        $result = $this->db->get_where('media', ['id' => $id])->result_array();
-        $this->_add_prefix($result);
-        if ($result){
-            return $result[0];
-        }
-        return null;
-    }
-
     public function get_media_by_name($name){
         $result = $this->db->get_where('media', ['media_name' => $name])->result_array();
         $this->_add_prefix($result);
@@ -65,6 +55,21 @@ class Mod_media extends CI_Model {
         $this->db->where('media_name', $media_name);
         $this->db->set('media_avatar', $avatar_name);
         $this->db->update('media');
+    }
+
+    public function get_media_fans($media_id){
+        $this->db->select('id, collect_media');
+        $result = $this->db->get('user')->result_array();
+        $num = 0;
+        foreach($result as $r){
+            if ($r['collect_media']){
+                $arr = json_decode($r['collect_media'], true);
+                if (in_array($media_id, $arr)){
+                    $num++;
+                }
+            }
+        }
+        return $num;
     }
 
 }

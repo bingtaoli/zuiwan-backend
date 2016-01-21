@@ -78,8 +78,8 @@ class Mod_article extends CI_Model
         return $result;
     }
 
-    public function get_by_id($id){
-        $this->db->select('article_img, create_time, article_title, article_author, article_media, article_topic, article_content');
+    public function select_by_id($select, $id){
+        $this->db->select($select);
         $result = $this->db->get_where('article', ['id' => $id])->result_array();
         $this->_add_prefix($result);
         if ($result){

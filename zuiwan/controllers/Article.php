@@ -112,7 +112,8 @@ class Article extends MY_Controller
         if (METHOD == 'get'){
             $get_data = $this->input->get();
             $id = $get_data['id'];
-            $article = $this->article->get_by_id($id);
+            $select = 'article_img, create_time, article_title, article_author, article_media, article_topic, article_content';
+            $article = $this->article->select_by_id($select, $id);
             $article['is_focus'] = 0;
             $media_id = $article['article_media'];
             $topic_id = $article['article_topic'];
@@ -168,8 +169,8 @@ class Article extends MY_Controller
                 //获取topic name && media name
                 $this->load->model('mod_topic', 'topic');
                 $this->load->model('mod_media', 'media');
-                $media = $this->media->get_by_id($article_media);
-                $topic = $this->topic->get_by_id($article_topic);
+                $media = $this->media->select_by_id('media_name, media_intro, media_avatar', $article_media);
+                $topic = $this->topic->select_by_id('topic_name, topic_intro, topic_img', $article_topic);
                 $data['article_media_name'] = $media['media_name'];
                 $data['article_topic_name'] = $topic['topic_name'];
                 if (!$isUpdate){
@@ -225,7 +226,8 @@ class Article extends MY_Controller
                         throw new Exception("文章大图上传失败");
                     }
                     //更新数据库
-                    $article = $this->article->get_by_id($id);
+                    $select = 'article_img';
+                    $article = $this->article->select_by_id($select, $id);
                     $originImg = $article['article_img'];
                     $article['article_img'] = $store_file_name;
                     $this->article->update_article($article);

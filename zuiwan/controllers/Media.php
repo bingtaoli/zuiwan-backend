@@ -32,11 +32,11 @@ class Media extends MY_Controller
     public function get_one_media(){
         $get_data = $this->input->get();
         $id = $get_data['id'];
-        $media = $this->media->get_by_id($id);
+        $media = $this->media->select_by_id('media_name, media_intro, media_avatar', $id);
         // is_focus
         $media['is_focus'] = 1;
         //fans_num
-        $media['fans_num'] = $this->user->get_media_fans($id);
+        $media['fans_num'] = $this->media->get_media_fans($id);
         //articles
         $media['articles'] = $this->article->get_by_media($id);
         header("Access-Control-Allow-Origin: *");

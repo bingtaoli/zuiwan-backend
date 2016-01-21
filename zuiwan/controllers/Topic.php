@@ -36,7 +36,7 @@ class Topic extends MY_Controller
         if (METHOD == 'get') {
             $get_data = $this->input->get();
             $id = $get_data['id'];
-            $topic = $this->topic->get_by_id($id);
+            $topic = $this->topic->select_by_id('topic_name, topic_intro, topic_img', $id);
             //设置文章count
             $topic['article_count'] = $this->article->get_count_by_topic($id);
             $topic['articles'] = $this->article->get_by_topic($id);

@@ -15,6 +15,10 @@ class Mod_user extends CI_Model {
         parent::__construct();
     }
 
+    private function _add_prefix(&$result){
+        add_img_prefix($result, 'user_avatar');
+    }
+
     /**
      * @param $data Array
      * @throws
@@ -46,9 +50,11 @@ class Mod_user extends CI_Model {
         return $this->db->get('user')->result_array();
     }
 
-    public function get_user_by_name($username){
+    public function select_user_by_name($select, $username){
+        $this->db->select($select);
         $this->db->where('username', $username);
         $result = $this->db->get('user')->result_array();
+        $this->_add_prefix($result);
         if ($result){
             return $result[0];
         } else {
@@ -63,20 +69,5 @@ class Mod_user extends CI_Model {
         } else {
             return NULL;
         }
-    }
-
-    public function get_media_fans($media_id){
-        $this->db->select('id, collect_media');
-        $result = $this->db->get('user')->result_array();
-        $num = 0;
-        foreach($result as $r){
-            if ($r['collect_media']){
-                $arr = json_decode($r['collect_media'], true);
-                if (in_array($media_id, $arr)){
-                    $num++;
-                }
-            }
-        }
-        return $num;
     }
 }

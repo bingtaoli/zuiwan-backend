@@ -28,7 +28,7 @@ class User extends MY_Controller {
             $result = [
                 'status' => 'success',
                 'message' => $s,
-                'user_detail' => '',  #登录成功后用户具体信息
+                //不返回用户信息
             ];
             try {
                 $data = [
@@ -65,7 +65,7 @@ class User extends MY_Controller {
             $result = [
                 'status' => 'success',
                 'message' => '',
-                'user_detail' => '',  #登录成功后用户具体信息
+                //不返回用户信息
             ];
             try {
                 $user = $this->user->get_user_by_name_password($username, $password);
@@ -87,6 +87,38 @@ class User extends MY_Controller {
         }
     }
 
+    public function get_detail(){
+        $username = $this->username;
+        if (!$username){
+            return;
+        }
+        $user = $this->user->select_user_by_name('username, user_avatar, collect_media, collect_article', $username);
+        //medias
+        $collect_media = $user['collect_media'];
+        unset($user['collect_media']);
+        if ($collect_media){
+            $arr = json_decode($collect_media, true);
+            foreach($arr as $a){
+                $media = $this->media->select_by_id('id, media_name, media_avatar', $a);
+                $user['medias'][] = $media;
+            }
+        }
+        //articles
+        $collect_article = $user['collect_article'];
+        unset($user['collect_article']);
+        if ($collect_article){
+            $arr = json_decode($collect_article, true);
+            foreach($arr as $a){
+                $select = 'id, article_title, article_media_name, article_topic_name, article_img, article_color';
+                $article = $this->article->select_by_id($select, $a);
+                $user['articles'][] = $article;
+            }
+        }
+        header("Access-Control-Allow-Origin: *");
+        $this->output->set_content_type('application/json');
+        $this->output->set_output(json_encode($user));
+    }
+
     /**
      * 收藏文章
      */
@@ -100,7 +132,7 @@ class User extends MY_Controller {
             $result['status'] = 'success';
             $result['message'] = '';
             try {
-                $user = $this->user->get_user_by_name($username);
+                $user = $this->user->select_user_by_name('collect_article', $username);
                 $collect_articles = $user['collect_article'];
                 $arr = $collect_articles ? json_decode($collect_articles, true) : []; // old collect
                 if ($action == 1){
@@ -141,7 +173,7 @@ class User extends MY_Controller {
             $result['status'] = 'success';
             $result['message'] = '';
             try {
-                $user = $this->user->get_user_by_name($username);
+                $user = $this->user->select_user_by_name('collect_media', $username);
                 $origin_collect = $user['collect_media'];
                 $arr = $origin_collect ? json_decode($origin_collect, true) : []; // old collect
                 if ($action == 1){
@@ -169,26 +201,28 @@ class User extends MY_Controller {
         }
     }
 
-    public function temp_store_string_to_json(){
-        return;
-        //取出users的collect media
-        $users = $this->user->get_all_user();
-        foreach($users as $user){
-            if ($user['collect_media']){
-                $string = $user['collect_media'];
-                $array = explode(',', $string);
-                $json_str = json_encode($array);
-                $user['collect_media'] = $json_str;
+    public function temp_store_string_to_json()
+    {
+        if (0) {
+            //取出users的collect media
+            $users = $this->user->get_all_user();
+            foreach ($users as $user) {
+                if ($user['collect_media']) {
+                    $string = $user['collect_media'];
+                    $array = explode(',', $string);
+                    $json_str = json_encode($array);
+                    $user['collect_media'] = $json_str;
+                }
+                if ($user['collect_article']) {
+                    $string = $user['collect_article'];
+                    $array = explode(',', $string);
+                    $json_str = json_encode($array);
+                    $user['collect_article'] = $json_str;
+                }
+                $this->user->update_user($user);
             }
-            if ($user['collect_article']){
-                $string = $user['collect_article'];
-                $array = explode(',', $string);
-                $json_str = json_encode($array);
-                $user['collect_article'] = $json_str;
-            }
-            $this->user->update_user($user);
+            echo "success\n";
         }
-        echo "success\n";
     }
 
 }
