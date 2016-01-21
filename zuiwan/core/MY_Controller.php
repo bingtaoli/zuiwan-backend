@@ -17,6 +17,8 @@ class MY_Controller extends CI_Controller{
     var $cfg = null;
     var $dict = null;
 
+    var $user;
+
     public function __construct(){
         error_reporting(0);
         parent::__construct();
@@ -24,8 +26,8 @@ class MY_Controller extends CI_Controller{
         $this->load->model('mod_article', 'article');
         $this->load->model('mod_media', 'media');
         $this->load->model('mod_topic', 'topic');
-        $this->load->model('mod_topic', 'user');
-
+        $this->load->model('mod_user', 'user');
+        
         if ($username = $this->zw_client->get_session_client()){
             $this->username = $username;
         } else {
