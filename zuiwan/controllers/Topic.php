@@ -31,9 +31,11 @@ class Topic extends MY_Controller
             $get_data = $this->input->get();
             $id = $get_data['id'];
             $topic = $this->topic->select_by_id('topic_name, topic_intro, topic_img', $id);
-            //设置文章count
-            $topic['article_count'] = $this->article->get_count_by_topic($id);
-            $topic['articles'] = $this->article->get_by_topic($id);
+            if (!empty($topic)){
+                //设置文章count
+                $topic['article_count'] = $this->article->get_count_by_topic($id);
+                $topic['articles'] = $this->article->get_by_topic($id);
+            }
             header("Access-Control-Allow-Origin: *");
             $result = $topic;
             $this->output->set_content_type('application/json');

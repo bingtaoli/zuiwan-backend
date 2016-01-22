@@ -26,12 +26,19 @@ class Media extends MY_Controller
         $get_data = $this->input->get();
         $id = $get_data['id'];
         $media = $this->media->select_by_id('media_name, media_intro, media_avatar', $id);
-        // is_focus
-        $media['is_focus'] = 1;
-        //fans_num
-        $media['fans_num'] = $this->media->get_media_fans($id);
-        //articles
-        $media['articles'] = $this->article->get_by_media($id);
+        if (!empty($media)){
+            // is_focus
+            $media['is_focus'] = 1;
+            //fans_num
+            $media['fans_num'] = $this->media->get_media_fans($id);
+            //articles
+            $articles = $this->article->get_by_media($id);
+            $media['articles'] = $articles;
+            //article count
+            if (!empty($articles)){
+                $media['article_count'] = count($articles);
+            }
+        }
         header("Access-Control-Allow-Origin: *");
         $this->output->set_content_type('application/json');
         $this->output->set_output(json_encode($media));

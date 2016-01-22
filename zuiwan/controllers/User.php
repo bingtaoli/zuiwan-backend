@@ -91,6 +91,7 @@ class User extends MY_Controller {
         //medias
         $collect_media = $user['collect_media'];
         unset($user['collect_media']);
+        $user['medias'] = [];
         if ($collect_media){
             $arr = json_decode($collect_media, true);
             foreach($arr as $a){
@@ -101,6 +102,7 @@ class User extends MY_Controller {
         //articles
         $collect_article = $user['collect_article'];
         unset($user['collect_article']);
+        $user['articles'] = [];
         if ($collect_article){
             $arr = json_decode($collect_article, true);
             foreach($arr as $a){
@@ -124,7 +126,7 @@ class User extends MY_Controller {
             $username = $post_data['username'];
             $action = $post_data['action'];
 
-            $result['status'] = 'success';
+            $result['status'] = 0;
             $result['message'] = '';
             try {
                 $user = $this->user->select_by_name('collect_article', $username);
@@ -147,7 +149,7 @@ class User extends MY_Controller {
                 $this->user->update_user($user);
             } catch(Exception $e){
                 $result['message'] = $e->getMessage();
-                $result['status'] = 'error';
+                $result['status'] = 1;
             }
             header("Access-Control-Allow-Origin: *");
             $this->output->set_content_type('application/json');
@@ -165,7 +167,7 @@ class User extends MY_Controller {
             $username = $post_data['username'];
             $action = $post_data['action'];
 
-            $result['status'] = 'success';
+            $result['status'] = 0;
             $result['message'] = '';
             try {
                 $user = $this->user->select_by_name('collect_media', $username);
@@ -188,7 +190,7 @@ class User extends MY_Controller {
                 $this->user->update_user($user);
             } catch(Exception $e){
                 $result['message'] = $e->getMessage();
-                $result['status'] = 'error';
+                $result['status'] = 1;
             }
             header("Access-Control-Allow-Origin: *");
             $this->output->set_content_type('application/json');

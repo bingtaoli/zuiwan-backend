@@ -55,6 +55,12 @@ class Mod_article extends CI_Model
         return $result;
     }
 
+    public function select_all($select){
+        $this->db->select($select);
+        $result = $this->db->get('article')->result_array();
+        return $result;
+    }
+
     public function get_recommended_articles(){
         $this->db->select('id, article_title, article_media_name, article_topic_name, article_img, article_color');
         $result = $this->db->get_where('article', ['is_recommended' => 1])->result_array();

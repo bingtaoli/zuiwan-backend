@@ -25,9 +25,19 @@ class Test extends MY_Controller
         $this->user->add_user($data);
     }
 
-    public function test_show_all_article(){
-        $data = $this->article->get_article();
-        var_dump($data);
+    public function temp_modify_time_format(){
+        if (0){
+            $articles = $this->article->select_all('id, create_time');
+            try {
+                foreach ($articles as $a){
+                    $unix = strtotime($a['create_time']);
+                    $a['create_time'] = date('Y-m-d H:m:s', $unix);
+                    $this->article->update_article($a);
+                }
+            } catch (Exception $e){
+                var_dump($e);
+            }
+        }
     }
 
 }

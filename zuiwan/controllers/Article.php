@@ -109,14 +109,16 @@ class Article extends MY_Controller
             $id = $get_data['id'];
             $select = 'article_img, create_time, article_title, article_author, article_media, article_topic, article_content';
             $article = $this->article->select_by_id($select, $id);
-            $article['is_focus'] = 0;
-            $media_id = $article['article_media'];
-            $topic_id = $article['article_topic'];
-            unset($article['article_media']);
-            unset($article['article_topic']);
-            $article['media'] = $this->media->select_by_id('id, media_name, media_avatar', $media_id);
-            $article['topic'] = $this->topic->select_by_id('id, topic_name, topic_intro, topic_img', $topic_id);
-            $article['topic']['article_count'] = $this->article->get_count_by_topic($article['topic']['id']);
+            if (!empty($article)){
+                $article['is_focus'] = 0;
+                $media_id = $article['article_media'];
+                $topic_id = $article['article_topic'];
+                unset($article['article_media']);
+                unset($article['article_topic']);
+                $article['media'] = $this->media->select_by_id('id, media_name, media_avatar', $media_id);
+                $article['topic'] = $this->topic->select_by_id('id, topic_name, topic_intro, topic_img', $topic_id);
+                $article['topic']['article_count'] = $this->article->get_count_by_topic($article['topic']['id']);
+            }
             header("Access-Control-Allow-Origin: *");
             $result = $article;
             $this->output->set_content_type('application/json');
