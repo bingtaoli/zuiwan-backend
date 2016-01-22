@@ -30,7 +30,7 @@ class User extends MY_Controller {
                     'username' => $username,
                     'password' => $password,
                     'create_time' => date("Y-m-d"),
-                    'identify' => 1,
+                    'user_avatar' => 'default_user_avatar.png',
                 ];
                 log_message('info', 'register user: ' . $username);
                 $this->user->add_user($data);
