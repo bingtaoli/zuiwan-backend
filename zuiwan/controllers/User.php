@@ -20,10 +20,9 @@ class User extends MY_Controller {
             $post_data = $this->input->post();
             $username = $post_data['username'];
             $password = $post_data['password'];
-            $s = var_export($post_data, true);
             $result = [
-                'status' => 'success',
-                'message' => $s,
+                'status' =>  0,
+                'message' => '',
                 //不返回用户信息
             ];
             try {
@@ -33,16 +32,16 @@ class User extends MY_Controller {
                     'create_time' => date("Y-m-d"),
                     'identify' => 1,
                 ];
-                log_message('info', 'register user: ' . $s);
+                log_message('info', 'register user: ' . $username);
                 $this->user->add_user($data);
             } catch (IdentifyException $e){
                 if ($e->getCode() == 0){
                     $result['message'] = '该用户已经注册';
-                    $result['status'] = 'error';
+                    $result['status'] = 1;
                 }
             } catch (Exception $e){
                 $result['message'] = '未知错误，请联系管理员';
-                $result['status'] = 'error';
+                $result['status'] = 1;
             }
             header("Access-Control-Allow-Origin: *");
             $this->output->set_content_type('application/json');
