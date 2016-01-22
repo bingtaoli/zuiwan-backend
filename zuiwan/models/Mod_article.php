@@ -55,6 +55,10 @@ class Mod_article extends CI_Model
         return $result;
     }
 
+    public function get_count(){
+        return $this->db->count_all_results('article');
+    }
+
     public function select_all($select){
         $this->db->select($select);
         $result = $this->db->get('article')->result_array();

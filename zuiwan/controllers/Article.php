@@ -76,6 +76,13 @@ class Article extends MY_Controller
         }
     }
 
+    public function get_article_count(){
+        $count = $this->article->get_count();
+        header("Access-Control-Allow-Origin: *");
+        $this->output->set_content_type('application/json');
+        $this->output->set_output(json_encode($count));
+    }
+
     public function get_recommend(){
         $result = [];
         $recommended = $this->article->get_recommended_articles();
