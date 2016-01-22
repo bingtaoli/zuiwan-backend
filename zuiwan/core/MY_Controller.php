@@ -25,7 +25,7 @@ class MY_Controller extends CI_Controller{
         $this->load->model('mod_media', 'media');
         $this->load->model('mod_topic', 'topic');
         $this->load->model('mod_user', 'user');
-        
+
         if ($username = $this->zw_client->get_session_client()){
             $this->username = $username;
         } else {

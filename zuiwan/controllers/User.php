@@ -59,7 +59,7 @@ class User extends MY_Controller {
             $username = $post_data['username'];
             $password = $post_data['password'];
             $result = [
-                'status' => 'success',
+                'status' => 1,
                 'message' => '',
                 //不返回用户信息
             ];
@@ -71,11 +71,11 @@ class User extends MY_Controller {
                     log_message('info', 'user logged in' . $username);
                 } else {
                     $result['message'] = '用户名或密码错误';
-                    $result['status'] = 'error';
+                    $result['status'] = 0;
                 }
             } catch (Exception $e){
                 $result['message'] = '未知错误，请联系管理员';
-                $result['status'] = 'error';
+                $result['status'] = 0;
             }
             header("Access-Control-Allow-Origin: *");
             $this->output->set_content_type('application/json');
