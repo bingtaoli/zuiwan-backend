@@ -80,7 +80,7 @@ class Article extends MY_Controller
         $result = [];
         $recommended = $this->article->get_recommended_articles();
         $banner = $this->article->get_banner_articles();
-        $result['recommended'] = $recommended;
+        $result['recommend'] = $recommended;
         $result['banner'] = $banner;
         header("Access-Control-Allow-Origin: *");
         $this->output->set_content_type('application/json');

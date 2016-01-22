@@ -17,8 +17,6 @@ class MY_Controller extends CI_Controller{
     var $cfg = null;
     var $dict = null;
 
-    var $user;
-
     public function __construct(){
         error_reporting(0);
         parent::__construct();
