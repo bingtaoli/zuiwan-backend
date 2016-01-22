@@ -41,7 +41,7 @@ class Mod_article extends CI_Model
 
     public function get_articles($type=null, $id=null){
         $this->db->select('id, article_title, article_intro, article_author, article_media, article_media_name,
-                          article_topic, article_topic_name, create_time, article_img, is_recommended');
+                          article_topic, article_topic_name, create_time, article_img, is_recommend');
         if ($type){
             if ($type == 1){
                 $result = $this->db->get_where('article', ['article_media' => $id])->result_array();
@@ -67,7 +67,7 @@ class Mod_article extends CI_Model
 
     public function get_recommended_articles(){
         $this->db->select('id, article_title, article_media_name, article_topic_name, article_img, article_color');
-        $result = $this->db->get_where('article', ['is_recommended' => 1])->result_array();
+        $result = $this->db->get_where('article', ['is_recommend' => 1])->result_array();
         $this->_add_prefix($result);
         return $result;
     }
@@ -81,7 +81,7 @@ class Mod_article extends CI_Model
 
     public function get_page_articles($index, $numberPerPage){
         $this->db->select('id, article_title, article_intro, article_author, article_media, article_media_name,
-                          article_topic, article_topic_name, create_time, article_img, is_recommended');
+                          article_topic, article_topic_name, create_time, article_img, is_recommend');
         $this->db->limit($numberPerPage, $index*$numberPerPage);
         $result = $this->db->get('article')->result_array();
         $this->_add_prefix($result);

@@ -168,6 +168,8 @@ class Article extends MY_Controller
                 'article_media'   =>  $article_media,
                 'create_time'     => $create_time,
                 'article_intro'   => $article_intro,
+                'is_recommend'   => $post_data['is_recommend'],
+                'is_banner'      => $post_data['is_banner'],
             ];
             try {
                 //获取topic name && media name
