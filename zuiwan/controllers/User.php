@@ -123,13 +123,13 @@ class User extends MY_Controller {
         if (METHOD == 'post'){
             $post_data = $this->input->post();
             $article_id = $post_data['article_id'];
-            $username = $post_data['username'];
             $action = $post_data['action'];
 
             $result['status'] = 1;
             $result['message'] = '';
             try {
-                $user = $this->user->select_by_name('collect_article, username', $username);
+                $this->judge_login();
+                $user = $this->user->select_by_name('collect_article, username', $this->username);
                 $collect_articles = $user['collect_article'];
                 $arr = $collect_articles ? json_decode($collect_articles, true) : []; // old collect
                 if ($action == 1){
@@ -164,13 +164,13 @@ class User extends MY_Controller {
         if (METHOD == 'post'){
             $post_data = $this->input->post();
             $media_id = $post_data['media_id'];
-            $username = $post_data['username'];
             $action = $post_data['action'];
 
             $result['status'] = 1;
             $result['message'] = '';
             try {
-                $user = $this->user->select_by_name('collect_media, username', $username);
+                $this->judge_login();
+                $user = $this->user->select_by_name('collect_media, username', $this->username);
                 $origin_collect = $user['collect_media'];
                 $arr = $origin_collect ? json_decode($origin_collect, true) : []; // old collect
                 if ($action == 1){
