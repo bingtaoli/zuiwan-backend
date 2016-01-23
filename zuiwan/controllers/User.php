@@ -12,6 +12,19 @@ class User extends MY_Controller {
         parent::__construct();
     }
 
+    public function test_hook(){
+        try {
+            $data = [
+                'username' => 'lixxxxxx',
+                'password' => 'li',
+                'create_time' => '2015-2-1 12:00:00',
+            ];
+            $this->insert_hook($data, "user");
+        } catch (Exception $e){
+            echo $e->getMessage();
+        }
+    }
+
     /**
      * 注册
      */
@@ -33,6 +46,7 @@ class User extends MY_Controller {
                     'user_avatar' => 'default_user_avatar.png',
                 ];
                 log_message('info', 'register user: ' . $username);
+                $this->insert_hook($data, "user");
                 $this->user->add_user($data);
             } catch (IdentifyException $e){
                 if ($e->getCode() == 0){

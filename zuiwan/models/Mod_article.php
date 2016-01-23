@@ -23,6 +23,7 @@ class Mod_article extends CI_Model
         } catch(Exception $e){
             throw new Exception($e);
         }
+        return $this->db->insert_id();
     }
 
     public function del_article($id){
@@ -116,6 +117,11 @@ class Mod_article extends CI_Model
     public function get_count_by_topic($topic_id){
         $this->db->where('article_topic', $topic_id);
         return $this->db->count_all_results('article');
+    }
+
+    public function get_columns(){
+        $result = $this->db->query('SHOW FULL COLUMNS FROM article')->result_array();
+        return $result;
     }
 
 }

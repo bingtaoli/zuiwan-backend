@@ -70,4 +70,10 @@ class Mod_user extends CI_Model {
             return NULL;
         }
     }
+
+    public function get_columns(){
+        $result = $this->db->query('SHOW FULL COLUMNS FROM user')->result_array();
+        return $result;
+    }
+
 }

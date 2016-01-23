@@ -40,4 +40,9 @@ class Test extends MY_Controller
         }
     }
 
+    public function get_article_table_columns(){
+        $cols = $this->user->get_columns();
+        var_dump($cols);
+    }
+
 }

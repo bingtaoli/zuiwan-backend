@@ -199,6 +199,10 @@ class Article extends MY_Controller
                 $data['article_media_name'] = $media['media_name'];
                 $data['article_topic_name'] = $topic['topic_name'];
                 if (!$isUpdate){
+                    //先存数据库,再存图片,图片不成功则删除数据
+                    $data['article_img'] = 'default_article_img.png';
+                    $this->insert_hook($data, "article");
+                    $id = $this->article->add_article($data);
                     //存文章大图
                     if(is_uploaded_file($_FILES['file']['tmp_name'])) {
                         $file_name = $_FILES['file']['name'];
@@ -207,11 +211,14 @@ class Article extends MY_Controller
                         $file_abs = $this->config->config["img_dir"] . "/" . $store_file_name;
                         $file_host = STATIC_PATH . $file_abs;
                         if (move_uploaded_file($_FILES['file']['tmp_name'], $file_host) == false) {
+                            //根据id删除数据库
+                            $this->article->del_article($id);
                             throw new Exception("文章大图上传失败");
                         }
                         $article_img = $store_file_name;
                         $data['article_img'] = $article_img;
-                        $this->article->add_article($data);
+                        $data['id'] = $id;
+                        $this->article->update_article($data);
                     }
                 } else {
                     //更新文章内容
