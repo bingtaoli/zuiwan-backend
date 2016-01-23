@@ -40,6 +40,12 @@ class MY_Controller extends CI_Controller{
         }
     }
 
+    public function judge_login(){
+        if (empty($this->username)){
+            throw new Exception("您尚未登陆");
+        }
+    }
+
     protected function _json($data,$code=1,$msg=null){
         $ret = array('code'=>$code,'msg'=>$msg,'data'=>$data);
         echo json_encode($ret);

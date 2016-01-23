@@ -21,7 +21,7 @@ class User extends MY_Controller {
             $username = $post_data['username'];
             $password = $post_data['password'];
             $result = [
-                'status' =>  0,
+                'status' =>  1,
                 'message' => '',
                 //不返回用户信息
             ];
@@ -37,11 +37,11 @@ class User extends MY_Controller {
             } catch (IdentifyException $e){
                 if ($e->getCode() == 0){
                     $result['message'] = '该用户已经注册';
-                    $result['status'] = 1;
+                    $result['status'] = 0;
                 }
             } catch (Exception $e){
                 $result['message'] = '未知错误，请联系管理员';
-                $result['status'] = 1;
+                $result['status'] = 0;
             }
             header("Access-Control-Allow-Origin: *");
             $this->output->set_content_type('application/json');
@@ -126,7 +126,7 @@ class User extends MY_Controller {
             $username = $post_data['username'];
             $action = $post_data['action'];
 
-            $result['status'] = 0;
+            $result['status'] = 1;
             $result['message'] = '';
             try {
                 $user = $this->user->select_by_name('collect_article', $username);
@@ -149,7 +149,7 @@ class User extends MY_Controller {
                 $this->user->update_user($user);
             } catch(Exception $e){
                 $result['message'] = $e->getMessage();
-                $result['status'] = 1;
+                $result['status'] = 0;
             }
             header("Access-Control-Allow-Origin: *");
             $this->output->set_content_type('application/json');
@@ -167,7 +167,7 @@ class User extends MY_Controller {
             $username = $post_data['username'];
             $action = $post_data['action'];
 
-            $result['status'] = 0;
+            $result['status'] = 1;
             $result['message'] = '';
             try {
                 $user = $this->user->select_by_name('collect_media', $username);
@@ -190,7 +190,7 @@ class User extends MY_Controller {
                 $this->user->update_user($user);
             } catch(Exception $e){
                 $result['message'] = $e->getMessage();
-                $result['status'] = 1;
+                $result['status'] = 0;
             }
             header("Access-Control-Allow-Origin: *");
             $this->output->set_content_type('application/json');
