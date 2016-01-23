@@ -203,7 +203,7 @@
 
 ```
 {
-	status: 0 or 1, (int, 0: success, 1: error),
+	status: 0 or 1, (int, 1: success, 0: error),
 	message: 'xxxxx',
 }
 ```
@@ -225,7 +225,7 @@
 
 ```
 {
-	status: 0 or 1, (int, 0: success, 1: error),
+	status: 0 or 1, (int, 1: success, 0: error),
 	message: 'xxxxx',
 }
 ```
@@ -247,7 +247,7 @@
 
 ```
 {
-	status: 0 or 1, (int, 0: success, 1: error),
+	status: 0 or 1, (int, 1: success, 0: error),
 	message: 'xxxxx',
 }
 ```
@@ -267,7 +267,7 @@
 
 ```
 {
-	status: 0 or 1, (int, 0: success, 1: error),
+	status: 0 or 1, (int, 1: success, 0: error),
 	message: 'xxxxx',
 }
 ```

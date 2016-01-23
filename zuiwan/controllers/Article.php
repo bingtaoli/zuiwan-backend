@@ -123,7 +123,7 @@ class Article extends MY_Controller
                     $user = $this->user->select_by_name('collect_article', $this->username);
                     $collect_article = $user['collect_article'];
                     $arr = json_decode($collect_article, true);
-                    if (in_array($id, $arr)){
+                    if (!empty($arr) && in_array($id, $arr)){
                         $article['is_focus'] = 1;
                     } else {
                         $article['is_focus'] = 0;
