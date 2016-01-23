@@ -149,6 +149,20 @@ class Article extends MY_Controller
         }
     }
 
+    public function admin_get_one_article(){
+        if (METHOD == 'get'){
+            $get_data = $this->input->get();
+            $id = $get_data['id'];
+            $select = 'article_img, create_time, article_title, article_intro, article_author, article_media, article_topic,
+                       article_content';
+            $article = $this->article->select_by_id($select, $id);
+            header("Access-Control-Allow-Origin: *");
+            $result = $article;
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
+        }
+    }
+
     public function test_get_article(){
         $this->get_article(1, "思存");
     }
@@ -163,12 +177,9 @@ class Article extends MY_Controller
             $result['status'] = 'success';
             $result['message'] = '';
             $post_data = $this->input->post();
-            $article_title = $post_data['article_title'];
-            $article_topic = $post_data['article_topic'];
             $article_content = $post_data['article_content'];
-            $article_author = $post_data['article_author'];
             $article_media = $post_data['article_media'];
-            $article_intro = $post_data['article_intro'];
+            $article_topic = $post_data['article_topic'];
             $isUpdate = isset($post_data['is_update']) ? $post_data['is_update'] : null;
             //时间格式 2016-1-1 12:00:00
             $create_time = date('Y-m-d H:m:s');
@@ -176,18 +187,8 @@ class Article extends MY_Controller
             $reg = "/<p>(<img.+?)<\/p>/";
             $replacement = '$1';
             $article_content = preg_replace($reg, $replacement, $article_content);
-            $data =[
-                'article_title'   => $article_title,
-                'article_topic'    => $article_topic,
-                'article_content' => $article_content,
-                'article_author'  => $article_author,
-                'article_media'   =>  $article_media,
-                'create_time'     => $create_time,
-                'article_intro'   => $article_intro,
-                'is_recommend'   => $post_data['is_recommend'],
-                'is_banner'      => $post_data['is_banner'],
-                'article_color'  => $post_data['article_color'],
-            ];
+            $post_data['article_content'] = $article_content;
+            $post_data['create_time'] = $create_time;
             try {
                 //获取topic name && media name
                 $this->load->model('mod_topic', 'topic');
@@ -197,6 +198,7 @@ class Article extends MY_Controller
                 $data['article_media_name'] = $media['media_name'];
                 $data['article_topic_name'] = $topic['topic_name'];
                 if (!$isUpdate){
+                    unset($post_data['is_update']);
                     //存文章大图
                     if(is_uploaded_file($_FILES['file']['tmp_name'])) {
                         $file_name = $_FILES['file']['name'];
