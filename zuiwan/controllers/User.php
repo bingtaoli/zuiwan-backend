@@ -134,12 +134,12 @@ class User extends MY_Controller {
                 $arr = $collect_articles ? json_decode($collect_articles, true) : []; // old collect
                 if ($action == 1){
                     //collect
-                    if (array_search($article_id, $arr) == false){
+                    if (array_search($article_id, $arr) === false){
                         $arr[] = $article_id;
                     }
                 } else if ($action == 0){
                     //undo collect
-                    if ($index = array_search($article_id, $arr)){
+                    if (($index = array_search($article_id, $arr)) !== false){
                         unset($arr[$index]);
                     }
                 }
@@ -175,12 +175,12 @@ class User extends MY_Controller {
                 $arr = $origin_collect ? json_decode($origin_collect, true) : []; // old collect
                 if ($action == 1){
                     //collect
-                    if (array_search($media_id, $arr) == false){
+                    if (array_search($media_id, $arr) === false){
                         $arr[] = $media_id;
                     }
                 } else if ($action == 0){
                     //undo collect
-                    if ($index = array_search($media_id, $arr)){
+                    if (($index = array_search($media_id, $arr)) !== false){
                         unset($arr[$index]);
                     }
                 }
