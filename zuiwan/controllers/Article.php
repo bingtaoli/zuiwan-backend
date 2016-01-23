@@ -153,7 +153,7 @@ class Article extends MY_Controller
         if (METHOD == 'get'){
             $get_data = $this->input->get();
             $id = $get_data['id'];
-            $select = 'article_img, create_time, article_title, article_intro, article_author, article_media, article_topic,
+            $select = 'id, article_img, create_time, article_title, article_intro, article_author, article_media, article_topic,
                        article_content';
             $article = $this->article->select_by_id($select, $id);
             header("Access-Control-Allow-Origin: *");
