@@ -209,8 +209,9 @@ class Article extends MY_Controller
                     //存文章大图
                     if(is_uploaded_file($_FILES['file']['tmp_name'])) {
                         $file_name = $_FILES['file']['name'];
-                        $file_type = pathinfo($file_name, PATHINFO_EXTENSION);
-                        $store_file_name = uniqid() . "." . $file_type;
+                        //$file_type = pathinfo($file_name, PATHINFO_EXTENSION);
+                        $date = date("YmdHms");
+                        $store_file_name = $date . $file_name;
                         $file_abs = $this->config->config["img_dir"] . "/" . $store_file_name;
                         $file_host = STATIC_PATH . $file_abs;
                         if (move_uploaded_file($_FILES['file']['tmp_name'], $file_host) == false) {
@@ -259,8 +260,10 @@ class Article extends MY_Controller
             try {
                 if(is_uploaded_file($_FILES['article_img']['tmp_name'])) {
                     $file_name = $_FILES['article_img']['name'];
-                    $file_type = pathinfo($file_name, PATHINFO_EXTENSION);
-                    $store_file_name = uniqid() . "." . $file_type;
+                    //$file_type = pathinfo($file_name, PATHINFO_EXTENSION);
+                    //$store_file_name = uniqid() . "." . $file_type;
+                    $date = date("YmdHms");
+                    $store_file_name = $date . $file_name;
                     $file_abs = $this->config->config["img_dir"] . "/" . $store_file_name;
                     $file_host = STATIC_PATH . $file_abs;
                     if (move_uploaded_file($_FILES['article_img']['tmp_name'], $file_host) == false) {
