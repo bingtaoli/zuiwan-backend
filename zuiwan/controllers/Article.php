@@ -199,7 +199,6 @@ class Article extends MY_Controller
                 $data['article_media_name'] = $media['media_name'];
                 $data['article_topic_name'] = $topic['topic_name'];
                 if (!$isUpdate){
-                    unset($post_data['is_update']);
                     //存文章大图
                     if(is_uploaded_file($_FILES['file']['tmp_name'])) {
                         $file_name = $_FILES['file']['name'];
@@ -216,6 +215,7 @@ class Article extends MY_Controller
                     }
                 } else {
                     //更新文章内容
+                    unset($data['is_update']);
                     if (!empty($data['id'])){
                         $this->article->update_article($data);
                     }
