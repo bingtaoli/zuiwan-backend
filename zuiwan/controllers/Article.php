@@ -189,6 +189,7 @@ class Article extends MY_Controller
             $article_content = preg_replace($reg, $replacement, $article_content);
             $post_data['article_content'] = $article_content;
             $post_data['create_time'] = $create_time;
+            $data = $post_data;
             try {
                 //获取topic name && media name
                 $this->load->model('mod_topic', 'topic');
@@ -215,8 +216,9 @@ class Article extends MY_Controller
                     }
                 } else {
                     //更新文章内容
-                    $data['id'] = $post_data['id'];
-                    $this->article->update_article($data);
+                    if (!empty($data['id'])){
+                        $this->article->update_article($data);
+                    }
                 }
                 if (MEMCACHED){
                     @$this->memcached->delete("articles");
