@@ -27,7 +27,7 @@ class Mod_user extends CI_Model {
         /**
          * 先判断user是否已经存在，如果存在则保存
          */
-        if ($this->get_user_by_name($data['username'])){
+        if ($this->select_by_name('id', $data['username'])){
             throw new IdentifyException("该用户应经存在", 0);
         }
         $this->db->insert('user', $data);
