@@ -129,7 +129,7 @@ class User extends MY_Controller {
             $result['status'] = 1;
             $result['message'] = '';
             try {
-                $user = $this->user->select_by_name('collect_article', $username);
+                $user = $this->user->select_by_name('collect_article, username', $username);
                 $collect_articles = $user['collect_article'];
                 $arr = $collect_articles ? json_decode($collect_articles, true) : []; // old collect
                 if ($action == 1){
@@ -170,7 +170,7 @@ class User extends MY_Controller {
             $result['status'] = 1;
             $result['message'] = '';
             try {
-                $user = $this->user->select_by_name('collect_media', $username);
+                $user = $this->user->select_by_name('collect_media, username', $username);
                 $origin_collect = $user['collect_media'];
                 $arr = $origin_collect ? json_decode($origin_collect, true) : []; // old collect
                 if ($action == 1){

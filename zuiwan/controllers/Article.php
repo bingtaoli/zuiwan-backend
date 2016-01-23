@@ -183,6 +183,7 @@ class Article extends MY_Controller
                 'article_intro'   => $article_intro,
                 'is_recommend'   => $post_data['is_recommend'],
                 'is_banner'      => $post_data['is_banner'],
+                'article_color'  => $post_data['article_color'],
             ];
             try {
                 //获取topic name && media name
