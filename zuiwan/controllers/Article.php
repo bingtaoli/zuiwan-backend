@@ -119,14 +119,15 @@ class Article extends MY_Controller
             $article = $this->article->select_by_id($select, $id);
             try {
                 if (!empty($article)){
-                    $this->judge_login();
-                    $user = $this->user->select_by_name('collect_article', $this->username);
-                    $collect_article = $user['collect_article'];
-                    $arr = json_decode($collect_article, true);
-                    if (!empty($arr) && in_array($id, $arr)){
-                        $article['is_focus'] = 1;
-                    } else {
-                        $article['is_focus'] = 0;
+                    $article['is_focus'] = 0;
+                    //如果登陆则判断is_focus是否为1
+                    if ($this->username) {
+                        $user = $this->user->select_by_name('collect_article', $this->username);
+                        $collect_article = $user['collect_article'];
+                        $arr = json_decode($collect_article, true);
+                        if (!empty($arr) && in_array($id, $arr)){
+                            $article['is_focus'] = 1;
+                        }
                     }
                     $media_id = $article['article_media'];
                     $topic_id = $article['article_topic'];
@@ -135,14 +136,16 @@ class Article extends MY_Controller
                     $article['media'] = $this->media->select_by_id('id, media_name, media_avatar', $media_id);
                     $article['topic'] = $this->topic->select_by_id('id, topic_name, topic_intro, topic_img', $topic_id);
                     $article['topic']['article_count'] = $this->article->get_count_by_topic($article['topic']['id']);
-                    header("Access-Control-Allow-Origin: *");
-                    $result = $article;
-                    $this->output->set_content_type('application/json');
-                    $this->output->set_output(json_encode($result));
                 }
             } catch (Exception $e){
-
+                $article = [];
+                $article['status'] = 0;
+                $article['error'] = $e->getMessage();
             }
+            header("Access-Control-Allow-Origin: *");
+            $result = $article;
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
         }
     }
 

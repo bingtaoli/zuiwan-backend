@@ -28,13 +28,14 @@ class Media extends MY_Controller
         $media = $this->media->select_by_id('media_name, media_intro, media_avatar', $id);
         if (!empty($media)){
             // is_focus
-            $user = $this->user->select_by_name('collect_media', $this->username);
-            $collect_media = $user['collect_media'];
-            $arr = json_decode($collect_media, true);
-            if (!empty($arr) && in_array($id, $arr)){
-                $media['is_focus'] = 1;
-            } else {
-                $media['is_focus'] = 0;
+            $media['is_focus'] = 0;
+            if (!empty($this->username)){
+                $user = $this->user->select_by_name('collect_media', $this->username);
+                $collect_media = $user['collect_media'];
+                $arr = json_decode($collect_media, true);
+                if (!empty($arr) && in_array($id, $arr)){
+                    $media['is_focus'] = 1;
+                }
             }
             //fans_num
             $media['fans_num'] = $this->media->get_media_fans($id);
