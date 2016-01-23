@@ -40,6 +40,64 @@ class MY_Controller extends CI_Controller{
         }
     }
 
+    /**
+     * @param $data
+     * @param $module
+     * @throws Exception
+     * 插入时检查data是否有效
+     * 现在只支持int varchar(xx)的检查,后续会完善.
+     */
+    public function insert_hook($data, $module){
+        $cols = $this->$module->get_columns();
+        $notNulls = [];
+        $fields = [];
+        foreach($cols as $col){
+            if ($col['Null'] == 'NO'){
+                $notNulls[] = $col['Field'];
+            }
+            $fieldName = $col['Field'];
+            $type = $col['Type'];
+            $reg_arr = [
+                "/(int)\((\d+)\)/",
+                "/(varchar)\((\d+)\)/",
+            ];
+            $fields[$fieldName] = [];
+            foreach ($reg_arr as $reg){
+                if (preg_match($reg, $type, $matches)){
+                    $fields[$fieldName]['type'] = $matches[1];
+                    $fields[$fieldName]['length'] = $matches[2];
+                }
+            }
+        }
+        //cols名称合法检查
+        foreach($data as $index => $value){
+            if (!isset($fields[$index])){
+                throw new Exception("unknown column " . $index . "  ");
+            }
+        }
+        foreach($notNulls as $index){
+            if (empty($data[$index]) && $index != 'id'){
+                throw new Exception($index  . " is null\t");
+            }
+        }
+        //Type合法检查,比如超长字符
+        foreach ($data as $index => $value){
+            if (isset($fields[$index]['type'])){
+                $type = $fields[$index]['type'];
+                if ($type == 'int'){
+                    if (!preg_match("/^[0-9]*$/", $value)){
+                        throw new Exception($index . " should be int, but format error");
+                    }
+                } else if ($type == 'varchar'){
+                    $length = strlen(utf8_decode($value));
+                    if ($length > $fields[$index]['length']){
+                        throw new Exception($index . "'s length is too long");
+                    }
+                }
+            }
+        }
+    }
+
     public function judge_login(){
         if (empty($this->username)){
             throw new Exception("您尚未登陆");
