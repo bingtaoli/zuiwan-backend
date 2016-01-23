@@ -11,6 +11,7 @@
  * @property Mod_topic $topic
  * @property Mod_user $user
  * @property ZW_client $zw_client
+ * @property Img_compress $img_compress
  */
 class MY_Controller extends CI_Controller{
 

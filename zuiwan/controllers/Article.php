@@ -190,6 +190,8 @@ class Article extends MY_Controller
             $post_data['article_content'] = $article_content;
             $post_data['create_time'] = $create_time;
             $data = $post_data;
+            $already_stored_in_db = false;
+            $id = -1;
             try {
                 //获取topic name && media name
                 $this->load->model('mod_topic', 'topic');
@@ -203,6 +205,7 @@ class Article extends MY_Controller
                     $data['article_img'] = 'default_article_img.png';
                     $this->insert_hook($data, "article");
                     $id = $this->article->add_article($data);
+                    $already_stored_in_db = true;
                     //存文章大图
                     if(is_uploaded_file($_FILES['file']['tmp_name'])) {
                         $file_name = $_FILES['file']['name'];
@@ -211,10 +214,13 @@ class Article extends MY_Controller
                         $file_abs = $this->config->config["img_dir"] . "/" . $store_file_name;
                         $file_host = STATIC_PATH . $file_abs;
                         if (move_uploaded_file($_FILES['file']['tmp_name'], $file_host) == false) {
-                            //根据id删除数据库
-                            $this->article->del_article($id);
                             throw new Exception("文章大图上传失败");
                         }
+                        $src = $file_host;
+                        $this->img_compress->set_img($src);
+                        $this->img_compress->set_size(400);
+                        //压缩覆盖原图
+                        $this->img_compress->save_img($file_host);
                         $article_img = $store_file_name;
                         $data['article_img'] = $article_img;
                         $data['id'] = $id;
@@ -230,10 +236,11 @@ class Article extends MY_Controller
                 if (MEMCACHED){
                     @$this->memcached->delete("articles");
                 }
-            } catch (IdentifyException $e){
-                $result['status'] = 'error';
-                $result['message'] = $e->getMessage();
             } catch (Exception $e){
+                //根据id删除数据库
+                if ($already_stored_in_db){
+                    $this->article->del_article($id);
+                }
                 $result['status'] = 'error';
                 $result['message'] = $e->getMessage();
             }
