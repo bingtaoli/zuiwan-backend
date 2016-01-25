@@ -19,6 +19,10 @@ class Mod_user extends CI_Model {
         add_img_prefix($result, 'user_avatar');
     }
 
+    public function get_count(){
+        return $this->db->count_all_results('user');
+    }
+
     /**
      * @param $data Array
      * @throws

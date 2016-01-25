@@ -30,4 +30,17 @@ class Admin extends MY_Controller
         }
         $this->load->view('admin_view', $data);
     }
+
+    //总访问量页面的信息
+    public function get_website_information(){
+        $article_count = $this->article->get_count();
+        $user_count = $this->user->get_count();
+        
+        $information['article_count'] = $article_count;
+        $information['user_count'] = $user_count;
+        header("Access-Control-Allow-Origin: *");
+        $this->output->set_content_type('application/json');
+        $this->output->set_output(json_encode($information));
+    }
+
 }
