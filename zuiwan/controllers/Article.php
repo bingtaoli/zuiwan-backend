@@ -76,13 +76,6 @@ class Article extends MY_Controller
         }
     }
 
-    public function get_article_count(){
-        $count = $this->article->get_count();
-        header("Access-Control-Allow-Origin: *");
-        $this->output->set_content_type('application/json');
-        $this->output->set_output(json_encode($count));
-    }
-
     public function get_recommend(){
         $result = [];
         $recommended = $this->article->get_recommended_articles();
@@ -95,6 +88,7 @@ class Article extends MY_Controller
     }
 
     //后台管理分页
+    //同时返回文章总数
     public function admin_get_page_article(){
         $get_data = $this->input->get();
         $numberPerPage = $get_data['numberPerPage'];
@@ -109,7 +103,9 @@ class Article extends MY_Controller
             $condition = null;
         }
         if ($numberPerPage && isset($index)){
-            $result = $this->article->get_page_articles($index, $numberPerPage, $condition);
+            list($count, $articles) = $this->article->get_page_articles($index, $numberPerPage, $condition);
+            $result['count'] = $count;
+            $result['articles'] = $articles;
         } else {
             $result = [];
             $result['error'] = "必须设定正确的索引和每页数目";
