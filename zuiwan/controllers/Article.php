@@ -95,12 +95,21 @@ class Article extends MY_Controller
     }
 
     //后台管理分页
-    public function get_page_article(){
+    public function admin_get_page_article(){
         $get_data = $this->input->get();
         $numberPerPage = $get_data['numberPerPage'];
         $index = $get_data['index'];
+        if (isset($get_data['is_recommend']) && isset($get_data['is_banner'])){
+            $condition = "is_recommend=" . $get_data['is_recommend'] . " and is_banner=" . $get_data['is_banner'];
+        } else if (isset($get_data['is_recommend'])){
+            $condition = "is_recommend=" . $get_data['is_recommend'];
+        } else if (isset($get_data['is_banner'])){
+            $condition = "is_banner=" . $get_data['is_banner'];
+        } else {
+            $condition = null;
+        }
         if ($numberPerPage && isset($index)){
-            $result = $this->article->get_page_articles($index, $numberPerPage);
+            $result = $this->article->get_page_articles($index, $numberPerPage, $condition);
         } else {
             $result = [];
             $result['error'] = "必须设定正确的索引和每页数目";

@@ -80,7 +80,10 @@ class Mod_article extends CI_Model
         return $result;
     }
 
-    public function get_page_articles($index, $numberPerPage){
+    public function get_page_articles($index, $numberPerPage, $condition){
+        if ($condition){
+            $this->db->where($condition);
+        }
         $this->db->select('id, article_title, article_intro, article_author, article_media, article_media_name,
                           article_topic, article_topic_name, create_time, article_img, is_recommend');
         $this->db->limit($numberPerPage, $index*$numberPerPage);
