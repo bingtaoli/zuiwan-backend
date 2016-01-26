@@ -50,27 +50,29 @@ class Topic extends MY_Controller
             if(is_uploaded_file($_FILES['avatar']['tmp_name']))
             {
                 $post_data = $this->input->post();
-                $topic_name = $post_data['topic_name'];
+                $topic_id = $post_data['id'];
 
                 //判断上传文件是否允许
-                $file_arr = pathinfo($_FILES['avatar']['name']);
-                $file_type = $file_arr["extension"];
-                $random_file_name = uniqid() . "." . $file_type;
-                $file_abs = $this->config->config["img_dir"] . "/" . $random_file_name;
+                $file_name = $_FILES['avatar']['name'];
+                $date = date("YmdHms");
+                $store_file_name = $date . $file_name;
+                $file_abs = $this->config->config["img_dir"] . "/" . $store_file_name;
                 $file_host = STATIC_PATH . $file_abs;
                 try {
                     if(move_uploaded_file($_FILES['avatar']['tmp_name'], $file_host))
                     {
                         //把以前的图片删除
-                        $topic = $this->topic->get_topic_by_name($topic_name);
+                        $select = 'id, topic_img';
+                        $topic = $this->topic->select_by_id($select, $topic_id);
                         $origin = $topic['topic_img'];
                         $origin_pos = STATIC_PATH . $this->config->config['img_dir'] . "/" . $origin;
                         if (file_exists($origin_pos) && $origin != 'default_topic_img.png'){
                             unlink($origin_pos);
                         }
+                        $topic['topic_img'] = $store_file_name;
                         //把topic的topic_img更新
-                        $this->topic->update_topic_img($topic_name, $random_file_name);
-                        $result['data'] = $random_file_name;
+                        $this->topic->update($topic);
+                        $result['data'] = $store_file_name;
                     }
                 } catch (Exception $e){
                     $result['status'] = 'error';

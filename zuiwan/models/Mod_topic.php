@@ -16,6 +16,15 @@ class Mod_topic extends CI_Model
         add_img_prefix($result, 'topic_detail_back');
     }
 
+    public function update($data){
+        try {
+            $this->db->where('id', $data['id']);
+            $this->db->update('topic', $data);
+        } catch (Exception $e){
+            throw new Exception($e);
+        }
+    }
+
     public function select_all($select, $add_prefix=1){
         $this->db->select($select);
         $result = $this->db->get('topic')->result_array();
@@ -37,17 +46,6 @@ class Mod_topic extends CI_Model
         return null;
     }
 
-    public function get_topic_by_name($name, $add_prefix=1){
-        $result = $this->db->get_where('topic', ['topic_name' => $name])->result_array();
-        if ($add_prefix == 1){
-            $this->_add_prefix($result);
-        }
-        if ($result){
-            return $result[0];
-        }
-        return null;
-    }
-
     public function add_topic($data){
         $this->db->insert('topic', $data);
         return $this->db->insert_id();
@@ -57,9 +55,4 @@ class Mod_topic extends CI_Model
         return $this->db->delete('topic', array('id' => $id));
     }
 
-    public function update_topic_img($topic_name, $img_name){
-        $this->db->where('topic_name', $topic_name);
-        $this->db->set('topic_img', $img_name);
-        $this->db->update('topic');
-    }
 }

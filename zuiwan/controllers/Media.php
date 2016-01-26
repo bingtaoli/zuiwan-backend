@@ -54,12 +54,11 @@ class Media extends MY_Controller
 
     public function set_media_avatar(){
         if (METHOD == 'post'){
-            $result['status'] = 'success';
-            $result['message'] = '';
+            $result['status'] = 0;
             if(is_uploaded_file($_FILES['avatar']['tmp_name']))
             {
                 $post_data = $this->input->post();
-                $media_name = $post_data['media_name'];
+                $media_id = $post_data['id'];
                 //判断上传文件是否允许
                 //$file_arr = pathinfo($_FILES['avatar']['name']);
                 //$file_type = $file_arr["extension"];
@@ -72,15 +71,19 @@ class Media extends MY_Controller
                     if(move_uploaded_file($_FILES['avatar']['tmp_name'], $file_host))
                     {
                         //把以前的图片删除
-                        $media = $this->media->select_by_name('media_avatar', $media_name, 0);
-                        $origin = $media['media_avatar'];
-                        $origin_pos = STATIC_PATH . $this->config->config['img_dir'] . "/" . $origin;
-                        if (file_exists($origin_pos) && $origin != 'default_media_avatar.png'){
-                            @unlink($origin_pos);
+                        $media = $this->media->select_by_id('id, media_avatar', $media_id, 0);
+                        if (!empty($media)){
+                            $origin = $media['media_avatar'];
+                            $origin_pos = STATIC_PATH . $this->config->config['img_dir'] . "/" . $origin;
+                            if (file_exists($origin_pos) && $origin != 'default_media_avatar.png'){
+                                @unlink($origin_pos);
+                            }
+                            //把media的media_avatar更新
+                            $media['media_avatar'] = $store_file_name;
+                            $this->media->update($media);
+                            $result['data'] = $store_file_name;
+                            $result['message'] = 'success';
                         }
-                        //把media的media_avatar更新
-                        $this->media->update_media_avatar($media_name, $store_file_name);
-                        $result['data'] = $store_file_name;
                     }
                 } catch (Exception $e){
                     $result['status'] = 'error';

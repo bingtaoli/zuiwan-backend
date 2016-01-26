@@ -16,6 +16,15 @@ class Mod_media extends CI_Model {
         add_img_prefix($result, 'media_detail_back');
     }
 
+    public function update($data){
+        try {
+            $this->db->where('id', $data['id']);
+            $this->db->update('media', $data);
+        } catch (Exception $e){
+            throw new Exception($e);
+        }
+    }
+
     public function select_all($select){
         $this->db->select($select);
         $result = $this->db->get('media')->result_array();
@@ -56,8 +65,8 @@ class Mod_media extends CI_Model {
         return $this->db->delete('media', array('id' => $id));
     }
 
-    public function update_media_avatar($media_name, $avatar_name){
-        $this->db->where('media_name', $media_name);
+    public function update_avatar($media_id, $avatar_name){
+        $this->db->where('id', $media_id);
         $this->db->set('media_avatar', $avatar_name);
         $this->db->update('media');
     }
