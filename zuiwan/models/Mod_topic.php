@@ -55,4 +55,9 @@ class Mod_topic extends CI_Model
         return $this->db->delete('topic', array('id' => $id));
     }
 
+    public function get_columns(){
+        $result = $this->db->query('SHOW FULL COLUMNS FROM topic')->result_array();
+        return $result;
+    }
+
 }

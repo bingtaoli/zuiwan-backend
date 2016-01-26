@@ -59,19 +59,19 @@ class Topic extends MY_Controller
         if (METHOD == 'post'){
             $result['status'] = 'success';
             $result['message'] = '';
-            if(is_uploaded_file($_FILES['avatar']['tmp_name']))
+            if(is_uploaded_file($_FILES['topic_img']['tmp_name']))
             {
                 $post_data = $this->input->post();
                 $topic_id = $post_data['id'];
 
                 //判断上传文件是否允许
-                $file_name = $_FILES['avatar']['name'];
+                $file_name = $_FILES['topic_img']['name'];
                 $date = date("YmdHms");
                 $store_file_name = $date . $file_name;
                 $file_abs = $this->config->config["img_dir"] . "/" . $store_file_name;
                 $file_host = STATIC_PATH . $file_abs;
                 try {
-                    if(move_uploaded_file($_FILES['avatar']['tmp_name'], $file_host))
+                    if(move_uploaded_file($_FILES['topic_img']['tmp_name'], $file_host))
                     {
                         //把以前的图片删除
                         $select = 'id, topic_img';
@@ -110,11 +110,11 @@ class Topic extends MY_Controller
                 'data'    => '',
             ];
             try {
-                //topic img
+                //topic topic_img
                 if(is_uploaded_file($_FILES['topic_img']['tmp_name'])) {
                     $file_name = $_FILES['topic_img']['name'];
-                    $file_type = pathinfo($file_name, PATHINFO_EXTENSION);
-                    $store_file_name = uniqid() . "." . $file_type;
+                    $date = date("YmdHms");
+                    $store_file_name = $date . $file_name;
                     $file_abs = $this->config->config["img_dir"] . "/" . $store_file_name;
                     $file_host = STATIC_PATH . $file_abs;
                     if (move_uploaded_file($_FILES['topic_img']['tmp_name'], $file_host) == false) {
@@ -122,8 +122,9 @@ class Topic extends MY_Controller
                     }
                     $data['topic_img'] = $store_file_name;
                 } else {
-                    throw new Exception("沒有上传头像");
+                    throw new Exception("沒有上传图片");
                 }
+                $this->insert_hook($data, "topic");
                 $id = $this->topic->add_topic($data);
                 $result['data'] = $id;
             } catch (Exception $e){
