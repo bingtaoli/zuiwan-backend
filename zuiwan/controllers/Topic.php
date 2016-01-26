@@ -43,6 +43,18 @@ class Topic extends MY_Controller
         }
     }
 
+    public function admin_get_one_topic(){
+        if (METHOD == 'get') {
+            $get_data = $this->input->get();
+            $id = $get_data['id'];
+            $topic = $this->topic->select_by_id('id, topic_name, topic_intro, topic_img', $id);
+            header("Access-Control-Allow-Origin: *");
+            $result = $topic;
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
+        }
+    }
+
     public function set_topic_img(){
         if (METHOD == 'post'){
             $result['status'] = 'success';

@@ -52,6 +52,15 @@ class Media extends MY_Controller
         $this->output->set_output(json_encode($media));
     }
 
+    public function admin_get_one_media(){
+        $get_data = $this->input->get();
+        $id = $get_data['id'];
+        $media = $this->media->select_by_id('id, media_name, media_intro, media_avatar', $id);
+        header("Access-Control-Allow-Origin: *");
+        $this->output->set_content_type('application/json');
+        $this->output->set_output(json_encode($media));
+    }
+
     public function set_media_avatar(){
         if (METHOD == 'post'){
             $result['status'] = 0;
