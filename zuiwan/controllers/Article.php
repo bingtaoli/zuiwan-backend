@@ -168,10 +168,6 @@ class Article extends MY_Controller
         }
     }
 
-    public function test_get_article(){
-        $this->get_article(1, "思存");
-    }
-
     //1. 添加文章
     //2. 更改文章
     public function add_article(){
@@ -276,7 +272,8 @@ class Article extends MY_Controller
                     }
                     //更新数据库
                     $select = 'article_img';
-                    $article = $this->article->select_by_id($select, $id);
+                    //不需要add_prefix
+                    $article = $this->article->select_by_id($select, $id, 0);
                     $originImg = $article['article_img'];
                     $article['article_img'] = $store_file_name;
                     $this->article->update_article($article);

@@ -45,4 +45,14 @@ class Test extends MY_Controller
         var_dump($cols);
     }
 
+    public function test(){
+        // nothing
+        if (METHOD == 'post'){
+            $result['status'] = 1;
+            header("Access-Control-Allow-Origin: *");
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
+        }
+    }
+
 }

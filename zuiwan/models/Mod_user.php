@@ -54,11 +54,13 @@ class Mod_user extends CI_Model {
         return $this->db->get('user')->result_array();
     }
 
-    public function select_by_name($select, $username){
+    public function select_by_name($select, $username, $add_prefix=1){
         $this->db->select($select);
         $this->db->where('username', $username);
         $result = $this->db->get('user')->result_array();
-        $this->_add_prefix($result);
+        if ($add_prefix == 1){
+            $this->_add_prefix($result);
+        }
         if ($result){
             return $result[0];
         } else {

@@ -23,20 +23,24 @@ class Mod_media extends CI_Model {
         return $result;
     }
 
-    public function select_by_id($select, $id){
+    public function select_by_id($select, $id, $add_prefix=1){
         $this->db->select($select);
         $result = $this->db->get_where('media', ['id' => $id])->result_array();
-        $this->_add_prefix($result);
+        if ($add_prefix == 1){
+            $this->_add_prefix($result);
+        }
         if ($result){
             return $result[0];
         }
         return null;
     }
 
-    public function select_by_name($select, $name){
+    public function select_by_name($select, $name, $add_prefix=1){
         $this->db->select($select);
         $result = $this->db->get_where('media', ['media_name' => $name])->result_array();
-        $this->_add_prefix($result);
+        if ($add_prefix == 1){
+            $this->_add_prefix($result);
+        }
         if ($result){
             return $result[0];
         }

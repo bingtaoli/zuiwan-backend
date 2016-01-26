@@ -60,26 +60,27 @@ class Media extends MY_Controller
             {
                 $post_data = $this->input->post();
                 $media_name = $post_data['media_name'];
-
                 //判断上传文件是否允许
-                $file_arr = pathinfo($_FILES['avatar']['name']);
-                $file_type = $file_arr["extension"];
-                $random_file_name = uniqid() . "." . $file_type;
-                $file_abs = $this->config->config["img_dir"] . "/" . $random_file_name;
+                //$file_arr = pathinfo($_FILES['avatar']['name']);
+                //$file_type = $file_arr["extension"];
+                $file_name = $_FILES['avatar']['name'];
+                $date = date("YmdHms");
+                $store_file_name = $date . $file_name;
+                $file_abs = $this->config->config["img_dir"] . "/" . $store_file_name;
                 $file_host = STATIC_PATH . $file_abs;
                 try {
                     if(move_uploaded_file($_FILES['avatar']['tmp_name'], $file_host))
                     {
                         //把以前的图片删除
-                        $media = $this->media->select_by_name('media_avatar', $media_name);
+                        $media = $this->media->select_by_name('media_avatar', $media_name, 0);
                         $origin = $media['media_avatar'];
                         $origin_pos = STATIC_PATH . $this->config->config['img_dir'] . "/" . $origin;
                         if (file_exists($origin_pos) && $origin != 'default_media_avatar.png'){
                             @unlink($origin_pos);
                         }
                         //把media的media_avatar更新
-                        $this->media->update_media_avatar($media_name, $random_file_name);
-                        $result['data'] = $random_file_name;
+                        $this->media->update_media_avatar($media_name, $store_file_name);
+                        $result['data'] = $store_file_name;
                     }
                 } catch (Exception $e){
                     $result['status'] = 'error';
@@ -138,6 +139,7 @@ class Media extends MY_Controller
                 $post_data = $this->input->post();
                 $id = $post_data['id'];
                 $this->media->del_media($id);
+                //todo 把该media下的所有文章都删除
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
                 $result['status'] = 'error';

@@ -16,26 +16,32 @@ class Mod_topic extends CI_Model
         add_img_prefix($result, 'topic_detail_back');
     }
 
-    public function select_all($select){
+    public function select_all($select, $add_prefix=1){
         $this->db->select($select);
         $result = $this->db->get('topic')->result_array();
-        $this->_add_prefix($result);
+        if ($add_prefix == 1){
+            $this->_add_prefix($result);
+        }
         return $result;
     }
 
-    public function select_by_id($select, $id){
+    public function select_by_id($select, $id, $add_prefix=1){
         $this->db->select($select);
         $result = $this->db->get_where('topic', ['id' => $id])->result_array();
-        $this->_add_prefix($result);
+        if ($add_prefix == 1){
+            $this->_add_prefix($result);
+        }
         if ($result){
             return $result[0];
         }
         return null;
     }
 
-    public function get_topic_by_name($name){
+    public function get_topic_by_name($name, $add_prefix=1){
         $result = $this->db->get_where('topic', ['topic_name' => $name])->result_array();
-        $this->_add_prefix($result);
+        if ($add_prefix == 1){
+            $this->_add_prefix($result);
+        }
         if ($result){
             return $result[0];
         }
