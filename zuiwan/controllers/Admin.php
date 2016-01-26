@@ -35,7 +35,7 @@ class Admin extends MY_Controller
     public function get_website_information(){
         $article_count = $this->article->get_count();
         $user_count = $this->user->get_count();
-        
+
         $information['article_count'] = $article_count;
         $information['user_count'] = $user_count;
         header("Access-Control-Allow-Origin: *");

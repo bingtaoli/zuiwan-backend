@@ -142,6 +142,7 @@ class Media extends MY_Controller
                 $result['message'] = $e->getMessage();
                 $result['status'] = 'error';
             }
+            header("Access-Control-Allow-Origin: *");
             $this->output->set_content_type('application/json');
             $this->output->set_output(json_encode($result));
         }
