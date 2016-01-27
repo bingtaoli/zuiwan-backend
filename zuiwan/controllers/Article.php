@@ -120,10 +120,15 @@ class Article extends MY_Controller
             $get_data = $this->input->get();
             $id = $get_data['id'];
             $select = 'article_img, create_time, article_title, article_author, article_media, article_topic,
-                       article_content';
+                       article_content, visit_count';
             $article = $this->article->select_by_id($select, $id);
             try {
                 if (!empty($article)){
+                    //访问量+1
+                    $update_data['id'] = $id;
+                    $update_data['visit_count'] = $article['visit_count'] + 1;
+                    unset($article['visit_count']);
+                    $this->article->update_article($update_data);
                     $article['is_focus'] = 0;
                     //如果登陆则判断is_focus是否为1
                     if ($this->username) {

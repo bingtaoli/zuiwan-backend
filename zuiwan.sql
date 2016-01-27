@@ -29,6 +29,7 @@ create table if not exists article (
     is_recommend int DEFAULT 0, #是否推荐,默认不推荐
     article_color VARCHAR(40) NOT NULL, #文章颜色
     is_banner int DEFAULT 0, #是否是banner
+    visit_count int DEFAULT 1,
     PRIMARY KEY (id)
 ) default charset=utf8;
 

@@ -8,6 +8,10 @@
 
 class Mod_article extends CI_Model
 {
+    /**
+     *  Model层API的顺序都为增删改查,方便管理
+     */
+
     public function __construct()
     {
         parent::__construct();
@@ -40,6 +44,25 @@ class Mod_article extends CI_Model
         }
     }
 
+    public function select_all($select){
+        $this->db->select($select);
+        $result = $this->db->get('article')->result_array();
+        return $result;
+    }
+
+    public function select_by_id($select, $id, $add_prefix=1){
+        $this->db->select($select);
+        $result = $this->db->get_where('article', ['id' => $id])->result_array();
+        if ($add_prefix == 1){
+            $this->_add_prefix($result);
+        }
+        if ($result){
+            return $result[0];
+        } else{
+            return null;
+        }
+    }
+
     public function get_articles($type=null, $id=null){
         $this->db->select('id, article_title, article_intro, article_author, article_media, article_media_name,
                           article_topic, article_topic_name, create_time, article_img, is_recommend');
@@ -58,12 +81,6 @@ class Mod_article extends CI_Model
 
     public function get_count(){
         return $this->db->count_all_results('article');
-    }
-
-    public function select_all($select){
-        $this->db->select($select);
-        $result = $this->db->get('article')->result_array();
-        return $result;
     }
 
     public function get_recommended_articles(){
@@ -95,19 +112,6 @@ class Mod_article extends CI_Model
         $result = $this->db->get('article')->result_array();
         $this->_add_prefix($result);
         return [$count, $result];
-    }
-
-    public function select_by_id($select, $id, $add_prefix=1){
-        $this->db->select($select);
-        $result = $this->db->get_where('article', ['id' => $id])->result_array();
-        if ($add_prefix == 1){
-            $this->_add_prefix($result);
-        }
-        if ($result){
-            return $result[0];
-        } else{
-            return null;
-        }
     }
 
     public function get_by_topic($id){
