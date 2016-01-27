@@ -173,6 +173,15 @@ class Article extends MY_Controller
         }
     }
 
+    //获取热门10篇文章
+    public function get_top_article(){
+        $articles = $this->article->get_top_articles(10);
+        header("Access-Control-Allow-Origin: *");
+        $result = $articles;
+        $this->output->set_content_type('application/json');
+        $this->output->set_output(json_encode($result));
+    }
+
     //1. 添加文章
     //2. 更改文章
     public function add_article(){

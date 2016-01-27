@@ -79,6 +79,15 @@ class Mod_article extends CI_Model
         return $result;
     }
 
+    public function get_top_articles($number){
+        $select = 'id, visit_count, article_title';
+        $this->db->select($select);
+        $this->db->order_by('visit_count', 'DESC');
+        $this->db->limit($number, 0);
+        $result = $this->db->get('article')->result_array();
+        return $result;
+    }
+
     public function get_count(){
         return $this->db->count_all_results('article');
     }
