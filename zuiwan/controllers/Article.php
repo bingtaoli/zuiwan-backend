@@ -4,6 +4,7 @@
  * User: bingtao
  * Date: 2015/12/5
  * Time: 14:55
+ *  @property SphinxClient sphinxclient
  */
 
 class Article extends MY_Controller
@@ -320,6 +321,34 @@ class Article extends MY_Controller
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
                 $result['status'] = 'error';
+            }
+            header("Access-Control-Allow-Origin: *");
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
+        }
+    }
+
+    public function coreseek(){
+        if (METHOD == 'get'){
+            $this->load->library("SphinxClient");
+            $this->sphinxclient->SetServer('115.28.75.190' ,9312);
+            $cl = $this->sphinxclient;
+            $cl->SetConnectTimeout ( 3 );
+
+            $cl->SetArrayResult ( true );
+            $cl->SetMatchMode ( SPH_MATCH_EXTENDED);
+
+            $res = $cl->Query ( 'Angular', "*" );
+            $ids = [];
+            foreach ($res['matches'] as $match){
+                $ids[] = $match['id'];
+            }
+            $result = [];
+            if (count($ids) > 0){
+                $select = 'id, article_title, article_media_name, article_topic_name, article_img, article_color';
+                foreach($ids as $id){
+                    $result['articles'][] = $this->article->select_by_id($select, $id);
+                }
             }
             header("Access-Control-Allow-Origin: *");
             $this->output->set_content_type('application/json');
