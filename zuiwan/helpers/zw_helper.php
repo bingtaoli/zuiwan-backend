@@ -25,3 +25,11 @@ if (!function_exists("add_img_prefix")){
         }
     }
 }
+
+if (!function_exists('getmicrotime')){
+    function getmicrotime()
+    {
+        $t = gettimeofday();
+        return ($t['sec'] + $t['usec'] / 1000000);
+    }
+}
