@@ -10,15 +10,10 @@
 class Article extends MY_Controller
 {
     var $config;
-    var $memcached;
 
     public function __construct()
     {
         parent::__construct();
-        if (MEMCACHED) {
-            $this->memcached = new Memcached();
-            $this->memcached->addServer('localhost', 11211);
-        }
     }
 
     /**
@@ -352,37 +347,141 @@ class Article extends MY_Controller
         }
     }
 
-    public function coreseek(){
+    public function search(){
         if (METHOD == 'get'){
             $data = $this->input->get();
             $query = $data['query'];
             $result = [];
-            if (!empty($query)){
-                $this->load->library("SphinxClient");
-                $this->sphinxclient->SetServer('115.28.75.190' ,9312);
-                $cl = $this->sphinxclient;
-                $cl->SetConnectTimeout ( 3 );
-
-                $cl->SetArrayResult ( true );
-                $cl->SetMatchMode ( SPH_MATCH_EXTENDED);
-
-                $res = $cl->Query ($query, "*" );
-                $ids = [];
-                foreach ($res['matches'] as $match){
-                    $ids[] = $match['id'];
+            $ch = curl_init();
+            $data = [
+                "query" => [
+                    "match_phrase" => [
+                        'article_content' => $query,
+                    ],
+                ],
+                "highlight" => [
+                    "fields" => [
+                        "article_content" => [],
+                    ]
+                ],
+            ];
+            $opts = [
+                CURLOPT_URL => 'http://localhost:9200/zuiwan/article/_search',
+                CURLOPT_POSTFIELDS => json_encode($data, JSON_FORCE_OBJECT),
+                CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
+                CURLOPT_RETURNTRANSFER => true,
+            ];
+            curl_setopt_array($ch, $opts);
+            $str = curl_exec($ch);
+            curl_close($ch);
+            $arr = json_decode($str, true);
+            /**
+             * $arr结构
+             * $arr = [
+             *     'hits => [
+             *          'total' => int,
+             *          'max_score' => float,
+             *          'hits'  => [
+             *              0 => [
+             *                  '_index' => 'zuiwan',
+             *                  '_type'  => 'article',
+             *                  '_source' => [
+             *                      'id' => int,
+             *                      'article_title' => string,
+             *                      //...
+             *                  ],
+             *                  'highlight' => [
+             *                      'article_content' => [
+             *                          //
+             *                      ]
+             *                  ]
+             *              ]
+             *          ]
+             *     ]
+             * ]
+             */
+            if (!empty($arr) && $arr['hits']['total'] > 0){
+                foreach ($arr['hits']['hits'] as $hit){
+                    $article['article']['id'] = $hit['_source']['id'];
+                    $article['article']['article_title'] = $hit['_source']['article_title'];
+                    $article['highlight'] = $hit['highlight']['article_content'];
+                    $result[] = $article;
                 }
-                if (count($ids) > 0){
-                    $select = 'id, article_title, article_media_name, article_topic_name, article_img, article_color';
-                    foreach($ids as $id){
-                        $result['articles'][] = $this->article->select_by_id($select, $id);
-                    }
-                }
-            } else {
-                $result['error'] = '请输入搜索关键字';
             }
             header("Access-Control-Allow-Origin: *");
             $this->output->set_content_type('application/json');
             $this->output->set_output(json_encode($result));
+        }
+    }
+
+    public function test_elastic_search(){
+        $ch = curl_init();
+        $data = [
+            "query" => [
+                "match_phrase" => [
+                    'article_content' => '呵呵'
+                ],
+            ],
+            "highlight" => [
+                "fields" => [
+                    "article_content" => [],
+                ]
+            ],
+        ];
+        $opts = [
+            CURLOPT_URL => 'http://localhost:9200/zuiwan/article/_search',
+            CURLOPT_POSTFIELDS => json_encode($data, JSON_FORCE_OBJECT),
+            CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
+            CURLOPT_RETURNTRANSFER => true,
+        ];
+
+        curl_setopt_array($ch, $opts);
+        $str = curl_exec($ch);
+        $arr = json_decode($str, true);
+        var_dump($arr);
+        //var_dump($arr['hits']);
+        var_dump($arr['hits']['hits']);
+        $article =  $arr['hits']['hits'][0]['_source'];
+        $article_highlight =  $arr['hits']['hits'][0]['highlight']['article_content'];
+        echo $article['article_content'];
+        echo $article_highlight;
+        curl_close($ch);
+    }
+
+    public function test_core_seek_search(){
+        $this->load->library("SphinxClient");
+        $this->sphinxclient->SetServer('115.28.75.190' ,9312);
+        $cl = $this->sphinxclient;
+        $cl->SetConnectTimeout ( 3 );
+
+        $cl->SetArrayResult ( true );
+        $cl->SetMatchMode ( SPH_MATCH_EXTENDED);
+        $query = '的呵呵';
+        $res = $cl->Query ($query, "*" );
+        $ids = [];
+        var_dump($res);
+        $words = array_keys($res['words']);
+        //按照长度排序$words
+        sort($words);
+        $preg = '/';
+        foreach($words as $i => $word){
+            if ($i < count($words) - 1){
+                $preg .= "($word)|";
+            } else {
+                $preg .= "($word)";
+            }
+        }
+        $preg .= '/';
+        foreach ($res['matches'] as $match){
+            $ids[] = $match['id'];
+        }
+        var_dump($preg);
+        if (count($ids) > 0){
+            $articles = $this->article->select_by_ids('id, article_title, article_content', $ids);
+            foreach ($articles as $a){
+                preg_match_all($preg, $a['article_content'], $matches, PREG_PATTERN_ORDER);
+                var_dump($matches);
+            }
         }
     }
 

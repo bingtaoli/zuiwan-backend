@@ -305,3 +305,37 @@
 	]
 }
 ```
+
+### 搜索
+
+##### GET /article/search
+
+参数:
+
+```json
+{
+	query: xxx
+}
+```
+
+结果:
+
+```json
+{
+	[
+		article: {
+			id: int,
+			article_title: xxx,
+		},
+		highlight: '带有em的html，高亮关键字'
+	],
+	[
+		article: {
+			id: int,
+			article_title: xxx,
+		},
+		highlight: '带有em的html，高亮关键字'
+	],
+	//...
+}
+```

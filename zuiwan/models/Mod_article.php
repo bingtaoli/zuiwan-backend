@@ -63,6 +63,16 @@ class Mod_article extends CI_Model
         }
     }
 
+    /**
+     * @param $select String
+     * @param $ids array
+     */
+    public function select_by_ids($select, $ids){
+        $this->db->where_in('id', $ids);
+        $this->db->select($select);
+        return $this->db->get('article')->result_array();
+    }
+
     public function get_articles($type=null, $id=null){
         $this->db->select('id, article_title, article_intro, article_author, article_media, article_media_name,
                           article_topic, article_topic_name, create_time, article_img, is_recommend');

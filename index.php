@@ -301,7 +301,6 @@ switch (ENVIRONMENT)
 
 	define('VIEWPATH', $view_folder);
 	define('HOST', "http://" . $_SERVER['HTTP_HOST'] . "/");
-	define('MEMCACHED', false);
 /*
  * --------------------------------------------------------------------
  * LOAD THE BOOTSTRAP FILE
