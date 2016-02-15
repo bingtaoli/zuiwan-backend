@@ -12,7 +12,7 @@ class ZW_client{
         $_SESSION['zw_username'] = $username;
         if ($remember){
             $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
-            setcookie('zw_username', $username, time()+60*60*24*365, '/', $domain, false);
+            setcookie('zw_username', $username, time() + SECONDS_A_DAY*20, '/', $domain, false);
         }
         return;
     }
@@ -37,7 +37,8 @@ class ZW_client{
         if (isset($_COOKIE['zw_username'])){
             $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
             $username = "";
-            setcookie('zw_username', $username, time()+60*60*24*365, '/', $domain, false);
+            //删除cookie,把超时时间设置成一个小时过去
+            setcookie('zw_username', $username, time() - 60*60, '/', $domain, false);
         }
     }
 }

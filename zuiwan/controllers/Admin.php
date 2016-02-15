@@ -100,4 +100,34 @@ class Admin extends MY_Controller
         }
     }
 
+    public function logout(){
+        if (METHOD == 'post'){
+            $post_data = $this->input->post();
+            if (!empty($post_data['username'])){
+                $username = $post_data['username'];
+            } else {
+                throw new Exception("user name needed");
+            }
+            $result = [
+                'status' => 1,
+                'message' => '',
+            ];
+            try {
+                //unset username in cookie and session
+                $this->zw_client->logout();
+                //delete token in database
+                $this->admin->del_token($username);
+                //unset token in cookie
+                $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
+                setcookie('zw_token', '', time() - 3600, '/', $domain, false);
+            } catch (Exception $e){
+                $result['message'] = $e->getMessage();
+                $result['status'] = 0;
+            }
+            header("Access-Control-Allow-Origin: *");
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode($result));
+        }
+    }
+
 }

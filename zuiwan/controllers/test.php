@@ -72,4 +72,12 @@ class Test extends MY_Controller
         $this->admin->add($data);
     }
 
+    public function del_cookie(){
+        $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
+        $username = "";
+        //删除cookie,把超时时间设置成一个小时过去
+        //domain is needed
+        setcookie('zw_username', $username, time() - 60*60, '/', $domain, false);
+    }
+
 }

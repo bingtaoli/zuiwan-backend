@@ -61,4 +61,8 @@ class Mod_admin extends CI_Model
         }
     }
 
+    public function del_token($username){
+        $this->db->delete('token', ['username' => $username]);
+    }
+
 }
