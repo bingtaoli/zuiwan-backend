@@ -301,6 +301,9 @@ switch (ENVIRONMENT)
 
 	define('VIEWPATH', $view_folder);
 	define('HOST', "http://" . $_SERVER['HTTP_HOST'] . "/");
+    define('ONLINE_HOSTNAME', '115.28.75.190');
+    define('ONLINE_MODE', ($_SERVER['HTTP_HOST'] == ONLINE_HOSTNAME ? true : false));
+    define('ENABLE_MEMCACHE', true);
 /*
  * --------------------------------------------------------------------
  * LOAD THE BOOTSTRAP FILE

@@ -19,12 +19,15 @@ class Mod_user extends CI_Model {
         add_img_prefix($result, 'user_avatar');
     }
 
+    /**
+     * @return int 获取所有用户数量
+     */
     public function get_count(){
         return $this->db->count_all_results('user');
     }
 
     /**
-     * @param $data Array
+     * @param $data array
      * @throws
      */
     public function add_user($data){
@@ -77,6 +80,10 @@ class Mod_user extends CI_Model {
         }
     }
 
+    /**
+     * @return mixed
+     * 数据库hook所必须的获取所有列函数
+     */
     public function get_columns(){
         $result = $this->db->query('SHOW FULL COLUMNS FROM user')->result_array();
         return $result;

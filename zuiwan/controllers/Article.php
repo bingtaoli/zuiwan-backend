@@ -269,7 +269,7 @@ class Article extends MY_Controller
                         $this->article->update_article($data);
                     }
                 }
-                if (MEMCACHED){
+                if (ENABLE_MEMCACHE && ONLINE_MODE){
                     @$this->memcached->delete("articles");
                 }
             } catch (Exception $e){
@@ -365,6 +365,7 @@ class Article extends MY_Controller
                     ]
                 ],
             ];
+            //为什么写死localhost呢,因为阿里云没有开放9200端口
             $opts = [
                 CURLOPT_URL => 'http://localhost:9200/zuiwan/article/_search',
                 CURLOPT_POSTFIELDS => json_encode($data, JSON_FORCE_OBJECT),

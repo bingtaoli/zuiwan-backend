@@ -94,3 +94,6 @@ define('MASTER_USER', 2);
  * 访问来自post或者get
  */
 define('METHOD', strtolower($_SERVER['REQUEST_METHOD']));
+
+//一天的秒数
+define('SECONDS_A_DAY', 60*60*24);

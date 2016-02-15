@@ -10,6 +10,7 @@
  * @property Mod_media $media
  * @property Mod_topic $topic
  * @property Mod_user $user
+ * @property Mod_admin $admin
  * @property ZW_client $zw_client
  * @property Img_compress $img_compress
  */
@@ -26,19 +27,19 @@ class MY_Controller extends CI_Controller{
         $this->load->model('mod_media', 'media');
         $this->load->model('mod_topic', 'topic');
         $this->load->model('mod_user', 'user');
+        $this->load->model('mod_admin', 'admin');
 
-        if ($username = $this->zw_client->get_session_client()){
-            $this->username = $username;
-        } else {
-            //检查cookie,如果有name则解密
-            if (isset($_COOKIE['zw_username']) && $_COOKIE['zw_username'] != ""){
-                $username = $this->zw_client->decode($_COOKIE['zw_username']);
-                //去除加密算法带来的空格
-                $username = rtrim($username);
-                $this->zw_client->login($username);
-                $this->username = $username;
-            }
-        }
+        //在angular的BaseCtrl做登录检查
+
+//        if ($username = $this->zw_client->get_session_client()){
+//            $this->username = $username;
+//        } else {
+//            //检查cookie,如果有name则解密
+//            if (isset($_COOKIE['zw_username']) && $_COOKIE['zw_username'] != ""){
+//                $this->zw_client->login($username);
+//                $this->username = $username;
+//            }
+//        }
     }
 
     /**

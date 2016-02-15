@@ -54,8 +54,15 @@ create table if not exists topic (
 #后台管理员
 create table if not exists admin(
     id int not null auto_increment,
-    admin_name varchar(10) NOT NULL ,
-    admin_password varchar(10) NOT NULL,
-    admin_avartar varchar(32) NOT NULL ,
+    username varchar(10) NOT NULL ,
+    password varchar(10) NOT NULL,
     PRIMARY KEY (id)
+)default charset = utf8;
+
+#token
+create table if not exists token(
+    username VARCHAR(20) NOT NULL,
+    token VARCHAR(32) NOT NULL ,
+    expire_time int NOT NULL , #strtotime seconds
+    PRIMARY KEY (username)
 )default charset = utf8;

@@ -64,4 +64,12 @@ class Test extends MY_Controller
         $this->output->set_output(json_encode($result));
     }
 
+    public function insert_admin(){
+        $data = [
+            'username' => 'root',
+            'password' => 'zw123',
+        ];
+        $this->admin->add($data);
+    }
+
 }
