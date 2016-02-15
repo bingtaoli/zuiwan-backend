@@ -31,6 +31,10 @@ class User extends MY_Controller {
     public function register(){
         if (METHOD == 'post'){
             $post_data = $this->input->post();
+            //数据校验
+            if (empty($post_data['username']) || empty($post_data['password'])){
+                throw new Exception("必须正确填写用户名和密码");
+            }
             $username = $post_data['username'];
             $password = $post_data['password'];
             $result = [

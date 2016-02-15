@@ -43,9 +43,7 @@ class Media extends MY_Controller
             $articles = $this->article->get_by_media($id);
             $media['articles'] = $articles;
             //article count
-            if (!empty($articles)){
-                $media['article_count'] = count($articles);
-            }
+            $media['article_count'] = count($articles);
         }
         header("Access-Control-Allow-Origin: *");
         $this->output->set_content_type('application/json');
