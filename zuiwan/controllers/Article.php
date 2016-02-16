@@ -418,11 +418,14 @@ class Article extends MY_Controller
                             # 优先级是从上到下
                             '/<.+?>/', #<strong>
                             '/<\/.+?>/', #</strong>
-                            '/[^<]*?>/', # 'strong>hehehe<em>hehehe</em>' 去除strong
+                            '/[^<]*?>/', # 'strong>he he he<em>he he he</em>' 去除strong
+                            '/<[^>]*/', # 'he he </p'  去除</p
                         );
                         $highlight = preg_replace($pattern, '', $highlight);
                         //3. 还原em标签
                         $highlight = preg_replace('/ZW_PREG(.+?)ZW_PREG/', '<em>${1}</em>', $highlight);
+                        //4. 去除换行
+                        $highlight = preg_replace('/\n/', '', $highlight);
                     }
                 }
             }
