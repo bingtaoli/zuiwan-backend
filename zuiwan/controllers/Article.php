@@ -361,7 +361,7 @@ class Article extends MY_Controller
                 ],
                 "highlight" => [
                     "fields" => [
-                        "article_content" => ["fragment_size" => 20, "number_of_fragments" => 3],
+                        "article_content" => ["fragment_size" => 150, "number_of_fragments" => 3],
                     ]
                 ],
             ];
@@ -407,6 +407,23 @@ class Article extends MY_Controller
                     $article['article']['article_title'] = $hit['_source']['article_title'];
                     $article['highlight'] = $hit['highlight']['article_content'];
                     $result[] = $article;
+                }
+                //正则去掉多余错误的html
+                foreach ($result as &$article){
+                    foreach ($article['highlight'] as &$highlight){
+                        //1. 把em标签保存
+                        $highlight = preg_replace('/<em>(.+?)<\/em>/', 'ZW_PREG${1}ZW_PREG', $highlight);
+                        //2. 除去其他的html标签
+                        $pattern = array(
+                            # 优先级是从上到下
+                            '/<.+?>/', #<strong>
+                            '/<\/.+?>/', #</strong>
+                            '/[^<]*?>/', # 'strong>hehehe<em>hehehe</em>' 去除strong
+                        );
+                        $highlight = preg_replace($pattern, '', $highlight);
+                        //3. 还原em标签
+                        $highlight = preg_replace('/ZW_PREG(.+?)ZW_PREG/', '<em>${1}</em>', $highlight);
+                    }
                 }
             }
             header("Access-Control-Allow-Origin: *");
