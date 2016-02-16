@@ -361,7 +361,7 @@ class Article extends MY_Controller
                 ],
                 "highlight" => [
                     "fields" => [
-                        "article_content" => [],
+                        "article_content" => ["fragment_size" => 20, "number_of_fragments" => 3],
                     ]
                 ],
             ];
