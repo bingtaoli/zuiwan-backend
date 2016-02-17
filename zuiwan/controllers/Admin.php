@@ -57,16 +57,16 @@ class Admin extends MY_Controller
                         $result['message'] = '登陆成功';
                         //设置session
                         $this->zw_client->login($username, $remember);
-                        //生成token
-                        $token = md5(microtime(true));
-                        //store token in DB
-                        $data = [
-                            'username' => $username,
-                            'token'    => $token,
-                            'expire_time' => time() + SECONDS_A_DAY * 20, //20天
-                        ];
-                        $this->admin->update_or_add_token($data);
                         if ($remember){
+                            //生成token
+                            $token = md5(microtime(true));
+                            //store token in DB
+                            $data = [
+                                'username' => $username,
+                                'token'    => $token,
+                                'expire_time' => time() + SECONDS_A_DAY * 20, //20天
+                            ];
+                            $this->admin->update_or_add_token($data);
                             //cookie store token
                             $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
                             setcookie('zw_token', $token, time() + SECONDS_A_DAY * 20, '/', $domain, false);
@@ -102,19 +102,26 @@ class Admin extends MY_Controller
 
     public function logout(){
         if (METHOD == 'post'){
-            $post_data = $this->input->post();
-            if (!empty($post_data['username'])){
-                $username = $post_data['username'];
-            } else {
-                throw new Exception("user name needed");
-            }
             $result = [
                 'status' => 1,
                 'message' => '',
             ];
             try {
-                //unset username in cookie and session
+                $post_data = $this->input->post();
+                if (!empty($post_data['username'])){
+                    $username = $post_data['username'];
+                } else {
+                    throw new Exception("user name needed");
+                }
+                //unset username session
                 $this->zw_client->logout();
+                //delete cookie
+                if (isset($_COOKIE['zw_username'])){
+                    $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
+                    $username = "";
+                    //删除cookie,把超时时间设置成一个小时过去
+                    setcookie('zw_username', $username, time() - 60*60, '/', $domain, false);
+                }
                 //delete token in database
                 $this->admin->del_token($username);
                 //unset token in cookie
