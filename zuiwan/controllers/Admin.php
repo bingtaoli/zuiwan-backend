@@ -56,8 +56,11 @@ class Admin extends MY_Controller
                     if ($user){
                         $result['message'] = '登陆成功';
                         //设置session
-                        $this->zw_client->login($username, $remember);
+                        $this->zw_client->login($username);
                         if ($remember){
+                            //store username in cookie
+                            $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
+                            setcookie('zw_username', $username, time() + SECONDS_A_DAY*20, '/', $domain, false);
                             //生成token
                             $token = md5(microtime(true));
                             //store token in DB

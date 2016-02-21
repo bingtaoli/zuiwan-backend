@@ -8,12 +8,8 @@
  */
 class ZW_client{
 
-    public function login($username, $remember=0){
+    public function login($username){
         $_SESSION['zw_username'] = $username;
-        if ($remember){
-            $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
-            setcookie('zw_username', $username, time() + SECONDS_A_DAY*20, '/', $domain, false);
-        }
         return;
     }
 
