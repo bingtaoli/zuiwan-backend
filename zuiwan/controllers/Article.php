@@ -228,7 +228,6 @@ class Article extends MY_Controller
                     //存文章大图
                     if(is_uploaded_file($_FILES['file']['tmp_name'])) {
                         $file_name = $_FILES['file']['name'];
-                        //$file_type = pathinfo($file_name, PATHINFO_EXTENSION);
                         $date = date("YmdHms");
                         $store_file_name = $date . $file_name;
                         $file_abs = $this->config->config["img_dir"] . "/" . $store_file_name;
@@ -252,9 +251,6 @@ class Article extends MY_Controller
                     if (!empty($data['id'])){
                         $this->article->update_article($data);
                     }
-                }
-                if (ENABLE_MEMCACHE && ONLINE_MODE){
-                    @$this->memcached->delete("articles");
                 }
             } catch (Exception $e){
                 //根据id删除数据库
