@@ -16,62 +16,6 @@ class Article extends MY_Controller
         parent::__construct();
     }
 
-    /**
-     * @throws
-     * 传media则获取某个media内容,否则获取所有内容
-     */
-    public function get_article(){
-        if (METHOD == 'get'){
-            $get_data = $this->input->get();
-            $type = isset($get_data['type']) ? $get_data['type'] : null;
-            $id = isset($get_data['id']) ? $get_data['id'] : null;
-            #memcached
-            if (MEMCACHED){
-                if ($type && $id){
-                    if ($type == 1){
-                        //media
-                        $articles = $this->memcached->get("articles-media-$id");
-                    } else if ($type == 2){
-                        $articles = $this->memcached->get("articles-topic-$id");
-                    } else {
-                        throw new Exception("未知类型文章,无法获取数据");
-                    }
-                } else {
-                    $articles = $this->memcached->get("articles");
-                }
-            }
-            if (!isset($articles) || $articles == null){
-                if ($type && $id ){
-                    if ($type == 1){
-                        $articles = $this->article->get_articles(1, $id);
-                        if (MEMCACHED){
-                            $this->memcached->set("articles-media-$id", $articles);
-                        }
-                    } else if ($type == 2){
-                        $articles = $this->article->get_articles(2, $id);
-                        if (MEMCACHED){
-                            $this->memcached->set("articles-topic-$id", $articles);
-                        }
-                    } else {
-                        throw new Exception("未知类型文章,无法获取数据");
-                    }
-                } else {
-                    $articles = $this->article->get_articles();
-                    if (MEMCACHED){
-                        $this->memcached->set("articles", $articles);
-                    }
-                }
-            }
-            header("Access-Control-Allow-Origin: *");
-            $result = $articles;
-            $this->output->set_content_type('application/json');
-            $this->output->set_output(json_encode($result));
-            if (MEMCACHED){
-                $this->memcached->quit();
-            }
-        }
-    }
-
     public function get_recommend(){
         $result = [];
         //从php.ini获取是否使用yac
@@ -105,6 +49,46 @@ class Article extends MY_Controller
         $this->get_recommend();
         $tt = getmicrotime();
         echo "costs " . ($tt - $t) . "s" . PHP_EOL;
+    }
+
+    //提醒用户关注的媒体有文章更新了
+    public function remind_media_article(){
+        //1. 遍历用户表
+        //1.1 遍历关注的媒体
+        //1.1.1 把每个被媒体更新的文章(即create_time在时间范围之内的)加入到数组中
+        //1.2 发邮件
+        $users = $this->user->get_all_users();
+        foreach ($users as $user){
+            if (!empty($user['collect_media'])){
+                $medias = json_decode($user['collect_media'], true);
+                $email_data = [];
+                foreach ($medias as $media_id){
+                    //获取文章
+                    $articles = $this->article->get_by_media($media_id);
+                    //是否在时间范围内
+                    $now = time();
+                    $bound = $now - REMIND_TIME;
+                    foreach ($articles as $article){
+                        $unix_create_time = strtotime($article['create_time']);
+                        if ($unix_create_time >= $bound){
+                            $email_data[$media_id][] = $article;
+                        }
+                    }
+                }
+                //把media id索引转换成media name索引
+                foreach ($email_data as $media_id => $media_articles){
+                    $media = $this->media->select_by_id($media_id);
+                    $email_data[$media['media_name']] = $media_articles;
+                    unset($email_data[$media_id]);
+                }
+                //发送邮件
+                $content = '';
+                $subject = '';
+                //username就是邮箱
+                $receivers = [$user['username']];
+                $this->_send_mail($subject, $content, $receivers);
+            }
+        }
     }
 
     //后台管理分页
@@ -152,7 +136,7 @@ class Article extends MY_Controller
                     $article['is_focus'] = 0;
                     //如果登陆则判断is_focus是否为1
                     if ($this->username) {
-                        $user = $this->user->select_by_name('collect_article', $this->username);
+                        $user = $this->user->select_by_name($this->username, 'collect_article');
                         $collect_article = $user['collect_article'];
                         $arr = json_decode($collect_article, true);
                         if (!empty($arr) && in_array($id, $arr)){
@@ -163,7 +147,7 @@ class Article extends MY_Controller
                     $topic_id = $article['article_topic'];
                     unset($article['article_media']);
                     unset($article['article_topic']);
-                    $article['media'] = $this->media->select_by_id('id, media_name, media_avatar', $media_id);
+                    $article['media'] = $this->media->select_by_id($media_id, 'id, media_name, media_avatar');
                     $article['topic'] = $this->topic->select_by_id('id, topic_name, topic_intro, topic_img', $topic_id);
                     $article['topic']['article_count'] = $this->article->get_count_by_topic($article['topic']['id']);
                 }
@@ -231,7 +215,7 @@ class Article extends MY_Controller
                 //获取topic name && media name
                 $this->load->model('mod_topic', 'topic');
                 $this->load->model('mod_media', 'media');
-                $media = $this->media->select_by_id('media_name, media_intro, media_avatar', $article_media);
+                $media = $this->media->select_by_id($article_media, 'media_name, media_intro, media_avatar');
                 $topic = $this->topic->select_by_id('topic_name, topic_intro, topic_img', $article_topic);
                 $data['article_media_name'] = $media['media_name'];
                 $data['article_topic_name'] = $topic['topic_name'];

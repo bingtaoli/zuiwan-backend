@@ -97,3 +97,7 @@ define('METHOD', strtolower($_SERVER['REQUEST_METHOD']));
 
 //一天的秒数
 define('SECONDS_A_DAY', 60*60*24);
+
+//推送的时间间隔
+//默认每天推送
+define('REMIND_TIME', 60*60*24);

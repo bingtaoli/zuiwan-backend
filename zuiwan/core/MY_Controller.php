@@ -13,6 +13,7 @@
  * @property Mod_admin $admin
  * @property ZW_client $zw_client
  * @property Img_compress $img_compress
+ * @property ZW_mail $zw_mail
  */
 class MY_Controller extends CI_Controller{
 
@@ -110,6 +111,28 @@ class MY_Controller extends CI_Controller{
         $ret = array('code'=>$code,'msg'=>$msg,'data'=>$data);
         echo json_encode($ret);
     }
+
+    /**
+     * @param $subject
+     * @param $content
+     * @param $receivers Array
+     * @param bool|true $is_html
+     * @throws
+     * 发送邮件
+     */
+    public function _send_mail($subject, $content, $receivers, $is_html=true){
+        $mail = $this->zw_mail->get_mail();
+        $mail->Subject = $subject;
+        $mail->Body = $content;
+        foreach ($receivers as $r){
+            $mail->addAddress($r);
+        }
+        $mail->isHTML($is_html);
+        if(!$mail->send()) {
+            throw new Exception("Message has not been sent for error: " . $mail->ErrorInfo);
+        }
+    }
+
 }
 
 /**
