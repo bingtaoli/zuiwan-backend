@@ -34,7 +34,7 @@ class Mod_user extends CI_Model {
         /**
          * 先判断user是否已经存在，如果存在则保存
          */
-        if ($this->select_by_name('id', $data['username'])){
+        if ($this->select_by_name($data['username'], 'id')){
             throw new IdentifyException("该用户应经存在", 0);
         }
         $this->db->insert('user', $data);
@@ -53,11 +53,18 @@ class Mod_user extends CI_Model {
         return $this->db->delete('user', array('username' => $username));
     }
 
-    public function get_all_user(){
+    public function get_all_users(){
         return $this->db->get('user')->result_array();
     }
 
-    public function select_by_name($select, $username, $add_prefix=1){
+    /**
+     * @param $username
+     * @param string $select
+     * @param int $add_prefix
+     * @return null
+     * 这样设计接口是因为username一定需要,select偶尔需要,add_prefix基本不需要
+     */
+    public function select_by_name($username, $select="*", $add_prefix=1){
         $this->db->select($select);
         $this->db->where('username', $username);
         $result = $this->db->get('user')->result_array();

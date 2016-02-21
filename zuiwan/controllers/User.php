@@ -105,7 +105,7 @@ class User extends MY_Controller {
         if (!$username){
             return;
         }
-        $user = $this->user->select_by_name('username, user_avatar, collect_media, collect_article', $username);
+        $user = $this->user->select_by_name($username, 'username, user_avatar, collect_media, collect_article');
         //medias
         $collect_media = $user['collect_media'];
         unset($user['collect_media']);
@@ -113,7 +113,7 @@ class User extends MY_Controller {
         if ($collect_media){
             $arr = json_decode($collect_media, true);
             foreach($arr as $a){
-                $media = $this->media->select_by_id('id, media_name, media_avatar', $a);
+                $media = $this->media->select_by_id($a, 'id, media_name, media_avatar');
                 $user['medias'][] = $media;
             }
         }
@@ -136,6 +136,7 @@ class User extends MY_Controller {
 
     /**
      * 收藏文章
+     * 保存article id数组 json字符串
      */
     public function collect_article(){
         if (METHOD == 'post'){
@@ -147,7 +148,7 @@ class User extends MY_Controller {
             $result['message'] = '';
             try {
                 $this->judge_login();
-                $user = $this->user->select_by_name('collect_article, username', $this->username);
+                $user = $this->user->select_by_name($this->username, 'collect_article, username');
                 $collect_articles = $user['collect_article'];
                 $arr = $collect_articles ? json_decode($collect_articles, true) : []; // old collect
                 if ($action == 1){
@@ -177,6 +178,7 @@ class User extends MY_Controller {
 
     /**
      * 关注媒体
+     * 保存media id数组 json字符串
      */
     public function focus_media(){
         if (METHOD == 'post'){
@@ -188,7 +190,7 @@ class User extends MY_Controller {
             $result['message'] = '';
             try {
                 $this->judge_login();
-                $user = $this->user->select_by_name('collect_media, username', $this->username);
+                $user = $this->user->select_by_name($this->username, 'collect_media, username');
                 $origin_collect = $user['collect_media'];
                 $arr = $origin_collect ? json_decode($origin_collect, true) : []; // old collect
                 if ($action == 1){
@@ -213,30 +215,6 @@ class User extends MY_Controller {
             header("Access-Control-Allow-Origin: *");
             $this->output->set_content_type('application/json');
             $this->output->set_output(json_encode($result));
-        }
-    }
-
-    public function temp_store_string_to_json()
-    {
-        if (0) {
-            //取出users的collect media
-            $users = $this->user->get_all_user();
-            foreach ($users as $user) {
-                if ($user['collect_media']) {
-                    $string = $user['collect_media'];
-                    $array = explode(',', $string);
-                    $json_str = json_encode($array);
-                    $user['collect_media'] = $json_str;
-                }
-                if ($user['collect_article']) {
-                    $string = $user['collect_article'];
-                    $array = explode(',', $string);
-                    $json_str = json_encode($array);
-                    $user['collect_article'] = $json_str;
-                }
-                $this->user->update_user($user);
-            }
-            echo "success\n";
         }
     }
 

@@ -25,12 +25,12 @@ class Media extends MY_Controller
     public function get_one_media(){
         $get_data = $this->input->get();
         $id = $get_data['id'];
-        $media = $this->media->select_by_id('media_name, media_intro, media_avatar', $id);
+        $media = $this->media->select_by_id($id, 'media_name, media_intro, media_avatar');
         if (!empty($media)){
             // is_focus
             $media['is_focus'] = 0;
             if (!empty($this->username)){
-                $user = $this->user->select_by_name('collect_media', $this->username);
+                $user = $this->user->select_by_name($this->username, 'collect_media');
                 $collect_media = $user['collect_media'];
                 $arr = json_decode($collect_media, true);
                 if (!empty($arr) && in_array($id, $arr)){
@@ -78,7 +78,7 @@ class Media extends MY_Controller
                     if(move_uploaded_file($_FILES['avatar']['tmp_name'], $file_host))
                     {
                         //把以前的图片删除
-                        $media = $this->media->select_by_id('id, media_avatar', $media_id, 0);
+                        $media = $this->media->select_by_id($media_id, 'id, media_avatar', 0);
                         if (!empty($media)){
                             $origin = $media['media_avatar'];
                             $origin_pos = STATIC_PATH . $this->config->config['img_dir'] . "/" . $origin;

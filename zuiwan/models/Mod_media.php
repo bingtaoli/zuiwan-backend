@@ -32,7 +32,7 @@ class Mod_media extends CI_Model {
         return $result;
     }
 
-    public function select_by_id($select, $id, $add_prefix=1){
+    public function select_by_id($id, $select='*', $add_prefix=1){
         $this->db->select($select);
         $result = $this->db->get_where('media', ['id' => $id])->result_array();
         if ($add_prefix == 1){
@@ -44,7 +44,7 @@ class Mod_media extends CI_Model {
         return null;
     }
 
-    public function select_by_name($select, $name, $add_prefix=1){
+    public function select_by_name($name, $select='*', $add_prefix=1){
         $this->db->select($select);
         $result = $this->db->get_where('media', ['media_name' => $name])->result_array();
         if ($add_prefix == 1){
