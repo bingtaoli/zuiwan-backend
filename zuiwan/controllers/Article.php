@@ -43,6 +43,15 @@ class Article extends MY_Controller
         $this->output->set_output(json_encode($result));
     }
 
+    //获取banner的文章数,一般建议在4篇左右
+    public function get_banner_count(){
+        $banner = $this->article->get_banner_articles();
+        $result = count($banner);
+        header("Access-Control-Allow-Origin: *");
+        $this->output->set_content_type('application/json');
+        $this->output->set_output(json_encode($result));
+    }
+
     public function test_recommend(){
         //可以看到select *和select具体列名相差近一半
         $t = getmicrotime();
@@ -148,7 +157,7 @@ class Article extends MY_Controller
                     unset($article['article_media']);
                     unset($article['article_topic']);
                     $article['media'] = $this->media->select_by_id($media_id, 'id, media_name, media_avatar');
-                    $article['topic'] = $this->topic->select_by_id('id, topic_name, topic_intro, topic_img', $topic_id);
+                    $article['topic'] = $this->topic->select_by_id($topic_id, 'id, topic_name, topic_intro, topic_img');
                     $article['topic']['article_count'] = $this->article->get_count_by_topic($article['topic']['id']);
                 }
             } catch (Exception $e){
@@ -216,7 +225,7 @@ class Article extends MY_Controller
                 $this->load->model('mod_topic', 'topic');
                 $this->load->model('mod_media', 'media');
                 $media = $this->media->select_by_id($article_media, 'media_name, media_intro, media_avatar');
-                $topic = $this->topic->select_by_id('topic_name, topic_intro, topic_img', $article_topic);
+                $topic = $this->topic->select_by_id($article_topic, 'topic_name, topic_intro, topic_img');
                 $data['article_media_name'] = $media['media_name'];
                 $data['article_topic_name'] = $topic['topic_name'];
                 if (!$isUpdate){
@@ -269,8 +278,12 @@ class Article extends MY_Controller
     public function update_article_img(){
         if (METHOD == 'post'){
             $post = $this->input->post();
-            $id = $post['id'];
-            $result['status'] = 'success';
+            if (isset($post['id'])){
+                $id = $post['id'];
+            } else {
+                throw new Exception("no article id");
+            }
+            $result['status'] = 1;
             $result['message'] = '';
             try {
                 if(is_uploaded_file($_FILES['article_img']['tmp_name'])) {
@@ -295,12 +308,9 @@ class Article extends MY_Controller
                     if ($originImg && $originImg != 'default_article_img.jpg' ){
                         @unlink(STATIC_PATH . $originImg);
                     }
-                    if (MEMCACHED){
-                        @$this->memcached->delete("articles");
-                    }
                 }
             } catch(Exception $e){
-                $result['status'] = 'error';
+                $result['status'] = 0;
                 $result['message'] = $e->getMessage();
             }
             header("Access-Control-Allow-Origin: *");
@@ -311,15 +321,19 @@ class Article extends MY_Controller
 
     public function del_article(){
         if (METHOD == 'post') {
-            $result['status'] = 'success';
+            $result['status'] = 1;
             $result['message'] = '';
             try {
                 $post_data = $this->input->post();
-                $article_id = $post_data['id'];
+                if (isset($post_data['id'])){
+                    $article_id = $post_data['id'];
+                } else {
+                    throw new Exception('no article id');
+                }
                 $this->article->del_article($article_id);
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
-                $result['status'] = 'error';
+                $result['status'] = 0;
             }
             header("Access-Control-Allow-Origin: *");
             $this->output->set_content_type('application/json');
@@ -412,77 +426,6 @@ class Article extends MY_Controller
             header("Access-Control-Allow-Origin: *");
             $this->output->set_content_type('application/json');
             $this->output->set_output(json_encode($result));
-        }
-    }
-
-    public function test_elastic_search(){
-        $ch = curl_init();
-        $data = [
-            "query" => [
-                "match_phrase" => [
-                    'article_content' => '呵呵'
-                ],
-            ],
-            "highlight" => [
-                "fields" => [
-                    "article_content" => [],
-                ]
-            ],
-        ];
-        $opts = [
-            CURLOPT_URL => 'http://localhost:9200/zuiwan/article/_search',
-            CURLOPT_POSTFIELDS => json_encode($data, JSON_FORCE_OBJECT),
-            CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
-            CURLOPT_RETURNTRANSFER => true,
-        ];
-
-        curl_setopt_array($ch, $opts);
-        $str = curl_exec($ch);
-        $arr = json_decode($str, true);
-        var_dump($arr);
-        //var_dump($arr['hits']);
-        var_dump($arr['hits']['hits']);
-        $article =  $arr['hits']['hits'][0]['_source'];
-        $article_highlight =  $arr['hits']['hits'][0]['highlight']['article_content'];
-        echo $article['article_content'];
-        echo $article_highlight;
-        curl_close($ch);
-    }
-
-    public function test_core_seek_search(){
-        $this->load->library("SphinxClient");
-        $this->sphinxclient->SetServer('115.28.75.190' ,9312);
-        $cl = $this->sphinxclient;
-        $cl->SetConnectTimeout ( 3 );
-
-        $cl->SetArrayResult ( true );
-        $cl->SetMatchMode ( SPH_MATCH_EXTENDED);
-        $query = '的呵呵';
-        $res = $cl->Query ($query, "*" );
-        $ids = [];
-        var_dump($res);
-        $words = array_keys($res['words']);
-        //按照长度排序$words
-        sort($words);
-        $preg = '/';
-        foreach($words as $i => $word){
-            if ($i < count($words) - 1){
-                $preg .= "($word)|";
-            } else {
-                $preg .= "($word)";
-            }
-        }
-        $preg .= '/';
-        foreach ($res['matches'] as $match){
-            $ids[] = $match['id'];
-        }
-        var_dump($preg);
-        if (count($ids) > 0){
-            $articles = $this->article->select_by_ids('id, article_title, article_content', $ids);
-            foreach ($articles as $a){
-                preg_match_all($preg, $a['article_content'], $matches, PREG_PATTERN_ORDER);
-                var_dump($matches);
-            }
         }
     }
 

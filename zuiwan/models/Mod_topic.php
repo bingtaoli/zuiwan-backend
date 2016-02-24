@@ -34,7 +34,7 @@ class Mod_topic extends CI_Model
         return $result;
     }
 
-    public function select_by_id($select, $id, $add_prefix=1){
+    public function select_by_id($id, $select='*', $add_prefix=1){
         $this->db->select($select);
         $result = $this->db->get_where('topic', ['id' => $id])->result_array();
         if ($add_prefix == 1){

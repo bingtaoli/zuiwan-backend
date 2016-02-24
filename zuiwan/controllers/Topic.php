@@ -30,7 +30,7 @@ class Topic extends MY_Controller
         if (METHOD == 'get') {
             $get_data = $this->input->get();
             $id = $get_data['id'];
-            $topic = $this->topic->select_by_id('topic_name, topic_intro, topic_img', $id);
+            $topic = $this->topic->select_by_id($id, 'topic_name, topic_intro, topic_img');
             if (!empty($topic)){
                 //设置文章count
                 $topic['article_count'] = $this->article->get_count_by_topic($id);
@@ -47,7 +47,7 @@ class Topic extends MY_Controller
         if (METHOD == 'get') {
             $get_data = $this->input->get();
             $id = $get_data['id'];
-            $topic = $this->topic->select_by_id('id, topic_name, topic_intro, topic_img', $id);
+            $topic = $this->topic->select_by_id($id, 'id, topic_name, topic_intro, topic_img');
             header("Access-Control-Allow-Origin: *");
             $result = $topic;
             $this->output->set_content_type('application/json');
@@ -55,30 +55,33 @@ class Topic extends MY_Controller
         }
     }
 
-    public function set_topic_img(){
-        if (METHOD == 'post'){
+    public function update_topic(){
+        if (METHOD == 'post') {
             $result['status'] = 'success';
-            $result['message'] = '';
-            if(is_uploaded_file($_FILES['topic_img']['tmp_name']))
-            {
-                $post_data = $this->input->post();
+            $post_data = $this->input->post();
+            try {
+                if (!isset($post_data['id'])) {
+                    throw new Exception('id needed');
+                }
                 $topic_id = $post_data['id'];
-
-                //判断上传文件是否允许
-                $file_name = $_FILES['topic_img']['name'];
-                $date = date("YmdHms");
-                $store_file_name = $date . $file_name;
-                $file_abs = $this->config->config["img_dir"] . "/" . $store_file_name;
-                $file_host = STATIC_PATH . $file_abs;
-                try {
-                    if(move_uploaded_file($_FILES['topic_img']['tmp_name'], $file_host))
-                    {
+                $topic = $this->topic->select_by_id($topic_id, 'id, topic_img', 0);
+                if (!empty($post_data['topic_name'])) {
+                    $topic['topic_name'] = $post_data['topic_name'];
+                    // ugly code, but will fix later
+                    $this->topic->update($topic);
+                }
+                if (is_uploaded_file($_FILES['topic_img']['tmp_name'])) {
+                    //判断上传文件是否允许
+                    $file_name = $_FILES['topic_img']['name'];
+                    $date = date("YmdHms");
+                    $store_file_name = $date . $file_name;
+                    $file_abs = $this->config->config["img_dir"] . "/" . $store_file_name;
+                    $file_host = STATIC_PATH . $file_abs;
+                    if (move_uploaded_file($_FILES['topic_img']['tmp_name'], $file_host)) {
                         //把以前的图片删除
-                        $select = 'id, topic_img';
-                        $topic = $this->topic->select_by_id($select, $topic_id);
                         $origin = $topic['topic_img'];
                         $origin_pos = STATIC_PATH . $this->config->config['img_dir'] . "/" . $origin;
-                        if (file_exists($origin_pos) && $origin != 'default_topic_img.png'){
+                        if (file_exists($origin_pos) && $origin != 'default_topic_img.png') {
                             unlink($origin_pos);
                         }
                         $topic['topic_img'] = $store_file_name;
@@ -86,15 +89,18 @@ class Topic extends MY_Controller
                         $this->topic->update($topic);
                         $result['data'] = $store_file_name;
                     }
-                } catch (Exception $e){
-                    $result['status'] = 'error';
-                    $result['message'] = $e->getMessage();
                 }
+            } catch (Exception $e){
+                $result['status'] = 'error';
+                $result['message'] = $e->getMessage();
             }
             header("Access-Control-Allow-Origin: *");
             $this->output->set_content_type('application/json');
             $this->output->set_output(json_encode($result));
         }
+    }
+
+    public function set_topic_img(){
     }
 
     public function add_topic(){

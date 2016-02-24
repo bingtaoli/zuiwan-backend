@@ -53,19 +53,29 @@ class Media extends MY_Controller
     public function admin_get_one_media(){
         $get_data = $this->input->get();
         $id = $get_data['id'];
-        $media = $this->media->select_by_id('id, media_name, media_intro, media_avatar', $id);
+        $media = $this->media->select_by_id($id, 'id, media_name, media_intro, media_avatar');
         header("Access-Control-Allow-Origin: *");
         $this->output->set_content_type('application/json');
         $this->output->set_output(json_encode($media));
     }
 
-    public function set_media_avatar(){
+    public function update_media(){
         if (METHOD == 'post'){
-            $result['status'] = 0;
-            if(is_uploaded_file($_FILES['avatar']['tmp_name']))
-            {
-                $post_data = $this->input->post();
-                $media_id = $post_data['id'];
+            $result['status'] = 1;
+            $post_data = $this->input->post();
+            if (!isset($post_data['id'])){
+                throw new Exception('id needed');
+            }
+            $media_id = $post_data['id'];
+            $media = $this->media->select_by_id($media_id, 'id, media_avatar', 0);
+            if (!empty($post_data['media_name'])){
+                //media name 需要修改,贺鑫的建议
+                $media['media_name'] = $post_data['media_name'];
+                // ugly code, but will fix later
+                $this->media->update($media);
+            }
+            // avatar
+            if(is_uploaded_file($_FILES['avatar']['tmp_name'])) {
                 //判断上传文件是否允许
                 //$file_arr = pathinfo($_FILES['avatar']['name']);
                 //$file_type = $file_arr["extension"];
@@ -78,7 +88,6 @@ class Media extends MY_Controller
                     if(move_uploaded_file($_FILES['avatar']['tmp_name'], $file_host))
                     {
                         //把以前的图片删除
-                        $media = $this->media->select_by_id($media_id, 'id, media_avatar', 0);
                         if (!empty($media)){
                             $origin = $media['media_avatar'];
                             $origin_pos = STATIC_PATH . $this->config->config['img_dir'] . "/" . $origin;
@@ -93,7 +102,7 @@ class Media extends MY_Controller
                         }
                     }
                 } catch (Exception $e){
-                    $result['status'] = 'error';
+                    $result['status'] = 0;
                     $result['message'] = $e->getMessage();
                 }
             }

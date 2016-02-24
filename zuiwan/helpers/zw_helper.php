@@ -13,7 +13,11 @@ if (!function_exists("add_img_prefix")){
         if (!$result){
             return;
         }
-        $img_prefix = 'http://115.28.75.190/zuiwan-backend/' .  "public/upload/img/";
+        if (ONLINE_MODE){
+            $img_prefix = 'http://115.28.75.190/zuiwan-backend/' .  "public/upload/img/";
+        } else {
+            $img_prefix = 'http://localhost/zuiwan-backend/' .  "public/upload/img/";
+        }
         foreach($result as &$r){
             if (!isset($r[$name])){
                 continue;

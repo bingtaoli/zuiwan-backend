@@ -98,11 +98,19 @@ if (ONLINE_MODE){
     );
 
 } else {
-    $db[$database] = array(
-        'dsn'	=> '',
+    //线下还是使用自己的数据库吧
+    $online_source = array(
         'hostname' => '115.28.75.190',
         'username' => 'admin',
         'password' => 'admin',
+    );
+    $local_source = array(
+        'hostname' => '127.0.0.1',
+        'username' => 'root',
+        'password' => '',
+    );
+    $db[$database] = array(
+        'dsn'	=> '',
         'database' => $database,
         'dbdriver' => 'mysqli',
         'dbprefix' => '',
@@ -119,4 +127,6 @@ if (ONLINE_MODE){
         'failover' => array(),
         'save_queries' => TRUE
     );
+    //$db[$database] = array_merge($db[$database], $online_source);
+    $db[$database] = array_merge($db[$database], $local_source);
 }

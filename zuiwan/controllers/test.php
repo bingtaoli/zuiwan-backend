@@ -80,4 +80,37 @@ class Test extends MY_Controller
         setcookie('zw_username', $username, time() - 60*60, '/', $domain, false);
     }
 
+    public function test_elastic_search(){
+        $ch = curl_init();
+        $data = [
+            "query" => [
+                "match_phrase" => [
+                    'article_content' => '呵呵'
+                ],
+            ],
+            "highlight" => [
+                "fields" => [
+                    "article_content" => [],
+                ]
+            ],
+        ];
+        $opts = [
+            CURLOPT_URL => 'http://localhost:9200/zuiwan/article/_search',
+            CURLOPT_POSTFIELDS => json_encode($data, JSON_FORCE_OBJECT),
+            CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
+            CURLOPT_RETURNTRANSFER => true,
+        ];
+
+        curl_setopt_array($ch, $opts);
+        $str = curl_exec($ch);
+        $arr = json_decode($str, true);
+        var_dump($arr);
+        //var_dump($arr['hits']);
+        var_dump($arr['hits']['hits']);
+        $article =  $arr['hits']['hits'][0]['_source'];
+        $article_highlight =  $arr['hits']['hits'][0]['highlight']['article_content'];
+        echo $article['article_content'];
+        echo $article_highlight;
+        curl_close($ch);
+    }
 }
