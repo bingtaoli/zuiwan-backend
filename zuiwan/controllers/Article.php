@@ -301,7 +301,7 @@ class Article extends MY_Controller
                         throw new Exception("文章大图上传失败");
                     }
                     //更新数据库
-                    $select = 'article_img';
+                    $select = 'id, article_img';
                     //不需要add_prefix
                     $article = $this->article->select_by_id($select, $id, 0);
                     $originImg = $article['article_img'];
