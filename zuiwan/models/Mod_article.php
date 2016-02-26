@@ -134,6 +134,8 @@ class Mod_article extends CI_Model
     }
 
     public function get_by_topic($id){
+        //按照时间排序,最新的在最上面
+        $this->db->order_by('create_time', 'DESC');
         $this->db->select('id, article_title, article_intro, article_media_name, article_topic_name, article_img, create_time');
         $result = $this->db->get_where('article', ['article_topic' => $id])->result_array();
         $this->_add_prefix($result);
