@@ -114,6 +114,8 @@ class User extends MY_Controller {
     }
 
     public function get_detail(){
+        //从cookie获取username
+        //$username =
         $username = $this->username;
         if (!$username){
             return;

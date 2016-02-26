@@ -19,6 +19,7 @@ class MY_Controller extends CI_Controller{
 
     var $cfg = null;
     var $dict = null;
+    var $username = null;
 
     public function __construct(){
         error_reporting(0);
@@ -29,6 +30,15 @@ class MY_Controller extends CI_Controller{
         $this->load->model('mod_topic', 'topic');
         $this->load->model('mod_user', 'user');
         $this->load->model('mod_admin', 'admin');
+
+        $this->username = null;
+
+        if ($this->zw_client->get_session_client()){
+            $this->username = $this->zw_client->get_session_client();
+        } else if ($_COOKIE['zw_username']) {
+            //获取username
+            $this->username = $_COOKIE['zw_username'];
+        }
 
         //在angular的BaseCtrl做登录检查
 
