@@ -116,7 +116,9 @@ class Article extends MY_Controller
             $condition = null;
         }
         if ($numberPerPage && isset($index)){
-            list($count, $articles) = $this->article->get_page_articles($index, $numberPerPage, $condition);
+            $select = 'id, article_title, article_intro, article_author, article_publisher, article_media, article_media_name,
+                       article_topic, article_topic_name, create_time, article_img, is_recommend';
+            list($count, $articles) = $this->article->get_page_articles($index, $numberPerPage, $select, $condition);
             $result['count'] = $count;
             $result['articles'] = $articles;
         } else {
@@ -176,7 +178,7 @@ class Article extends MY_Controller
         if (METHOD == 'get'){
             $get_data = $this->input->get();
             $id = $get_data['id'];
-            $select = 'id, article_img, create_time, article_title, article_intro, article_author, article_media,
+            $select = 'id, article_img, create_time, article_title, article_intro, article_author, article_publisher, article_media,
                        article_topic, article_content, article_color, is_recommend, is_banner';
             $article = $this->article->select_by_id($select, $id);
             header("Access-Control-Allow-Origin: *");
@@ -231,6 +233,7 @@ class Article extends MY_Controller
                 if (!$isUpdate){
                     //先存数据库,再存图片,图片不成功则删除数据
                     $data['article_img'] = 'default_article_img.png';
+                    //my hook function, it is a simple idea, :)
                     $this->insert_hook($data, "article");
                     $id = $this->article->add_article($data);
                     $already_stored_in_db = true;

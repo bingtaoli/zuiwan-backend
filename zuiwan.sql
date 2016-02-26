@@ -20,6 +20,7 @@ create table if not exists article (
     article_intro varchar(50), #文章简介
     article_content LONGTEXT NOT NULL, #内容
     article_author varchar(20) NOT NULL, #作者
+    article_publisher VARCHAR(20) NOT NULL, #文章发布者
     article_media int NOT NULL , #媒体id
     article_media_name VARCHAR(30) NOT NULL,
     article_topic int NOT NULL, #专题id
