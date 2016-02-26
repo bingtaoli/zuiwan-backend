@@ -72,26 +72,39 @@ class User extends MY_Controller {
      */
     public function login(){
         if (METHOD == 'post'){
-            $post_data = $this->input->post();
-            $username = $post_data['username'];
-            $password = $post_data['password'];
-            $result = [
-                'status' => 1,
-                'message' => '',
-                //不返回用户信息
-            ];
             try {
+                $post_data = $this->input->post();
+                if (empty($post_data['username']) || empty($post_data['password'])) {
+                    //throw exception
+                    throw new Exception('用户名或密码缺失');
+                }
+                $username = $post_data['username'];
+                $password = $post_data['password'];
+                $result = [
+                    'status' => 1,
+                    'message' => '',
+                    //不返回用户信息
+                ];
                 $user = $this->user->get_by_name_password($username, $password);
-                if ($user){
+                if ($user) {
                     $result['message'] = '登陆成功';
                     $this->zw_client->login($username);
+                    //设置cookie
+                    //store username in cookie
+                    $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
+                    setcookie('zw_username', $username, time() + SECONDS_A_DAY * 20, '/', $domain, false);
                     log_message('info', 'user logged in' . $username);
                 } else {
                     $result['message'] = '用户名或密码错误';
                     $result['status'] = 0;
                 }
             } catch (Exception $e){
-                $result['message'] = '未知错误，请联系管理员';
+                if ($e->getMessage()){
+                    $message = $e->getMessage();
+                } else {
+                    $message = '未知错误，请联系管理员';
+                }
+                $result['message'] = $message;
                 $result['status'] = 0;
             }
             header("Access-Control-Allow-Origin: *");
