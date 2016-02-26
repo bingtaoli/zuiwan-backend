@@ -156,9 +156,36 @@ class Media extends MY_Controller
             $result['message'] = '';
             try {
                 $post_data = $this->input->post();
+                if (!isset($post_data['id'])){
+                    throw new Exception('无id');
+                }
                 $id = $post_data['id'];
+                $media = $this->media->select_by_id($id, 'media_avatar', 0);
+                //删img
+                $img = $media['media_avatar'];
+                $file_abs = $this->config->config["img_dir"] . "/" . $img;
+                $file_host = STATIC_PATH . $file_abs;
+                @unlink($file_host);
                 $this->media->del_media($id);
-                //todo 把该media下的所有文章都删除
+                //把该media下的所有文章都删除
+                $this->article->del_by_media($id);
+                //把关注列表中的该media删除
+                $users = $this->user->get_all_users();
+                foreach ($users as $user){
+                    $collect_media = $user['collect_media'];
+                    if (empty($collect_media)){
+                        continue;
+                    }
+                    $arr = json_decode($collect_media, true);
+                    if ($index = array_search($id, $arr)){
+                        //2.删除该关注
+                        unset($arr[$index]);
+                        $str = json_encode($arr);
+                        //3.store
+                        $user['collect_media'] = $str;
+                        $this->user->update_user($user);
+                    }
+                }
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
                 $result['status'] = 'error';

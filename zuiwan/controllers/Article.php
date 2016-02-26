@@ -136,7 +136,7 @@ class Article extends MY_Controller
             $id = $get_data['id'];
             $select = 'article_img, create_time, article_title, article_author, article_media, article_topic,
                        article_content, visit_count';
-            $article = $this->article->select_by_id($select, $id);
+            $article = $this->article->select_by_id($id, $select);
             try {
                 if (!empty($article)){
                     //访问量+1
@@ -180,7 +180,7 @@ class Article extends MY_Controller
             $id = $get_data['id'];
             $select = 'id, article_img, create_time, article_title, article_intro, article_author, article_publisher, article_media,
                        article_topic, article_content, article_color, is_recommend, is_banner';
-            $article = $this->article->select_by_id($select, $id);
+            $article = $this->article->select_by_id($id, $select);
             header("Access-Control-Allow-Origin: *");
             $result = $article;
             $this->output->set_content_type('application/json');
@@ -303,7 +303,7 @@ class Article extends MY_Controller
                     //更新数据库
                     $select = 'id, article_img';
                     //不需要add_prefix
-                    $article = $this->article->select_by_id($select, $id, 0);
+                    $article = $this->article->select_by_id($id, $select, 0);
                     $originImg = $article['article_img'];
                     $article['article_img'] = $store_file_name;
                     $this->article->update_article($article);
@@ -333,7 +333,35 @@ class Article extends MY_Controller
                 } else {
                     throw new Exception('no article id');
                 }
+                $article = $this->article->select_by_id($article_id, 'article_img', 0);
+                if (empty($article)){
+                    throw new Exception("错误的文章");
+                }
+                $img = $article['article_img'];
+                $file_abs = $this->config->config["img_dir"] . "/" . $img;
+                $file_host = STATIC_PATH . $file_abs;
+                @unlink($file_host);
                 $this->article->del_article($article_id);
+                //把关注该文章的用户的关注列表删除
+                //虽然很延时,但是在后台管理操作,可以忽略
+                //1.遍历所有的用户,如果用户关注了该文章,则删除该关注
+                //todo ugly code, 每篇文章删除都要遍历..
+                $users = $this->user->get_all_users();
+                foreach ($users as $user){
+                    $collect_article = $user['collect_article'];
+                    if (empty($collect_article)){
+                        continue;
+                    }
+                    $arr = json_decode($collect_article, true);
+                    if ($index = array_search($article_id, $arr)){
+                        //2.删除该关注
+                        unset($arr[$index]);
+                        $str = json_encode($arr);
+                        //3.store
+                        $user['collect_article'] = $str;
+                        $this->user->update_user($user);
+                    }
+                }
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
                 $result['status'] = 0;

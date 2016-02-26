@@ -35,6 +35,16 @@ class Mod_article extends CI_Model
         $this->db->delete('article');
     }
 
+    public function del_by_media($id){
+        $this->db->where('article_media', $id);
+        $this->db->delete('article');
+    }
+
+    public function del_by_topic($id){
+        $this->db->where('article_topic', $id);
+        $this->db->delete('article');
+    }
+
     public function update_article($data){
         try {
             $this->db->where('id', $data['id']);
@@ -50,7 +60,7 @@ class Mod_article extends CI_Model
         return $result;
     }
 
-    public function select_by_id($select, $id, $add_prefix=1){
+    public function select_by_id($id, $select='*', $add_prefix=1){
         $this->db->select($select);
         $result = $this->db->get_where('article', ['id' => $id])->result_array();
         if ($add_prefix == 1){

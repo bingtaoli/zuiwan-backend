@@ -59,7 +59,7 @@ class Test extends MY_Controller
         $result['status'] = 1;
         header("Access-Control-Allow-Origin: *");
         $select = 'visit_count';
-        $result['article'] = $this->article->select_by_id($select, 17);
+        $result['article'] = $this->article->select_by_id(17, $select);
         $this->output->set_content_type('application/json');
         $this->output->set_output(json_encode($result));
     }

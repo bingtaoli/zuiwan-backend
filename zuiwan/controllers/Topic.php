@@ -149,8 +149,20 @@ class Topic extends MY_Controller
             $result['message'] = '';
             try {
                 $post_data = $this->input->post();
+                if (!isset($post_data['id'])){
+                    throw new Exception('无id');
+                }
                 $id = $post_data['id'];
+                $topic = $this->topic->select_by_id($id, 'topic_img', 0);
+                $img = $topic['topic_img'];
+                $file_abs = $this->config->config["img_dir"] . "/" . $img;
+                $file_host = STATIC_PATH . $file_abs;
+                @unlink($file_host);
                 $this->topic->del_topic($id);
+                //删除topic img
+
+                //把该media下的所有文章都删除
+                $this->article->del_by_topic($id);
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
                 $result['status'] = 'error';

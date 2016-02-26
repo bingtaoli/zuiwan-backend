@@ -143,7 +143,7 @@ class User extends MY_Controller {
             $arr = json_decode($collect_article, true);
             foreach($arr as $a){
                 $select = 'id, article_title, article_media_name, article_topic_name, article_img, article_color';
-                $article = $this->article->select_by_id($select, $a);
+                $article = $this->article->select_by_id($a, $select);
                 if (empty($article)){
                     continue;
                 }
