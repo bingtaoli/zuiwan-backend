@@ -84,7 +84,7 @@ class User extends MY_Controller {
                 $user = $this->user->get_by_name_password($username, $password);
                 if ($user){
                     $result['message'] = '登陆成功';
-                    $this->zw_client->login($username, 1);
+                    $this->zw_client->login($username);
                     log_message('info', 'user logged in' . $username);
                 } else {
                     $result['message'] = '用户名或密码错误';
