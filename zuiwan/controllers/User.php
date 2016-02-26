@@ -129,6 +129,9 @@ class User extends MY_Controller {
             $arr = json_decode($collect_media, true);
             foreach($arr as $a){
                 $media = $this->media->select_by_id($a, 'id, media_name, media_avatar');
+                if (empty($media)){
+                    continue;
+                }
                 $user['medias'][] = $media;
             }
         }
@@ -141,6 +144,9 @@ class User extends MY_Controller {
             foreach($arr as $a){
                 $select = 'id, article_title, article_media_name, article_topic_name, article_img, article_color';
                 $article = $this->article->select_by_id($select, $a);
+                if (empty($article)){
+                    continue;
+                }
                 $user['articles'][] = $article;
             }
         }
