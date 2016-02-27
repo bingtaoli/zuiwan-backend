@@ -66,15 +66,17 @@ class Media extends MY_Controller
             if (!isset($post_data['id'])){
                 throw new Exception('id needed');
             }
+            if (empty($post_data['media_name']) || empty($post_data['media_intro'])){
+                throw new Exception("媒体名称和简介都不能为空");
+            }
             $media_id = $post_data['id'];
             $media = $this->media->select_by_id($media_id, 'id, media_avatar', 0);
-            if (!empty($post_data['media_name'])){
-                //media name 需要修改,贺鑫的建议
-                $media['media_name'] = $post_data['media_name'];
-                // ugly code, but will fix later
-                $this->media->update($media);
-            }
-            // avatar
+            //1. media name and intro 需要修改,贺鑫的建议
+            $media['media_name'] = $post_data['media_name'];
+            $media['media_intro'] = $post_data['media_intro'];
+            //ugly code, but will fix later
+            $this->media->update($media);
+            //2. maybe update avatar
             if(is_uploaded_file($_FILES['avatar']['tmp_name'])) {
                 //判断上传文件是否允许
                 //$file_arr = pathinfo($_FILES['avatar']['name']);

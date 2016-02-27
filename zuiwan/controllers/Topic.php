@@ -63,13 +63,17 @@ class Topic extends MY_Controller
                 if (!isset($post_data['id'])) {
                     throw new Exception('id needed');
                 }
+                if (empty($post_data['topic_name']) || empty($post_data['topic_intro'])){
+                    throw new Exception("专题名称和简介都不能为空");
+                }
                 $topic_id = $post_data['id'];
                 $topic = $this->topic->select_by_id($topic_id, 'id, topic_img', 0);
-                if (!empty($post_data['topic_name'])) {
-                    $topic['topic_name'] = $post_data['topic_name'];
-                    // ugly code, but will fix later
-                    $this->topic->update($topic);
-                }
+                //1. update topic name intro
+                $topic['topic_name'] = $post_data['topic_name'];
+                $topic['topic_intro'] = $post_data['topic_intro'];
+                // ugly code, but will fix later
+                $this->topic->update($topic);
+                //2. maybe update img
                 if (is_uploaded_file($_FILES['topic_img']['tmp_name'])) {
                     //判断上传文件是否允许
                     $file_name = $_FILES['topic_img']['name'];
