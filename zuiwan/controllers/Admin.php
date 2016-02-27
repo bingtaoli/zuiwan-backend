@@ -20,7 +20,6 @@ class Admin extends MY_Controller
     public function get_website_information(){
         $article_count = $this->article->get_count();
         $user_count = $this->user->get_count();
-
         $information['article_count'] = $article_count;
         $information['user_count'] = $user_count;
         header("Access-Control-Allow-Origin: *");
@@ -56,11 +55,11 @@ class Admin extends MY_Controller
                     if ($user){
                         $result['message'] = '登陆成功';
                         //设置session
-                        $this->zw_client->login($username);
+                        $_SESSION['zw_admin_username'] = $username;
                         if ($remember){
                             //store username in cookie
                             $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
-                            setcookie('zw_username', $username, time() + SECONDS_A_DAY*20, '/', $domain, false);
+                            setcookie('zw_admin_username', $username, time() + SECONDS_A_DAY*20, '/', $domain, false);
                             //生成token
                             $token = md5(microtime(true));
                             //store token in DB
@@ -117,13 +116,13 @@ class Admin extends MY_Controller
                     throw new Exception("user name needed");
                 }
                 //unset username session
-                $this->zw_client->logout();
+                $_SESSION['zw_admin_username'] = $username;
                 //delete cookie
-                if (isset($_COOKIE['zw_username'])){
+                if (isset($_COOKIE['zw_admin_username'])){
                     $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
                     $username = "";
                     //删除cookie,把超时时间设置成一个小时过去
-                    setcookie('zw_username', $username, time() - 60*60, '/', $domain, false);
+                    setcookie('zw_admin_username', $username, time() - 60*60, '/', $domain, false);
                 }
                 //delete token in database
                 $this->admin->del_token($username);
