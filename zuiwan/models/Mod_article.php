@@ -113,6 +113,8 @@ class Mod_article extends CI_Model
     }
 
     public function get_recommended_articles(){
+        //按照时间排序,最新的在最上面
+        $this->db->order_by('create_time', 'DESC');
         $this->db->select('id, article_title, article_media_name, article_topic_name, article_img, article_color');
         $result = $this->db->get_where('article', ['is_recommend' => 1])->result_array();
         $this->_add_prefix($result);
@@ -120,6 +122,8 @@ class Mod_article extends CI_Model
     }
 
     public function get_banner_articles(){
+        //按照时间排序,最新的在最上面
+        $this->db->order_by('create_time', 'DESC');
         $this->db->select('id, article_title, article_intro, article_media_name, article_topic_name, article_img');
         $result = $this->db->get_where('article', ['is_banner' => 1])->result_array();
         $this->_add_prefix($result);

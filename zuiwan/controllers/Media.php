@@ -83,6 +83,9 @@ class Media extends MY_Controller
                 //$file_type = $file_arr["extension"];
                 $file_name = $_FILES['avatar']['name'];
                 $date = date("YmdHms");
+                if ( strlen($file_name) > 40 - strlen($date) ){
+                    //
+                }
                 $store_file_name = $date . $file_name;
                 $file_abs = $this->config->config["img_dir"] . "/" . $store_file_name;
                 $file_host = STATIC_PATH . $file_abs;

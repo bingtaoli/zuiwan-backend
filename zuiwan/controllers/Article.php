@@ -37,6 +37,9 @@ class Article extends MY_Controller
             $banner = $this->article->get_banner_articles();
         }
         $result['recommend'] = $recommended;
+        if (!empty($banner) &&  count($banner) > 3){
+            $banner = array_slice($banner, 0, 3);
+        }
         $result['banner'] = $banner;
         header("Access-Control-Allow-Origin: *");
         $this->output->set_content_type('application/json');
