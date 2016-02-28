@@ -302,6 +302,12 @@ class Article extends MY_Controller
             $result['message'] = '';
             try {
                 if(is_uploaded_file($_FILES['article_img']['tmp_name'])) {
+                    //文章颜色
+                    if (empty($post['article_color'])){
+                        throw new Exception("没有选择颜色");
+                    }
+                    $article_color = $post['article_color'];
+
                     $file_name = $_FILES['article_img']['name'];
                     //$file_type = pathinfo($file_name, PATHINFO_EXTENSION);
                     //$store_file_name = uniqid() . "." . $file_type;
@@ -318,11 +324,14 @@ class Article extends MY_Controller
                     $article = $this->article->select_by_id($id, $select, 0);
                     $originImg = $article['article_img'];
                     $article['article_img'] = $store_file_name;
+                    $article['article_color'] = $article_color;
                     $this->article->update_article($article);
                     //如果有old img,则删除old img
-                    if ($originImg && $originImg != 'default_article_img.jpg' ){
+                    if ($originImg && $originImg != 'default_article_img.png' ){
                         @unlink(STATIC_PATH . $originImg);
                     }
+                } else {
+                    throw new Exception('还没有上传图片');
                 }
             } catch(Exception $e){
                 $result['status'] = 0;
@@ -350,9 +359,11 @@ class Article extends MY_Controller
                     throw new Exception("错误的文章");
                 }
                 $img = $article['article_img'];
-                $file_abs = $this->config->config["img_dir"] . "/" . $img;
-                $file_host = STATIC_PATH . $file_abs;
-                @unlink($file_host);
+                if ($img != 'default_article_img.png'){
+                    $file_abs = $this->config->config["img_dir"] . "/" . $img;
+                    $file_host = STATIC_PATH . $file_abs;
+                    @unlink($file_host);
+                }
                 $this->article->del_article($article_id);
                 //把关注该文章的用户的关注列表删除
                 //虽然很延时,但是在后台管理操作,可以忽略
