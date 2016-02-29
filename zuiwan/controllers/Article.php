@@ -209,20 +209,19 @@ class Article extends MY_Controller
              */
             $result['status'] = 'success';
             $result['message'] = '';
-            $post_data = $this->input->post();
-            $article_content = $post_data['article_content'];
-            $article_media = $post_data['article_media'];
-            $article_topic = $post_data['article_topic'];
-            $isUpdate = isset($post_data['is_update']) ? $post_data['is_update'] : null;
+            $data = $this->input->post();
+            $article_content = $data['article_content'];
+            $article_media = $data['article_media'];
+            $article_topic = $data['article_topic'];
+            $isUpdate = isset($data['is_update']) ? $data['is_update'] : null;
             //时间格式 2016-1-1 12:00:00
             $create_time = date('Y-m-d H:m:s');
             //去除img包含的p标签
             $reg = "/<p>(<img.+?)<\/p>/";
             $replacement = '$1';
             $article_content = preg_replace($reg, $replacement, $article_content);
-            $post_data['article_content'] = $article_content;
-            $post_data['create_time'] = $create_time;
-            $data = $post_data;
+            $data['article_content'] = $article_content;
+            $data['create_time'] = $create_time;
             $already_stored_in_db = false;
             $id = -1;
             try {
@@ -270,11 +269,17 @@ class Article extends MY_Controller
                         $this->article->update_article($data);
                     }
                 } else {
-                    //更新文章内容
                     unset($data['is_update']);
-                    if (!empty($data['id'])){
-                        $this->article->update_article($data);
+                    if (!isset($data['id'])){
+                        throw new Exception("没有id, 不能更新");
                     }
+                    //更新文章内容
+                    //除了文章大图和文章颜色
+                    $article = $this->article->select_by_id($data['id'], '*', 0);
+                    //后者覆盖前者
+                    $data = array_merge($article, $data);
+                    $this->insert_hook($data, 'article');
+                    $this->article->update_article($data);
                 }
             } catch (Exception $e){
                 //根据id删除数据库
