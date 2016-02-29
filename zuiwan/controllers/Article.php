@@ -456,6 +456,9 @@ class Article extends MY_Controller
              */
             if (!empty($arr) && $arr['hits']['total'] > 0){
                 foreach ($arr['hits']['hits'] as $hit){
+                    if (!isset($hit['_source']['id'])){
+                        continue;
+                    }
                     $article['article']['id'] = $hit['_source']['id'];
                     $article['article']['article_title'] = $hit['_source']['article_title'];
                     $article['highlight'] = $hit['highlight']['article_content'];
