@@ -224,8 +224,6 @@ class Article extends MY_Controller
             $already_stored_in_db = false;
             $id = -1;
             //时间戳
-            $unix_time = time();
-            $data['time_stamp'] = $unix_time;
             try {
                 //获取topic name && media name
                 $this->load->model('mod_topic', 'topic');
