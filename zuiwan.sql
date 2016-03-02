@@ -31,7 +31,6 @@ create table if not exists article (
     article_color VARCHAR(40) NOT NULL, #文章颜色
     is_banner int DEFAULT 0, #是否是banner
     visit_count int DEFAULT 1,
-    time_stamp int NOT NULL DEFAULT 0, #时间戳 unix time
     PRIMARY KEY (id)
 ) default charset=utf8;
 

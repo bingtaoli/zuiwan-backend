@@ -295,17 +295,9 @@ class Article extends MY_Controller
                         }
                     }
                 }
-                //向elastic search请求更新文章,以timestamp为时间限制
-                $ch = curl_init();
-                $opts = [
-                    CURLOPT_CUSTOMREQUEST => "GET",
-                    CURLOPT_URL  => "http://localhost/zuiwan-backend/elastic_pull_update_by_time.php?time_stamp=$unix_time",
-                    CURLOPT_RETURNTRANSFER => true,
-                ];
-                curl_setopt_array($ch, $opts);
-                $str = curl_exec($ch);
-                $result['message'] = $str;
-                curl_close($ch);
+                //不管增加或更新,都是add到elastic
+                //data即一篇文章的数据
+                $this->_add_articles_to_elastic([$data]);
             } catch (Exception $e){
                 //根据id删除数据库
                 if ($already_stored_in_db){
@@ -476,6 +468,36 @@ class Article extends MY_Controller
         curl_close($ch);
     }
 
+    public function pull_data_to_elastic(){
+        $select = 'id, article_content, article_content';
+        $articles = $this->article->select_all($select);
+        $this->_add_articles_to_elastic($articles);
+    }
+
+    //输入为一个数组
+    public function _add_articles_to_elastic($articles){
+        $ch = curl_init();
+        $opts = [
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_URL           => "http://localhost:9200/zuiwan/article",
+            CURLOPT_RETURNTRANSFER => true,
+        ];
+        curl_setopt_array($ch, $opts);
+        foreach ($articles as $article){
+            if (!isset($article['id'])){
+                continue;
+            }
+            $data = json_encode([
+                'id'    => $article['id'],
+                'article_title'  => $article['article_title'],
+                'article_content' => $article['article_content']
+            ]);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+            $str = curl_exec($ch);
+        }
+        curl_close($ch);
+    }
+
     public function search(){
         if (METHOD == 'get'){
             $data = $this->input->get();
@@ -484,20 +506,24 @@ class Article extends MY_Controller
             $ch = curl_init();
             $data = [
                 "query" => [
+                    //奇怪,term不行
                     "match_phrase" => [
                         'article_content' => $query,
                     ],
                 ],
                 "highlight" => [
+                    "pre_tags"  => ["<tag1>", "<tag2>"],
+                    "post_tags" => ["</tag1>", "</tag2>"],
                     "fields" => [
-                        "article_content" => ["fragment_size" => 150, "number_of_fragments" => 3],
+                        "article_content" => ["fragment_size" => 60, "number_of_fragments" => 4],
                     ]
                 ],
             ];
             //为什么写死localhost呢,因为阿里云没有开放9200端口
+            $json_data = json_encode($data);
             $opts = [
                 CURLOPT_URL => 'http://localhost:9200/zuiwan/article/_search',
-                CURLOPT_POSTFIELDS => json_encode($data, JSON_FORCE_OBJECT),
+                CURLOPT_POSTFIELDS => $json_data,
                 CURLOPT_HTTPHEADER => array('Content-Type:application/json'),
                 CURLOPT_RETURNTRANSFER => true,
             ];
@@ -544,7 +570,7 @@ class Article extends MY_Controller
                 foreach ($result as &$article){
                     foreach ($article['highlight'] as &$highlight){
                         //1. 把em标签保存
-                        $highlight = preg_replace('/<em>(.+?)<\/em>/', 'ZW_PREG${1}ZW_PREG', $highlight);
+                        $highlight = preg_replace('/<tag1>(.+?)<\/tag1>/', 'ZW_PREG${1}ZW_PREG', $highlight);
                         //2. 除去其他的html标签
                         $pattern = array(
                             # 优先级是从上到下

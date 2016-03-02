@@ -54,7 +54,7 @@ class Mod_article extends CI_Model
         }
     }
 
-    public function select_all($select){
+    public function select_all($select='*'){
         $this->db->select($select);
         $result = $this->db->get('article')->result_array();
         return $result;
@@ -82,22 +82,6 @@ class Mod_article extends CI_Model
         $this->db->select($select);
         return $this->db->get('article')->result_array();
     }
-
-//    public function get_all_articles($type=null, $id=null){
-//        $this->db->select('id, article_title, article_intro, article_author, article_media, article_media_name,
-//                          article_topic, article_topic_name, create_time, article_img, is_recommend');
-//        if ($type){
-//            if ($type == 1){
-//                $result = $this->db->get_where('article', ['article_media' => $id])->result_array();
-//            } else if ($type == 2){
-//                $result = $this->db->get_where('article', ['article_topic' => $id])->result_array();
-//            }
-//        } else {
-//            $result = $this->db->get('article')->result_array();
-//        }
-//        $this->_add_prefix($result);
-//        return $result;
-//    }
 
     public function get_top_articles($number){
         $select = 'id, visit_count, article_title';
