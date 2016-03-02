@@ -20,22 +20,24 @@ class Article extends MY_Controller
         $result = [];
         //从php.ini获取是否使用yac
         //empty: 不是null且不是0
-        if (!empty(ini_get('yac.enable'))){
-            $yac = new Yac("zw");
-            $recommended = $yac->get("recommended_articles");
-            if (empty($recommended)){
-                $recommended = $this->article->get_recommended_articles();
-                $yac->set("recommended_articles", $recommended);
-            }
-            $banner = $yac->get('banner');
-            if (empty($banner)){
-                $banner = $this->article->get_banner_articles();
-                $yac->set('banner', $banner);
-            }
-        } else {
-            $recommended = $this->article->get_recommended_articles();
-            $banner = $this->article->get_banner_articles();
-        }
+//        if (!empty(ini_get('yac.enable'))){
+//            $yac = new Yac("zw");
+//            $recommended = $yac->get("recommended_articles");
+//            if (empty($recommended)){
+//                $recommended = $this->article->get_recommended_articles();
+//                $yac->set("recommended_articles", $recommended);
+//            }
+//            $banner = $yac->get('banner');
+//            if (empty($banner)){
+//                $banner = $this->article->get_banner_articles();
+//                $yac->set('banner', $banner);
+//            }
+//        } else {
+//            $recommended = $this->article->get_recommended_articles();
+//            $banner = $this->article->get_banner_articles();
+//        }
+        $recommended = $this->article->get_recommended_articles();
+        $banner = $this->article->get_banner_articles();
         $result['recommend'] = $recommended;
         if (!empty($banner) &&  count($banner) > 3){
             $banner = array_slice($banner, 0, 3);
@@ -214,16 +216,16 @@ class Article extends MY_Controller
             $article_media = $data['article_media'];
             $article_topic = $data['article_topic'];
             $isUpdate = isset($data['is_update']) ? $data['is_update'] : null;
-            //时间格式 2016-1-1 12:00:00
-            $create_time = date('Y-m-d H:m:s');
             //去除img包含的p标签
             $reg = "/<p>(<img.+?)<\/p>/";
             $replacement = '$1';
             $article_content = preg_replace($reg, $replacement, $article_content);
             $data['article_content'] = $article_content;
-            $data['create_time'] = $create_time;
+            $data['time_stamp'] = time();
             $already_stored_in_db = false;
             $id = -1;
+            //时间戳
+            //$data['time_stamp'] = time();
             try {
                 //获取topic name && media name
                 $this->load->model('mod_topic', 'topic');
@@ -233,6 +235,9 @@ class Article extends MY_Controller
                 $data['article_media_name'] = $media['media_name'];
                 $data['article_topic_name'] = $topic['topic_name'];
                 if (!$isUpdate){
+                    //时间格式 2016-1-1 12:00:00
+                    $create_time = date('Y-m-d H:m:s');
+                    $data['create_time'] = $create_time;
                     //先存数据库,再存图片,图片不成功则删除数据
                     $data['article_img'] = 'default_article_img.png';
                     //my hook function, it is a simple idea, :)
@@ -281,6 +286,8 @@ class Article extends MY_Controller
                     $this->insert_hook($data, 'article');
                     $this->article->update_article($data);
                 }
+                //向elastic search请求更新文章
+                //todo
             } catch (Exception $e){
                 //根据id删除数据库
                 if ($already_stored_in_db){
@@ -390,6 +397,13 @@ class Article extends MY_Controller
                         $this->user->update_user($user);
                     }
                 }
+                //elastic search delete
+                $es_ids = $this->get_article_elastic_id($article_id);
+                if (!empty($es_ids)){
+                    foreach ($es_ids as $es_id){
+                        $this->del_article_from_elastic($es_id);
+                    }
+                }
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
                 $result['status'] = 0;
@@ -398,6 +412,47 @@ class Article extends MY_Controller
             $this->output->set_content_type('application/json');
             $this->output->set_output(json_encode($result));
         }
+    }
+
+    public function get_article_elastic_id($article_id){
+        if (!is_numeric($article_id)){
+            return null;
+        }
+        $ch = curl_init();
+        $opts = [
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_URL           => "http://localhost:9200/zuiwan/article/_search?pretty&q=id:$article_id",
+            CURLOPT_RETURNTRANSFER => true,
+        ];
+        curl_setopt_array($ch, $opts);
+        $str = curl_exec($ch);
+        curl_close($ch);
+        $arr = json_decode($str, true);
+        /**
+         * $arr结构可以参照下面的search函数注释
+         */
+        $id_array = [];
+        if (!empty($arr) && $arr['hits']['total'] > 0){
+            foreach ($arr['hits']['hits'] as $hit){
+                if (!isset($hit['_source']['id'])){
+                    continue;
+                }
+                $id_array[] = $hit['_id'];
+            }
+        }
+        return $id_array;
+    }
+
+    public function del_article_from_elastic($id){
+        $ch = curl_init();
+        $opts = [
+            CURLOPT_CUSTOMREQUEST => "DELETE",
+            CURLOPT_URL           => "http://localhost:9200/zuiwan/article/$id",
+            CURLOPT_RETURNTRANSFER => true,
+        ];
+        curl_setopt_array($ch, $opts);
+        curl_exec($ch);
+        curl_close($ch);
     }
 
     public function search(){
