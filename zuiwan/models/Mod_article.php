@@ -135,13 +135,13 @@ class Mod_article extends CI_Model
             $this->db->where($condition);
         }
         $this->db->select($select);
-        $this->db->select();
         $count = $this->db->count_all_results('article');
         //上一次的限制查询过后就没有了 todo 优化,如果不用limit实现分页则少一次查询
         if ($condition){
             $this->db->where($condition);
         }
         $this->db->limit($numberPerPage, $index*$numberPerPage);
+        $this->db->order_by('create_time', 'DESC');
         $result = $this->db->get('article')->result_array();
         $this->_add_prefix($result);
         return [$count, $result];
@@ -157,6 +157,7 @@ class Mod_article extends CI_Model
     }
 
     public function get_by_media($id){
+        $this->db->order_by('create_time', 'DESC');
         $this->db->select('id, article_title, article_media_name, article_topic_name, article_img, article_color');
         $result = $this->db->get_where('article', ['article_media' => $id])->result_array();
         $this->_add_prefix($result);
