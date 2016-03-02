@@ -225,7 +225,8 @@ class Article extends MY_Controller
             $already_stored_in_db = false;
             $id = -1;
             //时间戳
-            //$data['time_stamp'] = time();
+            $unix_time = time();
+            $data['time_stamp'] = $unix_time;
             try {
                 //获取topic name && media name
                 $this->load->model('mod_topic', 'topic');
@@ -285,9 +286,26 @@ class Article extends MY_Controller
                     $data = array_merge($article, $data);
                     $this->insert_hook($data, 'article');
                     $this->article->update_article($data);
+                    //先删除
+                    //elastic search delete
+                    $es_ids = $this->get_article_elastic_id($data['id']);
+                    if (!empty($es_ids)){
+                        foreach ($es_ids as $es_id){
+                            $this->del_article_from_elastic($es_id);
+                        }
+                    }
                 }
-                //向elastic search请求更新文章
-                //todo
+                //向elastic search请求更新文章,以timestamp为时间限制
+                $ch = curl_init();
+                $opts = [
+                    CURLOPT_CUSTOMREQUEST => "GET",
+                    CURLOPT_URL  => "http://localhost/zuiwan-backend/elastic_pull_update_by_time.php?time_stamp=$unix_time",
+                    CURLOPT_RETURNTRANSFER => true,
+                ];
+                curl_setopt_array($ch, $opts);
+                $str = curl_exec($ch);
+                $result['message'] = $str;
+                curl_close($ch);
             } catch (Exception $e){
                 //根据id删除数据库
                 if ($already_stored_in_db){
@@ -414,6 +432,8 @@ class Article extends MY_Controller
         }
     }
 
+    //根据文章id获取elastic search中的存储id
+    //返回是id数组,一般都只有一个元素
     public function get_article_elastic_id($article_id){
         if (!is_numeric($article_id)){
             return null;
@@ -443,6 +463,7 @@ class Article extends MY_Controller
         return $id_array;
     }
 
+    //根据elastic search的存储id删除
     public function del_article_from_elastic($id){
         $ch = curl_init();
         $opts = [

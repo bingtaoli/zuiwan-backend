@@ -1,5 +1,4 @@
 #!/bin/sh
-
 # platform choice
 macPath=/Users/libingtao/Applications/elasticsearch-jdbc-2.1.1.2
 linuxPath=/home/bingtaoli/elasticsearch-jdbc-2.1.1.2
@@ -15,28 +14,34 @@ else
 	exit 1
 fi
 
-#新删除所有的数据
-#curl -XDELETE 'http://localhost:9200/zuiwan'
+if [ $# != 1 ]; then
+	echo "wrong arg number which should be one"
+	exit 1
+fi
+
+echo "timestamp is $1"
 
 bin=$JDBC_IMPORTER_HOME/bin
 lib=$JDBC_IMPORTER_HOME/lib
 echo $bin
-echo '
+str='
 {
     "type" : "jdbc",
     "jdbc" : {
         "url" : "jdbc:mysql://localhost:3306/zuiwan_m",
         "user" : "root",
         "password" : "",
-        "sql" : "select id, article_title, article_content from article" ,
+        "sql" : "select id, article_title, article_content from article where time_stamp >= '" $1 "'" ,
         "index" : "zuiwan",
         "type" : "article"
     }
-}'  | java \
+}'
+echo $str
+echo $str | java \
               -cp "${lib}/*" \
               -Dlog4j.configurationFile=${bin}/log4j2.xml \
               org.xbib.tools.Runner \
               org.xbib.tools.JDBCImporter
 echo "sleeping while importer should run..."
-sleep 5
-curl -XGET 'localhost:9200/zuiwan/article/_search?pretty&q=*'
+#sleep 3
+#curl -XGET 'localhost:9200/zuiwan/article/_search?pretty&q=*'

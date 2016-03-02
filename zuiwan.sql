@@ -17,7 +17,7 @@ create table if not exists user (
 create table if not exists article (
     id int NOT NULL AUTO_INCREMENT,
     article_title varchar(30) NOT NULL,
-    article_intro varchar(50), #文章简介
+    article_intro varchar(80), #文章简介
     article_content LONGTEXT NOT NULL, #内容
     article_author varchar(20) NOT NULL, #作者
     article_publisher VARCHAR(20) NOT NULL, #文章发布者
@@ -31,6 +31,7 @@ create table if not exists article (
     article_color VARCHAR(40) NOT NULL, #文章颜色
     is_banner int DEFAULT 0, #是否是banner
     visit_count int DEFAULT 1,
+    time_stamp int NOT NULL DEFAULT 0, #时间戳 unix time
     PRIMARY KEY (id)
 ) default charset=utf8;
 
