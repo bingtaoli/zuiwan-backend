@@ -221,7 +221,6 @@ class Article extends MY_Controller
             $replacement = '$1';
             $article_content = preg_replace($reg, $replacement, $article_content);
             $data['article_content'] = $article_content;
-            $data['time_stamp'] = time();
             $already_stored_in_db = false;
             $id = -1;
             //时间戳
