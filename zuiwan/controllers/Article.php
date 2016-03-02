@@ -217,6 +217,7 @@ class Article extends MY_Controller
             $article_topic = $data['article_topic'];
             $isUpdate = isset($data['is_update']) ? $data['is_update'] : null;
             //去除img包含的p标签
+            //因为ckeditor默认是会把img包含在p标签中
             $reg = "/<p>(<img.+?)<\/p>/";
             $replacement = '$1';
             $article_content = preg_replace($reg, $replacement, $article_content);
@@ -232,6 +233,10 @@ class Article extends MY_Controller
                 $topic = $this->topic->select_by_id($article_topic, 'topic_name, topic_intro, topic_img');
                 $data['article_media_name'] = $media['media_name'];
                 $data['article_topic_name'] = $topic['topic_name'];
+                //文章简介最少50字
+                if (!(empty($data['article_intro']) && strlen(utf8_decode($data['article_intro'])))){
+                    throw new Exception("文章简介最少50字");
+                }
                 if (!$isUpdate){
                     //时间格式 2016-1-1 12:00:00
                     $create_time = date('Y-m-d H:m:s');
