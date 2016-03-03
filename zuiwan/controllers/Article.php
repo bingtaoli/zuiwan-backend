@@ -206,9 +206,6 @@ class Article extends MY_Controller
     //2. 更改文章
     public function add_article(){
         if (METHOD == 'post'){
-            /**
-             * TODO 只有root账户可以访问
-             */
             $result['status'] = 'success';
             $result['message'] = '';
             $data = $this->input->post();
@@ -234,8 +231,12 @@ class Article extends MY_Controller
                 $data['article_media_name'] = $media['media_name'];
                 $data['article_topic_name'] = $topic['topic_name'];
                 //文章简介最少50字
-                if (!(empty($data['article_intro']) && strlen(utf8_decode($data['article_intro'])))){
-                    throw new Exception("文章简介最少50字");
+                if (!empty($data['article_intro'])){
+                    if (strlen(utf8_decode($data['article_intro'])) < 50){
+                        throw new Exception("文章简介最少50字");
+                    }
+                } else {
+                    throw new Exception("文章简介未填写");
                 }
                 if (!$isUpdate){
                     //时间格式 2016-1-1 12:00:00
