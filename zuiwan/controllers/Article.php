@@ -287,7 +287,7 @@ class Article extends MY_Controller
                     $article = $this->article->select_by_id($data['id'], '*', 0);
                     //后者覆盖前者
                     $data = array_merge($article, $data);
-                    $this->insert_hook($data, 'article');
+                    $this->insert_hook($data, 'article', 0);
                     $this->article->update_article($data);
                     //先删除
                     //elastic search delete

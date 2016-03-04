@@ -56,11 +56,12 @@ class MY_Controller extends CI_Controller{
     /**
      * @param $data
      * @param $module
+     * @param $is_add
      * @throws Exception
      * 插入时检查data是否有效
      * 现在只支持int varchar(xx)的检查,后续会完善.
      */
-    public function insert_hook($data, $module){
+    public function insert_hook($data, $module, $is_add=1){
         $cols = $this->$module->get_columns();
         $notNulls = [];
         $fields = [];
@@ -88,9 +89,25 @@ class MY_Controller extends CI_Controller{
                 throw new Exception("unknown column " . $index . "  ");
             }
         }
-        foreach($notNulls as $index){
-            if (empty($data[$index]) && $index != 'id'){
-                throw new Exception($index  . " is null\t");
+        if ($is_add){
+            //添加保证必须填写的都要填
+            foreach($notNulls as $index){
+                if (empty($data[$index]) && $index != 'id'){
+                    throw new Exception($index  . " is null\t");
+                }
+            }
+        } else {
+            //update,检查每个key=>value对
+            //1. key为必须填写但是value为空则报错
+            //2. value为undefined也报错
+            foreach ($data as $key => $value){
+                if (array_search($key, $notNulls) != false){
+                    if (empty($value) || $value == 'undefined'){
+                        //前端未设置则会成为undefined
+                        //当然了,前端也可以故意把一些字符设置成'undefined',这是一个hack
+                        throw new Exception("$key 必须设置");
+                    }
+                }
             }
         }
         //Type合法检查,比如超长字符
