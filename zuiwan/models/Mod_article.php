@@ -119,16 +119,24 @@ class Mod_article extends CI_Model
             $this->db->where($condition);
         }
         $this->db->select($select);
+        //获取count前端才能分页
         $count = $this->db->count_all_results('article');
         //上一次的限制查询过后就没有了 todo 优化,如果不用limit实现分页则少一次查询
         if ($condition){
             $this->db->where($condition);
         }
+        //recommend 数目
+        $this->db->where('is_recommend', 1);
+        $recommend_count = $this->db->count_all_results('article');
+        //recommend 数目
+        $this->db->where('is_banner', 1);
+        $banner_count = $this->db->count_all_results('article');
+        // articles
         $this->db->limit($numberPerPage, $index*$numberPerPage);
         $this->db->order_by('create_time', 'DESC');
         $result = $this->db->get('article')->result_array();
         $this->_add_prefix($result);
-        return [$count, $result];
+        return [$count, $result, $recommend_count, $banner_count];
     }
 
     public function get_by_topic($id){

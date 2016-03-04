@@ -123,9 +123,11 @@ class Article extends MY_Controller
         if ($numberPerPage && isset($index)){
             $select = 'id, article_title, article_intro, article_author, article_publisher, article_media, article_media_name,
                        article_topic, article_topic_name, create_time, article_img, is_recommend';
-            list($count, $articles) = $this->article->get_page_articles($index, $numberPerPage, $select, $condition);
+            list($count, $articles, $recommend_count, $banner_count) = $this->article->get_page_articles($index, $numberPerPage, $select, $condition);
             $result['count'] = $count;
             $result['articles'] = $articles;
+            $result['recommend_count'] = $recommend_count;
+            $result['banner_count'] = $banner_count;
         } else {
             $result = [];
             $result['error'] = "必须设定正确的索引和每页数目";
@@ -209,6 +211,10 @@ class Article extends MY_Controller
             $result['status'] = 'success';
             $result['message'] = '';
             $data = $this->input->post();
+            if (isset($data['editorValue'])){
+                //暂时解决百度editor自动提交
+                unset($data['editorValue']);
+            }
             $article_content = $data['article_content'];
             $article_media = $data['article_media'];
             $article_topic = $data['article_topic'];
