@@ -36,13 +36,19 @@ class Article extends MY_Controller
 //            $recommended = $this->article->get_recommended_articles();
 //            $banner = $this->article->get_banner_articles();
 //        }
-        $recommended = $this->article->get_recommended_articles();
-        $banner = $this->article->get_banner_articles();
-        $result['recommend'] = $recommended;
-        if (!empty($banner) &&  count($banner) > 3){
-            $banner = array_slice($banner, 0, 3);
+        $page = 1;
+        if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] >= 1){
+            $page = $_GET['page'];
         }
-        $result['banner'] = $banner;
+        if ($page == 1){
+            $banner = $this->article->get_banner_articles();
+            if (!empty($banner) &&  count($banner) > 3){
+                $banner = array_slice($banner, 0, 3);
+            }
+            $result['banner'] = $banner;
+        }
+        $recommended = $this->article->get_recommended_articles($page-1);
+        $result['recommend'] = $recommended;
         header("Access-Control-Allow-Origin: *");
         $this->output->set_content_type('application/json');
         $this->output->set_output(json_encode($result));
@@ -600,6 +606,11 @@ class Article extends MY_Controller
             $this->output->set_content_type('application/json');
             $this->output->set_output(json_encode($result));
         }
+    }
+
+    //定期调用清理未使用的图片
+    public function clean_used_pic(){
+        //
     }
 
 }

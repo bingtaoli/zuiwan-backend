@@ -101,3 +101,5 @@ define('SECONDS_A_DAY', 60*60*24);
 //推送的时间间隔
 //默认每天推送
 define('REMIND_TIME', 60*60*24);
+
+define('RECOMMEND_PER_PAGE', 12);

@@ -1,0 +1,7 @@
+服务器重启checklist:
+
+1. mysql  auto
+2. elasticsearch  bingtaoli/elastixxx/bin/elasxxx
+3. apache auto /usr/local/apache2/bin/apachectl start
+
+自动启动是使用脚本的，具体位置忘记了
