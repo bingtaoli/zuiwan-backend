@@ -47,8 +47,9 @@ class Article extends MY_Controller
             }
             $result['banner'] = $banner;
         }
-        $recommended = $this->article->get_recommended_articles($page-1);
+        list($recommended, $count) = $this->article->get_recommended_articles($page-1);
         $result['recommend'] = $recommended;
+        $result['recommendCount'] = $count;
         header("Access-Control-Allow-Origin: *");
         $this->output->set_content_type('application/json');
         $this->output->set_output(json_encode($result));

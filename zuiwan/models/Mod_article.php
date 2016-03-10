@@ -96,14 +96,20 @@ class Mod_article extends CI_Model
         return $this->db->count_all_results('article');
     }
 
+    //推荐列表
+    //同时返回总数,为了判断是否已经加载完
     public function get_recommended_articles($page=0){
         //按照时间排序,最新的在最上面
         $this->db->order_by('create_time', 'DESC');
         $this->db->limit(RECOMMEND_PER_PAGE, $page * RECOMMEND_PER_PAGE);
         $this->db->select('id, article_title, article_media_name, article_topic_name, article_img, article_color');
-        $result = $this->db->get_where('article', ['is_recommend' => 1])->result_array();
+        $this->db->where('is_recommend', 1);
+        $result = $this->db->get('article')->result_array();
         $this->_add_prefix($result);
-        return $result;
+        //总数
+        $this->db->where('is_recommend', 1);
+        $count = $this->db->count_all_results('article');
+        return [$result, $count];
     }
 
     public function get_banner_articles(){
