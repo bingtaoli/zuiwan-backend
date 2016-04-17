@@ -28,7 +28,7 @@ create table if not exists article (
     create_time varchar(30) NOT NULL, # 发布时间
     article_img text NOT NULL , #文章展示图片,可选
     is_recommend int DEFAULT 0, #是否推荐,默认不推荐
-    article_color VARCHAR(40) NOT NULL, #文章颜色
+    article_color VARCHAR(40), #文章颜色
     is_banner int DEFAULT 0, #是否是banner
     visit_count int DEFAULT 1,
     PRIMARY KEY (id)
