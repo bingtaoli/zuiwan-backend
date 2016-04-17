@@ -18,24 +18,6 @@ class Article extends MY_Controller
 
     public function get_recommend(){
         $result = [];
-        //从php.ini获取是否使用yac
-        //empty: 不是null且不是0
-//        if (!empty(ini_get('yac.enable'))){
-//            $yac = new Yac("zw");
-//            $recommended = $yac->get("recommended_articles");
-//            if (empty($recommended)){
-//                $recommended = $this->article->get_recommended_articles();
-//                $yac->set("recommended_articles", $recommended);
-//            }
-//            $banner = $yac->get('banner');
-//            if (empty($banner)){
-//                $banner = $this->article->get_banner_articles();
-//                $yac->set('banner', $banner);
-//            }
-//        } else {
-//            $recommended = $this->article->get_recommended_articles();
-//            $banner = $this->article->get_banner_articles();
-//        }
         $page = 1;
         if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] >= 1){
             $page = $_GET['page'];
@@ -55,6 +37,18 @@ class Article extends MY_Controller
         $this->output->set_output(json_encode($result));
     }
 
+    public function get_recommend_articles(){
+        $page = 1;
+        if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] >= 1){
+            $page = $_GET['page'];
+        }
+        list($recommended, $count) = $this->article->get_recommended_articles($page-1);
+        $result = $recommended;
+        header("Access-Control-Allow-Origin: *");
+        $this->output->set_content_type('application/json');
+        $this->output->set_output(json_encode($result));
+    }
+
     //获取banner的文章数,一般建议在4篇左右
     public function get_banner_count(){
         $banner = $this->article->get_banner_articles();
@@ -65,11 +59,9 @@ class Article extends MY_Controller
     }
 
     public function test_recommend(){
-        //可以看到select *和select具体列名相差近一半
-        $t = getmicrotime();
-        $this->get_recommend();
-        $tt = getmicrotime();
-        echo "costs " . ($tt - $t) . "s" . PHP_EOL;
+        $result = $this->article->test_get_recommend_articles();
+        $this->output->set_content_type('application/json');
+        $this->output->set_output(json_encode($result));
     }
 
     //提醒用户关注的媒体有文章更新了

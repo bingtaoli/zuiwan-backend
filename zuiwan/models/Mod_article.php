@@ -112,6 +112,13 @@ class Mod_article extends CI_Model
         return [$result, $count];
     }
 
+    public function test_get_recommend_articles(){
+        $this->db->select('id, article_title, article_media_name, article_topic_name, article_img, article_color');
+        $this->db->where('is_recommend', 1);
+        $result = $this->db->get('article')->result_array();
+        return $result;
+    }
+
     public function get_banner_articles(){
         //按照时间排序,最新的在最上面
         $this->db->order_by('create_time', 'DESC');
