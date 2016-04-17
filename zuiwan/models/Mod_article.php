@@ -128,28 +128,36 @@ class Mod_article extends CI_Model
         return $result;
     }
 
+
+
     public function get_page_articles($index, $numberPerPage, $select='*', $condition=null){
         if ($condition){
             $this->db->where($condition);
         }
-        $this->db->select($select);
-        //获取count前端才能分页
+        //获取count前端才能分页,该count是根据condition得到的
         $count = $this->db->count_all_results('article');
+
         //上一次的限制查询过后就没有了 todo 优化,如果不用limit实现分页则少一次查询
         if ($condition){
             $this->db->where($condition);
         }
-        //recommend 数目
-        $this->db->where('is_recommend', 1);
-        $recommend_count = $this->db->count_all_results('article');
-        //recommend 数目
-        $this->db->where('is_banner', 1);
-        $banner_count = $this->db->count_all_results('article');
         // articles
         $this->db->limit($numberPerPage, $index*$numberPerPage);
+        $this->db->select($select);
         $this->db->order_by('create_time', 'DESC');
         $result = $this->db->get('article')->result_array();
         $this->_add_prefix($result);
+
+        /**
+         * recommend数目和banner数目后续会移到另一个接口中 :(
+         */
+        //recommend 数目
+        $this->db->where('is_recommend', 1);
+        $recommend_count = $this->db->count_all_results('article');
+        //banner 数目
+        $this->db->where('is_banner', 1);
+        $banner_count = $this->db->count_all_results('article');
+        
         return [$count, $result, $recommend_count, $banner_count];
     }
 
