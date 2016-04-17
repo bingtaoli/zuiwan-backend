@@ -121,7 +121,7 @@ class Article extends MY_Controller
         }
         if ($numberPerPage && isset($index)){
             $select = 'id, article_title, article_intro, article_author, article_publisher, article_media, article_media_name,
-                       article_topic, article_topic_name, create_time, article_img, is_recommend';
+                       article_topic, article_topic_name, create_time, article_img, is_recommend, is_banner';
             list($count, $articles, $recommend_count, $banner_count) = $this->article->get_page_articles($index, $numberPerPage, $select, $condition);
             $result['count'] = $count;
             $result['articles'] = $articles;

@@ -157,7 +157,7 @@ class Mod_article extends CI_Model
         //banner 数目
         $this->db->where('is_banner', 1);
         $banner_count = $this->db->count_all_results('article');
-        
+
         return [$count, $result, $recommend_count, $banner_count];
     }
 
