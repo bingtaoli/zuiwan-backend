@@ -267,13 +267,15 @@ class Article extends MY_Controller
                         $this->img_compress->set_img($src);
                         $this->img_compress->set_size(400);
                         //根据图片大小来进行压缩比例
-                        //以1024K为界限
                         if ($_FILES['file']['size']  > 1024 * 1024){
-                            $this->img_compress->set_quality(60);
+                            //超过1M
+                            $this->img_compress->set_quality(75);
                         } else if ($_FILES['file']['size']  > 500 * 1024){
-                            $this->img_compress->set_quality(65);
-                        } else if ($_FILES['file']['size']  > 400 * 1024) {
-                            $this->img_compress->set_quality(70);
+                            //0.5 - 1 M
+                            $this->img_compress->set_quality(80);
+                        } else if ($_FILES['file']['size']  > 300 * 1024) {
+                            //0.3 - 0.5 M
+                            $this->img_compress->set_quality(85);
                         }
                         //压缩覆盖原图
                         $this->img_compress->save_img($file_host);
