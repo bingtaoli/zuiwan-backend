@@ -303,7 +303,9 @@ switch (ENVIRONMENT)
 	define('HOST', "http://" . $_SERVER['HTTP_HOST'] . "/");
     define('ONLINE_HOSTNAME_IP', '115.28.75.190');
 	define('ONLINE_HOSTNAME', 'zuiwant.com');
-    define('ONLINE_MODE', ($_SERVER['HTTP_HOST'] == ONLINE_HOSTNAME || $_SERVER['HTTP_HOST'] == ONLINE_HOSTNAME_IP ? true : false));
+	define('ONLINE_HOSTNAME_LONGER', 'www.zuiwant.com');
+	define('ONLINE_MODE', ($_SERVER['HTTP_HOST'] == ONLINE_HOSTNAME || $_SERVER['HTTP_HOST'] == ONLINE_HOSTNAME_IP
+							|| $_SERVER['HTTP_HOST'] == ONLINE_HOSTNAME_LONGER ? true : false));
 /*
  * --------------------------------------------------------------------
  * LOAD THE BOOTSTRAP FILE
